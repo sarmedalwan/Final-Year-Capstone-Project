@@ -2,7 +2,7 @@
 This project will be a two-player online multiplayer strategy game, created in Java. The game will be turn-based, 
 and will be set in WW2 and focused on Operation Mars, a famous operation on the eastern front around the city of Rzhev.
 
-![](example.png)
+![](src/sarmed_ce301_game.png)
 
 ## Getting Started (Software Based)
 
