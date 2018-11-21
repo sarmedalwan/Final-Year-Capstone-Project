@@ -1,13 +1,13 @@
-# Project Title
-A *brief* paragraph explaining your project and what it does should be written here. The idea is to give readers an overview of what it is that you've built.
+# Online Turn-Based Multiplayer Game
+This project will be a two-player online multiplayer strategy game, created in Java. The game will be turn-based, 
+and will be set in WW2 and focused on Operation Mars, a famous operation on the eastern front around the city of Rzhev.
 
 ## Getting Started (Software Based)
-You should write a bit about **how** I can get your project working, It's good to think in terms of the following sections:
 
 ### Prerequisites
 What do I need in order to get your project running? For example,
-* Python 3.5 (or later)
-* sqlalchemy
+* IntelliJ Idea 2016 (or later)
+* Image editing software
 
 ### Installing
 A step by step guide on how to build and install your software, for example:
@@ -24,37 +24,25 @@ database_pass=password
 #### Install libraries and run program
 
 ```
-pip install -r requirements.txt
-python3 main.py
+gson 2.8.2
 ```
 
 ### Running Tests
-How do I run your tests? Make it as easy as possible to do this!
 
-```
-pip install -r requirements.txt
-./tests.py
-```
+Tests are currently built-in and will simply print values to the IntelliJ console. Otherwise, testing the game involves running and attempting to play it in various ways.
 
 ### Versioning Statergy
-What versioning statergy are you using for your project, something like [semantic versioning](https://semver.org/) might be a good idea.
+I will use semantic versioning for my software.
 
 ## Getting Started (Hardware Based)
 
 ### Pre-requisites
 
-* Components
-* PBC
-* etc..
- 
-### Component Testing
-### PCB Board design
-### System Building
-### Hardware version Stratgery
+Working modern computer capable of running Windows 7 or later, with network connectivity, and capable of running IntelliJ Idea 2016 or later
 
 ## Authors
 Provide your names here
-* Fred Bloggs - UI Design
+* Sarmed Alwan - Programming and Art
 
 ## References
 * [Gitlab Markdown Guide](https://docs.gitlab.com/ee/user/markdown.html)
