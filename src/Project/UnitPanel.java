@@ -91,7 +91,7 @@ public class UnitPanel extends JPanel
 
     public void paintComponent(Graphics g) {
         this.grabFocus();
-        gameGrid = GameState.getNewBoard();
+        gameGrid = GameState.newUnitBoard();
         try {
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {

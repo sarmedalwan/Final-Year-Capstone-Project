@@ -56,7 +56,7 @@ public class MainPanel extends JPanel {
     {
         this.setFocusable(true);
         this.grabFocus();
-        UnitPanel unitPanel = new UnitPanel(GameState.getNewBoard(), 1);
+        UnitPanel unitPanel = new UnitPanel(GameState.newUnitBoard(), 1);
         Territories territories = new Territories();
         Grid grid = new Grid();
         Background background = new Background();

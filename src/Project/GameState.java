@@ -1,17 +1,13 @@
 package Project;
 
-import CE303Project.Coordinates;
-import CE303Project.Move;
-
 import java.util.*;
 
-// This class (not yet fully implemented) will give access to the current state of the game.
 public final class GameState {
     public static final int rows = 10;
     public static final int columns = 10;
     public static Unit[][] gameBoard;
 
-    public static Unit[][] getNewBoard() {
+    public static Unit[][] newUnitBoard() {
         int width = 10;
         int height = 10;
         gameBoard = new Unit[width][height];
@@ -45,15 +41,11 @@ public final class GameState {
         return gameBoard;
     }
 
-    public static Unit[][] getBoard() {
+    public static Unit[][] getUnitBoard() {
         return gameBoard;
     }
 
-    public static boolean isMoveAllowed(int[][] a, Move move, int player) {
-        Coordinates coordinates = move.getFirstMove();
-        if (a[coordinates.getX()][coordinates.getY()] == 0){
-            return true;
-        }
+    public static boolean isMoveAllowed() {
         return false;
     }
 
