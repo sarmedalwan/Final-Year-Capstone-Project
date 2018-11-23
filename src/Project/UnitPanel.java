@@ -12,34 +12,36 @@ import java.awt.event.MouseListener;
 import static Project.GameState.columns;
 import static Project.GameState.rows;
 
-public class DrawUnits extends JPanel
+public class UnitPanel extends JPanel
 {
     int w;
     int h;
     int faction;
-    static int size = 12;
+    static int size = 60;
     Unit[][] gameGrid;
 
     class Listener implements MouseListener {
-        DrawUnits panel;
+        UnitPanel panel;
 
-        Listener(DrawUnits panel){
+        Listener(UnitPanel panel){
             this.panel = panel;
         }
         @Override
         public void mouseClicked(MouseEvent e) {
             panel.grabFocus();
             panel.requestFocus();
-            System.out.println("h");
-            int x = (e.getX()/40)+10;
-            int y = (e.getY()/40)+10;
+            int x = (e.getX()/size);
+            int y = (e.getY()/size);
             System.out.println(x + ", " + y);
-            Unit selectedUnit = Selection.selected(gameGrid);
-            if (selectedUnit != null) {
-                System.out.println("unit already selected");
-            } else{
-                panel.gameGrid[x][y].setSelection(true);
-                System.out.println(panel.gameGrid[x][y].getName() + " selection set true");
+            if (gameGrid[x][y] != null) {
+                System.out.println(gameGrid[x][y].getName());
+                Unit selectedUnit = Selection.selected(gameGrid);
+                if (selectedUnit != null) {
+                    System.out.println("Unit already selected");
+                } else {
+                    panel.gameGrid[x][y].setSelection(true);
+                    System.out.println(panel.gameGrid[x][y].getName() + " selection set true");
+                }
             }
             repaint();
             //panel.gameGrid[x][y] = ;
@@ -75,7 +77,7 @@ public class DrawUnits extends JPanel
         }
     }
 
-    public DrawUnits(Unit[][] gameGrid, int faction)
+    public UnitPanel(Unit[][] gameGrid, int faction)
     {
         this.setFocusable(true);
         this.grabFocus();
@@ -87,7 +89,6 @@ public class DrawUnits extends JPanel
         this.requestFocus();
     }
 
-
     public void paintComponent(Graphics g) {
         this.grabFocus();
         gameGrid = GameState.getNewBoard();
@@ -95,7 +96,7 @@ public class DrawUnits extends JPanel
             for (int i = 0; i < columns; i++) {
                 for (int j = 0; j < rows; j++) {
                     if(gameGrid[i][j] != null) {
-                        g.drawImage(gameGrid[i][j].getIcon(), (gameGrid[i][j].getxLocation() * size * 5) + 10, (gameGrid[i][j].getyLocation() * size * 5) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
+                        g.drawImage(gameGrid[i][j].getIcon(), (gameGrid[i][j].getxLocation() * size) + 10, (gameGrid[i][j].getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
                 }
             }
@@ -103,5 +104,9 @@ public class DrawUnits extends JPanel
             System.out.println(e);
         }
         this.requestFocus();
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(w * size, h * size);
     }
 }

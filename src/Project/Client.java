@@ -27,36 +27,6 @@ public class Client {
         Socket socket = new Socket(host, portNumber);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-
-//        int player1x = Integer.parseInt(br.readLine());
-//        int player1y = Integer.parseInt(br.readLine());
-//        int player2x = Integer.parseInt(br.readLine());
-//        int player2y = Integer.parseInt(br.readLine());
-//        int player3x = Integer.parseInt(br.readLine());
-//        int player3y = Integer.parseInt(br.readLine());
-//
-//        for (int i = 0; i < COLUMNS; i++)
-//        {
-//            for (int j = 0; j < ROWS; j++)
-//            {
-//                a[i][j] = 0;
-//            }
-//        }
-//
-//        for (int i = 0; i < COLUMNS; i++)
-//        {
-//            for (int j = 0; j < ROWS; j++)
-//            {
-//                if (i == player1x && j == player1y){
-//                    a[i][j] = 1;
-//                } else if (i == player2x && j == player2y){
-//                    a[i][j] = 2;
-//                } else if (i == player3x && j == player3y){
-//                    a[i][j] = 3;
-//                }
-//            }
-//        }
-
         GameState.updateBoard(a);
 
         faction = Integer.parseInt(br.readLine());

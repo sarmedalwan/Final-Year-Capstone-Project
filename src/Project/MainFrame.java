@@ -17,73 +17,20 @@ public class MainFrame extends JFrame {
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
     public MainFrame(String title) {
         super(title);
-        JPanel main = new JPanel();
         final JFXPanel fxPanel = new JFXPanel();
         fxPanel.setFocusable(false);
-        main.add(fxPanel);
+        getContentPane().add(fxPanel);
         mediaPlayer.play();
+        fxPanel.setFocusable(false);
+        MainPanel main = new MainPanel();
         LayoutManager overlay = new OverlayLayout(main);
         main.setLayout(overlay);
-        DrawUnits drawUnits = new DrawUnits(GameState.getNewBoard(), 1);
-        drawUnits.setFocusable(true);
-        drawUnits.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent aE) {
-                drawUnits.requestFocus();
-                drawUnits.grabFocus();
-            }
-            @Override
-            public void focusLost(FocusEvent aE) {
-                drawUnits.requestFocus();
-                drawUnits.grabFocus();
-            }
-        });
-        this.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                drawUnits.requestFocus();
-                drawUnits.grabFocus();
-            }
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        });
-        main.add(drawUnits);
-
-        Territories territories = new Territories();
-        main.add(BorderLayout.CENTER, territories);
-
-        Grid grid = new Grid();
-        grid.setFocusable(false);
-        main.add(BorderLayout.CENTER, grid);
-
-        Background background = new Background();
-        grid.setFocusable(false);
-        main.add(BorderLayout.CENTER, background);
-
         setLayout(new BorderLayout());
-        grid.setFocusable(false);
         getContentPane().add(main, BorderLayout.CENTER);
-
-        drawUnits.setFocusable(true);
-        drawUnits.setRequestFocusEnabled(true);
-        drawUnits.requestFocus();
-        drawUnits.grabFocus();
-
         pack();
-        //mediaPlayer.play();
         this.setVisible(true);
-        drawUnits.requestFocus();
-        drawUnits.grabFocus();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         repaint();
-        drawUnits.requestFocus();
-        drawUnits.grabFocus();
     }
 
 }

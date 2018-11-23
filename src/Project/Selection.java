@@ -9,9 +9,11 @@ public class Selection {
         {
             for (int j = 0; j < rows; j++)
             {
-                if (gameGrid[i][j].selected = true){
-                    gameGrid[i][j].setSelection(false);
-                    return gameGrid[i][j];
+                if (gameGrid[i][j] != null) {
+                    if (gameGrid[i][j].selected = true) {
+                        gameGrid[i][j].setSelection(false);
+                        return gameGrid[i][j];
+                    }
                 }
             }
         }
