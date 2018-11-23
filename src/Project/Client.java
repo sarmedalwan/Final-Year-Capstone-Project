@@ -19,15 +19,15 @@ public class Client {
         Socket socket = new Socket(host, portNumber);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-        Unit[][] gameBoard = GameState.newUnitBoard();
-        GameState.updateBoard(gameBoard);
+        Unit[][] unitBoard = GameState.newUnitBoard();
+        GameState.updateBoard(unitBoard);
         faction = Integer.parseInt(br.readLine());
         System.out.println("Welcome, Player " + faction);
 
         new MainFrame("Sarmed Alwan's Operation Mars");
 
         while(true) {
-            Unit[][] unitBoard = gson.fromJson(br.readLine(), Unit[][].class);
+            unitBoard = gson.fromJson(br.readLine(), Unit[][].class);
             GameState.updateBoard(unitBoard);
         }
 
