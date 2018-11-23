@@ -5,13 +5,12 @@ import java.awt.*;
 
 public class Territories extends JPanel
 {
-    static Color transparent = new Color(255,255,255,255);
-    static Color[] colors =
+    Color[] colors =
             {new Color(200, 0,0, 140), new Color(200, 200, 200, 140)};
     int[][] owners;
-    int w = 10;
-    int h = 10;
-    static int size = 12;
+    int w;
+    int h;
+    static int size = 60;
 
     public Territories()
     {
@@ -59,12 +58,12 @@ public class Territories extends JPanel
             for (int j = 0; j < h; j++)
             {
                 g.setColor(colors[owners[i][j]]);
-                g.fill3DRect(i * size*5, j * size*5, 60, 60, true); //Sets all tile colours
+                g.fill3DRect(i * size, j * size, 60, 60, true); //Sets all tile colours
             }
         }
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(w * size*5, h * size*5);
+        return new Dimension(w * size, h * size);
     } //Defines the dimensions of the game
 }

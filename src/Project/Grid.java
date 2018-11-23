@@ -1,22 +1,14 @@
 package Project;
 
-/**
- * Created by Sarmed on 10/11/2018.
- */
-
 import javax.swing.*;
 import java.awt.*;
 import static java.awt.Color.darkGray;
 
 public class Grid extends JPanel
 {
-    static Color transparent = new Color(255,255,255,255);
-    static Color[] colors =
-            {new Color(128, 0,0,70), darkGray};
     int w = 10;
     int h = 10;
-    static int size = 12;
-
+    static int size = 60;
     public Grid()
     {
         w = 10;
@@ -29,12 +21,12 @@ public class Grid extends JPanel
         {
             for (int j = 0; j < h; j++)
             {
-                g.drawRect(i*size*5,j*size*5, 60, 60);
+                g.drawRect(i*size,j*size, 60, 60);
             }
         }
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(w * size*5, h * size*5);
+        return new Dimension(w * size, h * size);
     } //Defines the dimensions of the game
 }

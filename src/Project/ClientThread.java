@@ -9,27 +9,26 @@ import java.util.List;
 public class ClientThread extends Thread {
     protected Socket socket;
     private List<Socket> sockets;
-    public int[] playerpositions;
     public Unit[][] gameBoard;
 
-    public ClientThread(Socket clientSocket, List<Socket> sockets, Unit[][] gameBoard) {
+    public ClientThread(Socket clientSocket, List<Socket> sockets) {
         this.socket = clientSocket;
         this.sockets = sockets;
-        this.gameBoard = gameBoard;
     }
 
+    @Override
     public void run() {
-        InputStream inp;
-        BufferedReader br;
-        DataOutputStream out;
+        InputStream inputStream;
+        DataOutputStream dataOutputStream;
         Gson gson = new Gson();
+        BufferedReader br;
 
         try {
-            OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(os, true);
+            OutputStream outputStream = socket.getOutputStream();
+            PrintWriter printWriter = new PrintWriter(outputStream, true);
             String boardJson = gson.toJson(gameBoard);
-            pw.println(boardJson);
-            pw.println(sockets.size());
+            printWriter.println(boardJson);
+            printWriter.println(sockets.size());
         } catch(Exception e){
             System.out.println(e);
         }
