@@ -8,9 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-import static Project.GameState.columns;
-import static Project.GameState.rows;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class UnitPanel extends JPanel
 {
@@ -18,7 +17,7 @@ public class UnitPanel extends JPanel
     int h;
     int faction;
     static int size = 60;
-    Unit[][] gameGrid;
+    static Unit[][] gameGrid;
 
     class Listener implements MouseListener {
         UnitPanel panel;
@@ -33,14 +32,33 @@ public class UnitPanel extends JPanel
             int x = (e.getX()/size);
             int y = (e.getY()/size);
             System.out.println(x + ", " + y);
+            for (int i = 0; i < GameState.width; i++) {
+                for (int j = 0; j < GameState.height; j++) {
+                    if(GameState.getBoard()[i][j] != null) {
+                        try {
+                            gameGrid[i][j] =  new Unit(GameState.getBoard()[i][j]);
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < GameState.width; i++) {
+                for (int j = 0; j < GameState.height; j++) {
+                    if(gameGrid[i][j] != null && gameGrid[i][j].getSelection()) {
+                        System.out.println(gameGrid[i][j].getName());
+                    }
+                }
+            }
             if (gameGrid[x][y] != null) {
                 System.out.println(gameGrid[x][y].getName());
                 Unit selectedUnit = Selection.selected(gameGrid);
                 if (selectedUnit != null) {
-                    System.out.println("Unit already selected");
+                    System.out.println("Unit " + selectedUnit.getName() + " is already selected");
                 } else {
-                    panel.gameGrid[x][y].setSelection(true);
-                    System.out.println(panel.gameGrid[x][y].getName() + " selection set true");
+                    gameGrid[x][y].setSelection(true);
+                    GameState.updateBoard(gameGrid);
+                    System.out.println(gameGrid[x][y].getName() + " selection set true");
                 }
             }
             repaint();
@@ -91,10 +109,20 @@ public class UnitPanel extends JPanel
 
     public void paintComponent(Graphics g) {
         this.grabFocus();
-        gameGrid = GameState.newUnitBoard();
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if(GameState.getBoard()[i][j] != null) {
+                    try {
+                        gameGrid[i][j] =  new Unit(GameState.getBoard()[i][j]);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
         try {
-            for (int i = 0; i < columns; i++) {
-                for (int j = 0; j < rows; j++) {
+            for (int i = 0; i < GameState.width; i++) {
+                for (int j = 0; j < GameState.height; j++) {
                     if(gameGrid[i][j] != null) {
                         g.drawImage(gameGrid[i][j].getIcon(), (gameGrid[i][j].getxLocation() * size) + 10, (gameGrid[i][j].getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }

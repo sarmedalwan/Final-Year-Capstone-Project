@@ -1,19 +1,21 @@
 package Project;
 
+import java.io.IOException;
 import java.util.*;
 
+// This class (not yet fully implemented) will give access to the current state of the game.
 public final class GameState {
-    public static final int rows = 10;
-    public static final int columns = 10;
+    public static final int height = 10;
+    public static final int width = 10;
     public static Unit[][] gameBoard;
 
-    public static Unit[][] newUnitBoard() {
+    public static Unit[][] getNewBoard() {
         int width = 10;
         int height = 10;
         gameBoard = new Unit[width][height];
-        for (int i = 0; i < columns; i++)
+        for (int i = 0; i < GameState.width; i++)
         {
-            for (int j = 0; j < rows; j++)
+            for (int j = 0; j < GameState.height; j++)
             {
                 gameBoard[i][j] = null;
             }
@@ -41,16 +43,26 @@ public final class GameState {
         return gameBoard;
     }
 
-    public static Unit[][] getUnitBoard() {
+    public static Unit[][] getBoard() {
         return gameBoard;
     }
 
-    public static boolean isMoveAllowed() {
-        return false;
+    public static boolean isMoveAllowed(Unit[][] a, Move move, int player) {
+        return true;
     }
 
     public static void updateBoard(Unit[][] updatedBoard){
-        gameBoard = Arrays.copyOf(updatedBoard, updatedBoard.length);
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if(updatedBoard[i][j] != null) {
+                    try {
+                        gameBoard[i][j] =  new Unit(updatedBoard[i][j]);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -3,10 +3,12 @@ package Project;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Unit {
+public class Unit implements Serializable {
 
     private Image icon;
+    private String iconFileName;
     private String name;
     private int xLocation;
     private int yLocation;
@@ -17,14 +19,25 @@ public class Unit {
 
     public Unit(String name, String iconFileName, int xLocation, int yLocation, String type, int faction, boolean selected) throws IOException {
 
-        icon = ImageIO.read(getClass().getResource("/media/"+iconFileName+".png"));
+        this.iconFileName = iconFileName;
+        this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
         this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.type = type;
-        health = 100;
+        this.health = 100;
         this.name = name;
         this.faction = faction;
         this.selected = selected;
+    }
+
+    public Unit(Unit unit) throws IOException {
+        this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getSelection());
+        this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
+        this.health = 100;
+    }
+
+    public String getIconFileName(){
+        return iconFileName;
     }
 
     public Image getIcon(){
@@ -47,13 +60,18 @@ public class Unit {
         return yLocation;
     }
 
+    public String getType(){
+        return type;
+    }
+
+    public int getHealth(){
+        return health;
+    }
+
     public void setSelection(boolean selected)
     {
         this.selected = selected;
     }
 
-    //public void paintComponent(Graphics g) {
-   //     super.paintComponent(g);
-     //   g.drawImage(backgroundImage, 0, 0, this);
- //   }
+    public boolean getSelection(){ return selected; }
 }

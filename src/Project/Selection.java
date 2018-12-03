@@ -1,19 +1,17 @@
 package Project;
 
-import static Project.GameState.columns;
-import static Project.GameState.rows;
+import static Project.GameState.width;
+import static Project.GameState.height;
 
 public class Selection {
     public static Unit selected(Unit[][] gameGrid){
-        for (int i = 0; i < columns; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < rows; j++)
+            for (int j = 0; j < height; j++)
             {
-                if (gameGrid[i][j] != null) {
-                    if (gameGrid[i][j].selected = true) {
-                        gameGrid[i][j].setSelection(false);
-                        return gameGrid[i][j];
-                    }
+                if (gameGrid[i][j] != null && gameGrid[i][j].selected) {
+                    gameGrid[i][j].setSelection(false);
+                    return gameGrid[i][j];
                 }
             }
         }
