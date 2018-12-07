@@ -36,6 +36,9 @@ public class Unit implements Serializable {
         this.health = 100;
     }
 
+    public Unit() {
+    }
+
     public String getIconFileName(){
         return iconFileName;
     }
@@ -51,6 +54,7 @@ public class Unit implements Serializable {
     public int getFaction(){
         return faction;
     }
+
 
     public int getxLocation(){
         return xLocation;
@@ -68,9 +72,23 @@ public class Unit implements Serializable {
         return health;
     }
 
+    public void setxLocation(int location){
+        this.xLocation = location;
+    }
+
+    public void setyLocation(int location){
+        this.yLocation = location;
+    }
+
     public void setSelection(boolean selected)
     {
         this.selected = selected;
+    }
+
+    public void removeUnit()
+    {
+        this.xLocation = 30;
+        this.yLocation = 30;
     }
 
     public boolean getSelection(){ return selected; }

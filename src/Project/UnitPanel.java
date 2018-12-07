@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class UnitPanel extends JPanel
 {
@@ -17,7 +17,8 @@ public class UnitPanel extends JPanel
     int h;
     int faction;
     static int size = 60;
-    static Unit[][] gameGrid;
+    static ArrayList<ArrayList<Unit>> gameGrid;
+    Unit selected;
 
     class Listener implements MouseListener {
         UnitPanel panel;
@@ -27,39 +28,57 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
+            Unit[][] newGrid = new Unit[10][10];
             panel.grabFocus();
             panel.requestFocus();
             int x = (e.getX()/size);
             int y = (e.getY()/size);
+            int oldX;
+            int oldY;
             System.out.println(x + ", " + y);
+            copyBoard();
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
-                    if(GameState.getBoard()[i][j] != null) {
+                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getSelection()) {
                         try {
-                            gameGrid[i][j] =  new Unit(GameState.getBoard()[i][j]);
+                            selected = new Unit(gameGrid.get(i).get(j));
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
+                        System.out.println("Selected unit: " + selected.getName());
                     }
                 }
             }
-            for (int i = 0; i < GameState.width; i++) {
-                for (int j = 0; j < GameState.height; j++) {
-                    if(gameGrid[i][j] != null && gameGrid[i][j].getSelection()) {
-                        System.out.println(gameGrid[i][j].getName());
+            if (gameGrid.get(x).get(y) != null) {
+                System.out.println(gameGrid.get(x).get(y).getName());
+                Unit selectedUnit = null;
+                if(Selection.selected(gameGrid)!=null) {
+                    try {
+                        selectedUnit = new Unit(Selection.selected(gameGrid));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
                 }
-            }
-            if (gameGrid[x][y] != null) {
-                System.out.println(gameGrid[x][y].getName());
-                Unit selectedUnit = Selection.selected(gameGrid);
                 if (selectedUnit != null) {
                     System.out.println("Unit " + selectedUnit.getName() + " is already selected");
                 } else {
-                    gameGrid[x][y].setSelection(true);
+                    gameGrid.get(x).get(y).setSelection(true);
                     GameState.updateBoard(gameGrid);
-                    System.out.println(gameGrid[x][y].getName() + " selection set true");
+                    System.out.println(gameGrid.get(x).get(y).getName() + " selection set true");
                 }
+            }
+            if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=selected.getFaction()))))){
+                oldX = selected.getxLocation();
+                oldY = selected.getyLocation();
+                selected.setxLocation(x);
+                selected.setyLocation(y);
+                gameGrid.get(oldX).remove(oldY);
+                try {
+                    newGrid[x][y] = new Unit(selected);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                GameState.updateBoard(gameGrid);
             }
             repaint();
             //panel.gameGrid[x][y] = ;
@@ -95,7 +114,7 @@ public class UnitPanel extends JPanel
         }
     }
 
-    public UnitPanel(Unit[][] gameGrid, int faction)
+    public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction)
     {
         this.setFocusable(true);
         this.grabFocus();
@@ -109,22 +128,12 @@ public class UnitPanel extends JPanel
 
     public void paintComponent(Graphics g) {
         this.grabFocus();
-        for (int i = 0; i < GameState.width; i++) {
-            for (int j = 0; j < GameState.height; j++) {
-                if(GameState.getBoard()[i][j] != null) {
-                    try {
-                        gameGrid[i][j] =  new Unit(GameState.getBoard()[i][j]);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        }
+        copyBoard();
         try {
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
-                    if(gameGrid[i][j] != null) {
-                        g.drawImage(gameGrid[i][j].getIcon(), (gameGrid[i][j].getxLocation() * size) + 10, (gameGrid[i][j].getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
+                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30) {
+                        g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
                 }
             }
@@ -132,6 +141,20 @@ public class UnitPanel extends JPanel
             System.out.println(e);
         }
         this.requestFocus();
+    }
+
+    public void copyBoard() {
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if(GameState.getBoard().get(i).get(j) != null) {
+                    try {
+                        gameGrid.get(i).set(j, new Unit(GameState.getBoard().get(i).get(j)));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     public Dimension getPreferredSize() {

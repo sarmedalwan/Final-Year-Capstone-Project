@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client {
     static int faction;
@@ -19,7 +20,7 @@ public class Client {
         Socket socket = new Socket(host, portNumber);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-        Unit[][] unitBoard = GameState.newUnitBoard();
+        ArrayList<ArrayList<Unit>> unitBoard = GameState.newUnitBoard();
         GameState.updateBoard(unitBoard);
         faction = Integer.parseInt(br.readLine());
         System.out.println("Welcome, Player " + faction);
@@ -27,7 +28,7 @@ public class Client {
         new MainFrame("Sarmed Alwan's Operation Mars");
 
         while(true) {
-            unitBoard = gson.fromJson(br.readLine(), Unit[][].class);
+            //unitBoard = gson.fromJson(br.readLine(), ArrayList<ArrayList<>>.class);
             GameState.updateBoard(unitBoard);
         }
 
