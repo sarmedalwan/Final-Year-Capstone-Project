@@ -12,16 +12,12 @@ What do I need in order to get your project running? For example,
 * Image editing software
 
 ### Installing
-A step by step guide on how to build and install your software, for example:
 
-#### Edit the configuration file
-In myconfig.ini, change the following settings to match your requirements:
+The game can presently be run from the command line or from the IntelliJ IDE
 
-```
-database_name=test
-database_user=test
-database_pass=password
-```
+#### Run from Command Line
+
+
 
 #### Install libraries and run program
 
@@ -42,11 +38,12 @@ I will use semantic versioning for my software.
 
 Working modern computer capable of running Windows 7 or later, with network connectivity, and capable of running IntelliJ Idea 2016 or later
 
-## Authors
+## Credits
 Provide your names here
 * Sarmed Alwan - Programming and Art
+* Bensound - Music [2]
+* Richard Ampleford - Music
 
 ## References
-* [Gitlab Markdown Guide](https://docs.gitlab.com/ee/user/markdown.html)
-* [Example 1](https://github.com/erasmus-without-paper/ewp-specs-sec-intro/tree/v2.0.2)
-* [Example 2](https://github.com/erasmus-without-paper/ewp-specs-architecture/tree/v1.10.0)
+* 1 - [Java and the Windows Command Line](https://introcs.cs.princeton.edu/java/15inout/windows-cmd.html)
+* 2 - [Bensound Music](https://www.bensound.com/royalty-free-music/track/instinct)
