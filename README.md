@@ -13,11 +13,7 @@ What do I need in order to get your project running? For example,
 
 ### Installing
 
-The game can presently be run from the command line or from the IntelliJ IDE
-
-#### Run from Command Line
-
-
+The game can presently be run from the command line or from the IntelliJ IDE [1]
 
 #### Install libraries and run program
 
