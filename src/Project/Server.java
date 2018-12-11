@@ -13,7 +13,7 @@ public class Server {
         List<Socket> socketList = new ArrayList<>();
         System.out.println("Server created: " + portNumber);
         ServerSocket serverSocket = new ServerSocket(portNumber);
-        ArrayList<ArrayList<Unit>> a = GameState.newUnitBoard();
+        ArrayList<ArrayList<Unit>> a = GameState.getNewBoard();
         while (true) {
             Socket socket = serverSocket.accept();
             socketList.add(socket);

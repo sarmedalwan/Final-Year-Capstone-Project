@@ -20,7 +20,7 @@ public class Client {
         Socket socket = new Socket(host, portNumber);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
-        ArrayList<ArrayList<Unit>> unitBoard = GameState.newUnitBoard();
+        ArrayList<ArrayList<Unit>> unitBoard = GameState.getNewBoard();
         GameState.updateBoard(unitBoard);
         faction = Integer.parseInt(br.readLine());
         System.out.println("Welcome, Player " + faction);

@@ -1,8 +1,10 @@
 package Project;
 
+import java.awt.*;
+
 public class Main
 {
     public static void main(String[] args) {
-        new MainFrame("Sarmed Alwan's Operation Mars");
+        new MenuFrame("Operation Mars");
     }
 }

@@ -4,12 +4,16 @@ package Project;
  * Created by Sarmed on 10/11/2018.
  */
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import static Project.Selection.*;
 
 public class UnitPanel extends JPanel
 {
@@ -17,8 +21,13 @@ public class UnitPanel extends JPanel
     int h;
     int faction;
     static int size = 60;
-    static ArrayList<ArrayList<Unit>> gameGrid;
+    ArrayList<ArrayList<Unit>> gameGrid;
     Unit selected;
+    Color transparent = new Color(0,0,0,0);
+    int[][] territories;
+    TerritoriesPanel territoriesPanel;
+    MainFrame frame;
+    MainPanel mainPanel;
 
     class Listener implements MouseListener {
         UnitPanel panel;
@@ -28,7 +37,6 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            Unit[][] newGrid = new Unit[10][10];
             panel.grabFocus();
             panel.requestFocus();
             int x = (e.getX()/size);
@@ -36,6 +44,9 @@ public class UnitPanel extends JPanel
             int oldX;
             int oldY;
             System.out.println(x + ", " + y);
+            if(gameGrid.get(x).get(y) == null){
+                System.out.println("empty");
+            }
             copyBoard();
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
@@ -52,12 +63,8 @@ public class UnitPanel extends JPanel
             if (gameGrid.get(x).get(y) != null) {
                 System.out.println(gameGrid.get(x).get(y).getName());
                 Unit selectedUnit = null;
-                if(Selection.selected(gameGrid)!=null) {
-                    try {
-                        selectedUnit = new Unit(Selection.selected(gameGrid));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+                if(currentSelected(gameGrid)!=null) {
+                    selectedUnit = currentSelected(gameGrid);
                 }
                 if (selectedUnit != null) {
                     System.out.println("Unit " + selectedUnit.getName() + " is already selected");
@@ -72,25 +79,21 @@ public class UnitPanel extends JPanel
                 oldY = selected.getyLocation();
                 selected.setxLocation(x);
                 selected.setyLocation(y);
+                gameGrid.get(x).set(y, selected);
                 gameGrid.get(oldX).remove(oldY);
-                try {
-                    newGrid[x][y] = new Unit(selected);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                gameGrid.get(oldX).add(oldY, null);
                 GameState.updateBoard(gameGrid);
+                territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
+                territories[x][y] = selected.getFaction()-1;
+                territoriesPanel.updateTerritories(territories);
+                territoriesPanel.repaint();
+                mainPanel.repaint();
+                frame.repaint();
+                repaint();
             }
+            removeAll();
+            revalidate();
             repaint();
-            //panel.gameGrid[x][y] = ;
-//            System.out.println("playernumber " + panel.faction);
-//            System.out.println(Arrays.deepToString(a));
-//            Move move = new Move(null, new Coordinates(x,y), null);
-//            System.out.println("x " + move.getFirstMove().getX() + " y " + move.getFirstMove().getY());
-//            //if (GameState.isMoveAllowed(gameBoard, move, faction)){
-//            GameState.updateBoard(panel.a);
-//            GameClient.makeMove(move);
-//            //revalidate();
-//            repaint();
         }
 
         @Override
@@ -114,21 +117,26 @@ public class UnitPanel extends JPanel
         }
     }
 
-    public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction)
+    public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction, TerritoriesPanel territoriesPanel, MainFrame frame, MainPanel mainPanel)
     {
         this.setFocusable(true);
         this.grabFocus();
-        this.gameGrid = gameGrid;
+        this.gameGrid = GameState.getBoard();
+        this.frame = frame;
+        this.mainPanel = mainPanel;
         w = 10;
         h = 10; //Defines the dimensions of the grid
         this.faction = faction;
+        this.territoriesPanel = territoriesPanel;
         this.addMouseListener(new Listener(this));
         this.requestFocus();
+        this.setBackground(transparent);
+        this.setOpaque(false);
     }
 
     public void paintComponent(Graphics g) {
-        this.grabFocus();
         copyBoard();
+        setOpaque(false);
         try {
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {

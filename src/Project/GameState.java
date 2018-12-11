@@ -8,13 +8,14 @@ public final class GameState {
     public static final int height = 10;
     public static final int width = 10;
     public static ArrayList<ArrayList<Unit>> gameBoard;
+    public static int[][] territories;
 
-    public static ArrayList<ArrayList<Unit>> newUnitBoard() {
-        gameBoard = new ArrayList<ArrayList<Unit>>();
-        for (int i = 0; i < GameState.width+1; i++)
+    public static ArrayList<ArrayList<Unit>> getNewBoard() {
+        gameBoard = new ArrayList<ArrayList<Unit>>(10);
+        for (int i = 0; i < GameState.width; i++)
         {
-            gameBoard.add(new ArrayList<Unit>());
-            for (int j = 0; j < GameState.height+1; j++)
+            gameBoard.add(new ArrayList<Unit>(10));
+            for (int j = 0; j < GameState.height; j++)
             {
                 gameBoard.get(i).add(null);
             }
@@ -46,13 +47,60 @@ public final class GameState {
         return gameBoard;
     }
 
-    public static boolean isMoveAllowed() {
+    public static boolean isMoveAllowed(ArrayList<ArrayList<Unit>> gameBoard, int player) {
         return false;
     }
 
+    public static int[][] getTerritories(){
+        return territories;
+    }
+
+    public static void updateTerritories(){
+
+    }
+
+    public static int[][] getNewTerritories(){
+        int w = 10;
+        int h = 10;
+        int[][] owners = new int[w][h];
+        for (int i = 0; i < w; i++)
+        {
+            for (int j = 0; j < h; j++)
+            {
+                owners[i][j] = 0;
+            }
+        }
+        for (int i = 0; i<7; i++){
+            owners[i][9] = 1;
+        }
+        for (int i = 1; i<7; i++){
+            owners[i][8] = 1;
+        }
+        for (int i = 1; i<8; i++){
+            owners[i][7] = 1;
+        }
+        for (int i = 1; i<8; i++){
+            owners[i][6] = 1;
+        }
+        for (int i = 2; i<7; i++){
+            owners[i][5] = 1;
+        }
+        for (int i = 2; i<7; i++){
+            owners[i][4] = 1;
+        }
+        for (int i = 1; i<7; i++){
+            owners[i][3] = 1;
+        }
+        for (int i = 2; i<6; i++){
+            owners[i][2] = 1;
+        }
+        owners[2][1] = 1;
+        return owners;
+    }
+
     public static void updateBoard(ArrayList<ArrayList<Unit>> updatedBoard){
-        for (int i = 0; i < GameState.width-1; i++) {
-            for (int j = 0; j < GameState.height-1; j++) {
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
                 if(gameBoard.get(i).get(j) != null) {
                     try {
                         gameBoard.get(i).set(j, new Unit(gameBoard.get(i).get(j)));

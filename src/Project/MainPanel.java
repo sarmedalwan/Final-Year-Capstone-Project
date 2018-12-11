@@ -7,18 +7,19 @@ import java.awt.*;
  * Created by Sarmed on 23/11/2018.
  */
 public class MainPanel extends JPanel {
-
-    public MainPanel()
+    MainFrame frame;
+    public MainPanel(MainFrame frame)
     {
+        this.frame = frame;
         this.setFocusable(true);
         this.grabFocus();
-        UnitPanel unitPanel = new UnitPanel(GameState.newUnitBoard(), 1);
-        TerritoriesPanel territoriesPanel = new TerritoriesPanel();
-        Grid grid = new Grid();
-        Background background = new Background();
+        TerritoriesPanel territoriesPanel = new TerritoriesPanel(GameState.getNewTerritories());
+        UnitPanel unitPanel = new UnitPanel(GameState.getNewBoard(), 1, territoriesPanel, frame, this);
+        GridPanel gridPanel = new GridPanel();
+        Background background = new Background("operationmarsmapbigger.png");
         this.add(BorderLayout.CENTER, unitPanel);
         this.add(BorderLayout.CENTER, territoriesPanel);
-        this.add(BorderLayout.CENTER, grid);
+        this.add(BorderLayout.CENTER, gridPanel);
         this.add(BorderLayout.CENTER, background);
     }
 }
