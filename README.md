@@ -18,7 +18,7 @@ These are the in-game credits
 
 The game requires two players. One plays as the Soviets, and one plays as the Germans. The game is based on the historical battle Operation Mars. The users can click on units and move them in alternating turns.
 Opposing units can engage in combat against each other. Each unit has a health value. The specific rules of the game will be decided and implemented in further versions. The units represent historical divisions,
-which were thousands of men in strength historically. A player must oppose and defeat the other player.
+which were thousands of men in strength historically. The players' territories will shift when their respective units move into their respective territories. A player must oppose and defeat the other player.
 
 ## Getting Started (Software Based)
 
