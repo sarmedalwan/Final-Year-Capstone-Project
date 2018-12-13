@@ -2,12 +2,13 @@ package Project;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 
 public class Unit implements Serializable {
 
-    private Image icon;
+    private BufferedImage icon;
     private String iconFileName;
     private String name;
     private int xLocation;
