@@ -4,6 +4,22 @@ and will be set in WW2 and focused on Operation Mars, a famous operation on the 
 
 ![](src/sarmed_ce301_game.png)
 
+## Using the Main Menu
+
+![](src/sarmed_game_2.png)
+
+The main menu allows the user, via buttons, to join a game, host a game server, check the credits, and quit the menu
+
+These are the in-game credits
+
+![](src/sarmed_game_3.png)
+
+## Design of the Game
+
+The game requires two players. One plays as the Soviets, and one plays as the Germans. The game is based on the historical battle Operation Mars. The users can click on units and move them in alternating turns.
+Opposing units can engage in combat against each other. Each unit has a health value. The specific rules of the game will be decided and implemented in further versions. The units represent historical divisions,
+which were thousands of men in strength historically. A player must oppose and defeat the other player.
+
 ## Getting Started (Software Based)
 
 ### Prerequisites
@@ -35,7 +51,6 @@ I will use semantic versioning for my software.
 Working modern computer capable of running Windows 7 or later, with network connectivity, and capable of running IntelliJ Idea 2016 or later
 
 ## Credits
-Provide your names here
 * Sarmed Alwan - Programming and Art
 * Bensound - Music [2]
 * Richard Ampleford - Music
