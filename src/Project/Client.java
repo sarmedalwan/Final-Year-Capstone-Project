@@ -33,7 +33,7 @@ public class Client {
         }
 
         }
-        public static void makeMove(Move move){
-            out.println(move);
+        public static void makeMove(){
+            out.println();
         }
     }
