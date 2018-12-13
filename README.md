@@ -22,10 +22,12 @@ which were thousands of men in strength historically. The players' territories w
 
 ## Getting Started (Software Based)
 
-### Prerequisites
-What do I need in order to get your project running? For example,
+### Prerequisites for development
+
 * IntelliJ Idea 2016 (or later)
 * Image editing software
+* Video editing software
+* Working modern computer capable of running Windows 7 or later, with network connectivity, and capable of running IntelliJ Idea 2016 or later
 
 ### Installing
 
