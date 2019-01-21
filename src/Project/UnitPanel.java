@@ -6,14 +6,17 @@ package Project;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static Project.Selection.*;
+import static java.awt.MouseInfo.getPointerInfo;
 
 public class UnitPanel extends JPanel
 {
@@ -28,8 +31,9 @@ public class UnitPanel extends JPanel
     TerritoriesPanel territoriesPanel;
     MainFrame frame;
     MainPanel mainPanel;
+    Thread worker;
 
-    class Listener implements MouseListener {
+    class Listener extends MouseInputAdapter {
         UnitPanel panel;
 
         Listener(UnitPanel panel){
@@ -108,12 +112,38 @@ public class UnitPanel extends JPanel
 
         @Override
         public void mouseEntered(MouseEvent e) {
-
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
+        }
 
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            int x = (e.getX() / size);
+            int y = (e.getY() / size);
+            if (gameGrid.get(x).get(y) != null) {
+                JComponent component = (JComponent) e.getSource();
+                component.setToolTipText("<html>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</html>");
+                MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, e.getX(), e.getY(), 0, false);
+                ToolTipManager.sharedInstance().mouseMoved(phantom);
+            }
+            /*final Timer timer = new Timer(50, new ActionListener() {
+                private int id = 1;
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ++id;
+                    panel.setToolTipText(gameGrid.get(x).get(y).getName());
+                }
+            });
+            timer.start();
+            */
         }
     }
 
@@ -128,7 +158,9 @@ public class UnitPanel extends JPanel
         h = 10; //Defines the dimensions of the grid
         this.faction = faction;
         this.territoriesPanel = territoriesPanel;
-        this.addMouseListener(new Listener(this));
+        Listener listener = new Listener(this);
+        this.addMouseListener(listener);
+        this.addMouseMotionListener(listener);
         this.requestFocus();
         this.setBackground(transparent);
         this.setOpaque(false);
@@ -169,3 +201,41 @@ public class UnitPanel extends JPanel
         return new Dimension(w * size, h * size);
     }
 }
+
+
+
+
+
+
+/*
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            class Worker implements Runnable {
+                public Worker(MouseEvent e){
+
+                }
+                public void run() {
+                    while (true) {
+                        int x = (e.getX() / size);
+                        int y = (e.getY() / size);
+                        if (gameGrid.get(x).get(y) != null) {
+                            JComponent component = (JComponent) e.getSource();
+                            x = (e.getX() / size);
+                            //Point p = getPointerInfo().getLocation();
+                            //x = p.x;
+                            //x = (int) Math.round((getPointerInfo().getLocation().getX()-component.getLocationOnScreen().getX())/size);
+                            //System.out.println("tooltipx" + x);
+                            y = (e.getY() / size);
+                            //y = (int) Math.round((getPointerInfo().getLocation().getY()-component.getLocationOnScreen().getY())/size);
+                            //System.out.println("tooltipy" + y);
+                            component.setToolTipText(gameGrid.get(x).get(y).getName());
+                            MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, 0, 0, 0, false);
+                            ToolTipManager.sharedInstance().mouseMoved(phantom);
+                        }
+                    }
+                }
+            }
+            Runnable worker = new Worker(e);
+            new Thread(worker).start();
+        }
+ */
