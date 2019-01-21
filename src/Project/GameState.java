@@ -43,13 +43,13 @@ public final class GameState {
             gameBoard.get(0).set(2, s3rdMCRes);
             Unit s3rdMCArtRes = new Unit("Katukov's 3rd Mechanised Corps Artillery Reserve", "sovietartillerycounter", 0, 1, "art", 1, false);
             gameBoard.get(0).set(1, s3rdMCArtRes);
-            Unit s11thCC = new Unit("11th Cavalry Corps", "sovietinfcounter", 2, 0, "inf", 1, false);
+            Unit s11thCC = new Unit("11th Cavalry Corps", "sovietcavcounter", 2, 0, "inf", 1, false);
             gameBoard.get(2).set(0, s11thCC);
-            Unit s18thCav = new Unit("11th Cavalry Division", "sovietinfcounter", 5, 1, "inf", 1, false);
+            Unit s18thCav = new Unit("11th Cavalry Division", "sovietcavcounter", 5, 1, "inf", 1, false);
             gameBoard.get(5).set(1, s18thCav);
-            Unit s24thCav = new Unit("24th Cavalry Division", "sovietinfcounter", 4, 1, "inf", 1, false);
+            Unit s24thCav = new Unit("24th Cavalry Division", "sovietcavcounter", 4, 1, "inf", 1, false);
             gameBoard.get(4).set(1, s24thCav);
-            Unit s82ndCav = new Unit("82nd Cavalry Division", "sovietinfcounter", 1, 1, "inf", 1, false);
+            Unit s82ndCav = new Unit("82nd Cavalry Division", "sovietcavcounter", 1, 1, "inf", 1, false);
             gameBoard.get(1).set(1, s82ndCav);
             Unit s11thCCArt = new Unit("11th Cavalry Corps Artillery Support", "sovietartillerycounter", 3, 0, "art", 1, false);
             gameBoard.get(3).set(0, s11thCCArt);
@@ -97,6 +97,42 @@ public final class GameState {
             gameBoard.get(7).set(3, s5thTC);
             Unit s6thTC = new Unit("6th Tank Corps", "sovietarmourcounter", 7, 4, "arm", 1, false);
             gameBoard.get(7).set(4, s6thTC);
+            Unit s8thGRC = new Unit("8th Guards Rifle Corps", "sovietinfcounter", 7, 5, "inf", 1, false);
+            gameBoard.get(7).set(5, s8thGRC);
+            Unit s2ndGCC = new Unit("2nd Guards Cavalry Corps", "sovietcavcounter", 8, 5, "inf", 1, false);
+            gameBoard.get(8).set(5, s2ndGCC);
+            Unit s331stInf = new Unit("331st Rifle Division", "sovietinfcounter", 9, 5, "inf", 1, false);
+            gameBoard.get(9).set(5, s331stInf);
+            Unit s350thInf = new Unit("350th Rifle Division", "sovietinfcounter", 8, 4, "inf", 1, false);
+            gameBoard.get(8).set(4, s350thInf);
+            Unit s20thArmy = new Unit("20th Army", "sovietarmourcounter", 9, 4, "arm", 1, false);
+            gameBoard.get(9).set(4, s20thArmy);
+            Unit s9thTC = new Unit("9th Tank Corps", "sovietarmourcounter", 8, 6, "arm", 1, false);
+            gameBoard.get(8).set(6, s9thTC);
+            Unit s5thArmy = new Unit("5th Army", "sovietarmourcounter", 8, 7, "arm", 1, false);
+            gameBoard.get(8).set(7, s5thArmy);
+            Unit s10thTC = new Unit("10th Tank Corps", "sovietarmourcounter", 8, 8, "arm", 1, false);
+            gameBoard.get(8).set(8, s10thTC);
+            Unit s3rdTC = new Unit("3rd Tank Corps", "sovietarmourcounter", 7, 8, "arm", 1, false);
+            gameBoard.get(7).set(8, s3rdTC);
+            Unit s33rdArmy = new Unit("33rd Army", "sovietinfcounter", 7, 9, "inf", 1, false);
+            gameBoard.get(7).set(9, s33rdArmy);
+
+            Unit g41stPzC = new Unit("XXXXI Panzer Corps", "germanarmourcounter", 0, 9, "arm", 2, false);
+            gameBoard.get(0).set(9, g41stPzC);
+            Unit g19thPz = new Unit("19th Panzer Division", "germanarmourcounter", 1, 8, "arm", 2, false);
+            gameBoard.get(1).set(8, g19thPz);
+            Unit g56thInf = new Unit("56th Infantry Division", "germaninfcounter", 1, 9, "inf", 2, false);
+            gameBoard.get(1).set(9, g56thInf);
+            Unit g11thPz = new Unit("11th Panzer Division", "germanarmourcounter", 1, 7, "arm", 2, false);
+            gameBoard.get(1).set(7, g11thPz);
+            Unit g1stPz = new Unit("1st Panzer Division", "germanarmourcounter", 1, 6, "arm", 2, false);
+            gameBoard.get(1).set(6, g1stPz);
+            Unit gHMB441 = new Unit("Heavy Mortar Battalion 441", "germanartillerycounter", 2, 6, "art", 2, false);
+            gameBoard.get(2).set(6, gHMB441);
+            Unit gEB441 = new Unit("Eastern Battalion 441", "germaninfcounter", 1, 6, "inf", 2, false);
+            gameBoard.get(1).set(6, gEB441);
+
         } catch(Exception e){
             e.printStackTrace();
         }

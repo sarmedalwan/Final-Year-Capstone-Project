@@ -127,11 +127,13 @@ public class UnitPanel extends JPanel
         public void mouseMoved(MouseEvent e) {
             int x = (e.getX() / size);
             int y = (e.getY() / size);
+            JComponent component = (JComponent) e.getSource();
             if (gameGrid.get(x).get(y) != null) {
-                JComponent component = (JComponent) e.getSource();
                 component.setToolTipText("<html>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</html>");
                 MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, e.getX(), e.getY(), 0, false);
                 ToolTipManager.sharedInstance().mouseMoved(phantom);
+            } else{
+                component.setToolTipText(null);
             }
             /*final Timer timer = new Timer(50, new ActionListener() {
                 private int id = 1;
