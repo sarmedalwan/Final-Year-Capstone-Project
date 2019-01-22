@@ -72,28 +72,32 @@ public class UnitPanel extends JPanel
                 }
                 if (selectedUnit != null) {
                     System.out.println("Unit " + selectedUnit.getName() + " is already selected");
-                } else {
+                } else if (gameGrid.get(x).get(y).getFaction() == faction) {
                     gameGrid.get(x).get(y).setSelection(true);
                     GameState.updateBoard(gameGrid);
                     System.out.println(gameGrid.get(x).get(y).getName() + " selection set true");
                 }
             }
-            if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=selected.getFaction()))))){
-                oldX = selected.getxLocation();
-                oldY = selected.getyLocation();
-                selected.setxLocation(x);
-                selected.setyLocation(y);
-                gameGrid.get(x).set(y, selected);
-                gameGrid.get(oldX).remove(oldY);
-                gameGrid.get(oldX).add(oldY, null);
-                GameState.updateBoard(gameGrid);
-                territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
-                territories[x][y] = selected.getFaction()-1;
-                territoriesPanel.updateTerritories(territories);
-                territoriesPanel.repaint();
-                mainPanel.repaint();
-                frame.repaint();
-                repaint();
+            if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=faction))))){
+                if (gameGrid.get(x).get(y) == null) {
+                    oldX = selected.getxLocation();
+                    oldY = selected.getyLocation();
+                    selected.setxLocation(x);
+                    selected.setyLocation(y);
+                    gameGrid.get(x).set(y, selected);
+                    gameGrid.get(oldX).remove(oldY);
+                    gameGrid.get(oldX).add(oldY, null);
+                    GameState.updateBoard(gameGrid);
+                    territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
+                    territories[x][y] = selected.getFaction() - 1;
+                    territoriesPanel.updateTerritories(territories);
+                    territoriesPanel.repaint();
+                    mainPanel.repaint();
+                    frame.repaint();
+                    repaint();
+                } else{
+                    GameState.combat(selected, gameGrid.get(x).get(y));
+                }
             }
             removeAll();
             revalidate();

@@ -126,12 +126,52 @@ public final class GameState {
             gameBoard.get(1).set(9, g56thInf);
             Unit g11thPz = new Unit("11th Panzer Division", "germanarmourcounter", 1, 7, "arm", 2, false);
             gameBoard.get(1).set(7, g11thPz);
-            Unit g1stPz = new Unit("1st Panzer Division", "germanarmourcounter", 1, 6, "arm", 2, false);
-            gameBoard.get(1).set(6, g1stPz);
+            Unit g1stPz = new Unit("1st Panzer Division", "germanarmourcounter", 2, 5, "arm", 2, false);
+            gameBoard.get(2).set(5, g1stPz);
             Unit gHMB441 = new Unit("Heavy Mortar Battalion 441", "germanartillerycounter", 2, 6, "art", 2, false);
             gameBoard.get(2).set(6, gHMB441);
             Unit gEB441 = new Unit("Eastern Battalion 441", "germaninfcounter", 1, 6, "inf", 2, false);
             gameBoard.get(1).set(6, gEB441);
+            Unit gArt73 = new Unit("Artillery Regiment 73", "germanartillerycounter", 2, 4, "art", 2, false);
+            gameBoard.get(2).set(4, gArt73);
+            Unit g1stMInf = new Unit("1st Motorised Infantry Brigade", "germaninfcounter", 2, 3, "inf", 2, false);
+            gameBoard.get(2).set(3, g1stMInf);
+            Unit gPzGGD = new Unit("Panzergrenadier Division Großdeutschland", "germaninfcounter", 1, 3, "inf", 2, false);
+            gameBoard.get(1).set(3, gPzGGD);
+            Unit g253rdInf = new Unit("253rd Infantry Division", "germaninfcounter", 2, 2, "inf", 2, false);
+            gameBoard.get(2).set(2, g253rdInf);
+            Unit g86thInf = new Unit("86th Infantry Division", "germaninfcounter", 2, 1, "inf", 2, false);
+            gameBoard.get(2).set(1, g86thInf);
+            Unit g1stPzD = new Unit("1st Panzer Division Detachment", "germanarmourcounter", 3, 2, "arm", 2, false);
+            gameBoard.get(3).set(2, g1stPzD);
+            Unit g95thInf = new Unit("95th Infantry Division", "germaninfcounter", 4, 2, "inf", 2, false);
+            gameBoard.get(4).set(2, g95thInf);
+            Unit g14thPzG = new Unit("14th Panzergrenadier Division", "germaninfcounter", 5, 2, "inf", 2, false);
+            gameBoard.get(5).set(2, g14thPzG);
+            Unit gArt816 = new Unit("Heavy Artillery Division 816", "germanartillerycounter", 5, 3, "art", 2, false);
+            gameBoard.get(5).set(3, gArt816);
+            Unit gArt808 = new Unit("Heavy Artillery Division 808", "germanartillerycounter", 6, 3, "art", 2, false);
+            gameBoard.get(6).set(3, gArt808);
+            Unit gArt620 = new Unit("Heavy Artillery Division 620", "germanartillerycounter", 6, 4, "art", 2, false);
+            gameBoard.get(6).set(4, gArt620);
+            Unit gAG189 = new Unit("Assault Gun Department 189", "germanarmourcounter", 6, 5, "arm", 2, false);
+            gameBoard.get(6).set(5, gAG189);
+            Unit g9thPz = new Unit("9th Panzer Division", "germanarmourcounter", 6, 6, "arm", 2, false);
+            gameBoard.get(6).set(6, g9thPz);
+            Unit g78thInf = new Unit("78th Infantry Division", "germaninfcounter", 6, 7, "inf", 2, false);
+            gameBoard.get(6).set(7, g78thInf);
+            Unit g102ndInf = new Unit("102nd Infantry Division", "germaninfcounter", 6, 9, "inf", 2, false);
+            gameBoard.get(6).set(9, g102ndInf);
+            Unit gArt637 = new Unit("Heavy Artillery Division 637", "germanartillerycounter", 7, 6, "art", 2, false);
+            gameBoard.get(7).set(6, gArt637);
+            Unit gArt740 = new Unit("Heavy Artillery Division 740", "germanartillerycounter", 7, 7, "art", 2, false);
+            gameBoard.get(7).set(7, gArt740);
+            Unit g255thInf = new Unit("255th Infantry Division", "germaninfcounter", 6, 8, "inf", 2, false);
+            gameBoard.get(6).set(8, g255thInf);
+            Unit g31stInf = new Unit("31st Infantry Division", "germaninfcounter", 4, 5, "inf", 2, false);
+            gameBoard.get(4).set(5, g31stInf);
+            Unit g183rdInf = new Unit("183rd Infantry Division", "germaninfcounter", 3, 7, "inf", 2, false);
+            gameBoard.get(3).set(7, g183rdInf);
 
         } catch(Exception e){
             e.printStackTrace();
@@ -153,6 +193,11 @@ public final class GameState {
 
     public static void updateTerritories(){
 
+    }
+
+    public static Unit[] combat(Unit attacker, Unit defender){
+
+        return null;
     }
 
     public static int[][] getNewTerritories(){
