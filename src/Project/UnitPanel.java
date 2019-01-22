@@ -41,8 +41,6 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            panel.grabFocus();
-            panel.requestFocus();
             int x = (e.getX()/size);
             int y = (e.getY()/size);
             int oldX;
@@ -91,11 +89,8 @@ public class UnitPanel extends JPanel
                     territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
                     territories[x][y] = selected.getFaction() - 1;
                     territoriesPanel.updateTerritories(territories);
-                    territoriesPanel.repaint();
-                    mainPanel.repaint();
-                    frame.repaint();
-                    repaint();
                 } else{
+                    System.out.println("Combat!");
                     GameState.combat(selected, gameGrid.get(x).get(y));
                 }
             }
