@@ -195,9 +195,10 @@ public final class GameState {
 
     }
 
-    public static Unit[] combat(Unit attacker, Unit defender){
-
-        return null;
+    public static void combat(Unit attacker, Unit defender){
+        System.out.println("Attacker: " + attacker.getName());
+        attacker.setHealth(attacker.getHealth()-30);
+        defender.setHealth(defender.getHealth()-30);
     }
 
     public static int[][] getNewTerritories(){

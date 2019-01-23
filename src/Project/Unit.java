@@ -56,7 +56,6 @@ public class Unit implements Serializable {
         return faction;
     }
 
-
     public int getxLocation(){
         return xLocation;
     }
@@ -85,6 +84,8 @@ public class Unit implements Serializable {
     {
         this.selected = selected;
     }
+
+    public void setHealth(int newHealth){ this.health = newHealth; }
 
     public void removeUnit()
     {

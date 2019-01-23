@@ -41,6 +41,7 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
+            //gameGrid = GameState.getBoard();
             int x = (e.getX()/size);
             int y = (e.getY()/size);
             int oldX;
@@ -90,8 +91,28 @@ public class UnitPanel extends JPanel
                     territories[x][y] = selected.getFaction() - 1;
                     territoriesPanel.updateTerritories(territories);
                 } else{
+                    copyBoard();
                     System.out.println("Combat!");
                     GameState.combat(selected, gameGrid.get(x).get(y));
+                    System.out.println(gameGrid.get(x).get(y).getHealth());
+                    System.out.println(selected.getHealth());
+                    GameState.updateBoard(gameGrid);
+                    copyBoard();
+                    removeAll();
+                    revalidate();
+                    repaint();
+                    if (selected.getHealth()<1){
+                        int tempx = selected.getxLocation();
+                        int tempy = selected.getyLocation();
+                        gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
+                        gameGrid.get(tempx).add(tempy, null);
+                    }
+                    if (gameGrid.get(x).get(y).getHealth()<1){
+                        int tempx = gameGrid.get(x).get(y).getxLocation();
+                        int tempy = gameGrid.get(x).get(y).getyLocation();
+                        gameGrid.get(gameGrid.get(x).get(y).getxLocation()).remove(gameGrid.get(x).get(y).getyLocation());
+                        gameGrid.get(tempx).add(tempy, null);
+                    }
                 }
             }
             removeAll();
@@ -134,22 +155,13 @@ public class UnitPanel extends JPanel
             } else{
                 component.setToolTipText(null);
             }
-            /*final Timer timer = new Timer(50, new ActionListener() {
-                private int id = 1;
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ++id;
-                    panel.setToolTipText(gameGrid.get(x).get(y).getName());
-                }
-            });
-            timer.start();
-            */
         }
     }
 
     public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction, TerritoriesPanel territoriesPanel, MainFrame frame, MainPanel mainPanel)
     {
+        UIManager.put("ToolTip.background", Color.BLACK);
+        UIManager.put("ToolTip.foreground", Color.WHITE);
         this.setFocusable(true);
         this.grabFocus();
         this.gameGrid = GameState.getBoard();
@@ -173,7 +185,7 @@ public class UnitPanel extends JPanel
         try {
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
-                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30) {
+                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30&&gameGrid.get(i).get(j).getHealth()>0) {
                         g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
                 }
