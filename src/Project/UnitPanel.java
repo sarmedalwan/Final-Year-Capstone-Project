@@ -24,14 +24,13 @@ public class UnitPanel extends JPanel
     int h;
     int faction;
     static int size = 60;
-    ArrayList<ArrayList<Unit>> gameGrid;
+    static ArrayList<ArrayList<Unit>> gameGrid;
     Unit selected;
     Color transparent = new Color(0,0,0,0);
     int[][] territories;
     TerritoriesPanel territoriesPanel;
     MainFrame frame;
     MainPanel mainPanel;
-    Thread worker;
 
     class Listener extends MouseInputAdapter {
         UnitPanel panel;
@@ -41,7 +40,6 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            //gameGrid = GameState.getBoard();
             int x = (e.getX()/size);
             int y = (e.getY()/size);
             int oldX;
@@ -60,6 +58,7 @@ public class UnitPanel extends JPanel
                             e1.printStackTrace();
                         }
                         System.out.println("Selected unit: " + selected.getName());
+                        System.out.println(selected.getHealth());
                     }
                 }
             }
@@ -69,7 +68,7 @@ public class UnitPanel extends JPanel
                 if(currentSelected(gameGrid)!=null) {
                     selectedUnit = currentSelected(gameGrid);
                 }
-                if (selectedUnit != null) {
+                if (currentSelected(gameGrid) != null) {
                     System.out.println("Unit " + selectedUnit.getName() + " is already selected");
                 } else if (gameGrid.get(x).get(y).getFaction() == faction) {
                     gameGrid.get(x).get(y).setSelection(true);
@@ -78,7 +77,7 @@ public class UnitPanel extends JPanel
                 }
             }
             if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=faction))))){
-                if (gameGrid.get(x).get(y) == null) {
+                if (gameGrid.get(x).get(y) == null) { //moving to empty square
                     oldX = selected.getxLocation();
                     oldY = selected.getyLocation();
                     selected.setxLocation(x);
@@ -86,38 +85,39 @@ public class UnitPanel extends JPanel
                     gameGrid.get(x).set(y, selected);
                     gameGrid.get(oldX).remove(oldY);
                     gameGrid.get(oldX).add(oldY, null);
+                    System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
                     GameState.updateBoard(gameGrid);
                     territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
                     territories[x][y] = selected.getFaction() - 1;
                     territoriesPanel.updateTerritories(territories);
                 } else{
-                    copyBoard();
-                    System.out.println("Combat!");
-                    GameState.combat(selected, gameGrid.get(x).get(y));
-                    System.out.println(gameGrid.get(x).get(y).getHealth());
-                    System.out.println(selected.getHealth());
-                    GameState.updateBoard(gameGrid);
-                    copyBoard();
-                    removeAll();
-                    revalidate();
-                    repaint();
-                    if (selected.getHealth()<1){
-                        int tempx = selected.getxLocation();
-                        int tempy = selected.getyLocation();
-                        gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
-                        gameGrid.get(tempx).add(tempy, null);
-                    }
-                    if (gameGrid.get(x).get(y).getHealth()<1){
-                        int tempx = gameGrid.get(x).get(y).getxLocation();
-                        int tempy = gameGrid.get(x).get(y).getyLocation();
-                        gameGrid.get(gameGrid.get(x).get(y).getxLocation()).remove(gameGrid.get(x).get(y).getyLocation());
-                        gameGrid.get(tempx).add(tempy, null);
+                    try {                             //attacking an enemy unit
+                        System.out.println("Combat!");
+                        GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y));
+                        System.out.println(selected.getHealth());
+                        System.out.println(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth());
+                        System.out.println(gameGrid.get(x).get(y).getHealth());
+                        revalidate();
+                        repaint();
+                        if (selected.getHealth() < 1) {
+                            int tempX = selected.getxLocation();
+                            int tempY = selected.getyLocation();
+                            gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
+                            gameGrid.get(tempX).add(tempY, null);
+                        }
+                        if (gameGrid.get(x).get(y).getHealth() < 1) {
+                            gameGrid.get(x).remove(y);
+                            gameGrid.get(x).add(y, null);
+                        }
+                    } catch (Exception h){
+                        h.printStackTrace();
                     }
                 }
             }
-            removeAll();
+            GameState.updateBoard(gameGrid);
             revalidate();
             repaint();
+            selected = null;
         }
 
         @Override
@@ -149,6 +149,7 @@ public class UnitPanel extends JPanel
             int y = (e.getY() / size);
             JComponent component = (JComponent) e.getSource();
             if (gameGrid.get(x).get(y) != null) {
+                //gameGrid.get(x).get(y).setHealth(GameState.getBoard().get(x).get(y).getHealth());
                 component.setToolTipText("<html>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</html>");
                 MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, e.getX(), e.getY(), 0, false);
                 ToolTipManager.sharedInstance().mouseMoved(phantom);
@@ -180,7 +181,7 @@ public class UnitPanel extends JPanel
     }
 
     public void paintComponent(Graphics g) {
-        copyBoard();
+        //copyBoard();
         setOpaque(false);
         try {
             for (int i = 0; i < GameState.width; i++) {
@@ -214,41 +215,3 @@ public class UnitPanel extends JPanel
         return new Dimension(w * size, h * size);
     }
 }
-
-
-
-
-
-
-/*
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            class Worker implements Runnable {
-                public Worker(MouseEvent e){
-
-                }
-                public void run() {
-                    while (true) {
-                        int x = (e.getX() / size);
-                        int y = (e.getY() / size);
-                        if (gameGrid.get(x).get(y) != null) {
-                            JComponent component = (JComponent) e.getSource();
-                            x = (e.getX() / size);
-                            //Point p = getPointerInfo().getLocation();
-                            //x = p.x;
-                            //x = (int) Math.round((getPointerInfo().getLocation().getX()-component.getLocationOnScreen().getX())/size);
-                            //System.out.println("tooltipx" + x);
-                            y = (e.getY() / size);
-                            //y = (int) Math.round((getPointerInfo().getLocation().getY()-component.getLocationOnScreen().getY())/size);
-                            //System.out.println("tooltipy" + y);
-                            component.setToolTipText(gameGrid.get(x).get(y).getName());
-                            MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, 0, 0, 0, false);
-                            ToolTipManager.sharedInstance().mouseMoved(phantom);
-                        }
-                    }
-                }
-            }
-            Runnable worker = new Worker(e);
-            new Thread(worker).start();
-        }
- */

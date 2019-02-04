@@ -34,7 +34,7 @@ public class Unit implements Serializable {
     public Unit(Unit unit) throws IOException {
         this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getSelection());
         this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
-        this.health = 100;
+        this.health = unit.getHealth();
     }
 
     public Unit() {
@@ -60,9 +60,7 @@ public class Unit implements Serializable {
         return xLocation;
     }
 
-    public int getyLocation(){
-        return yLocation;
-    }
+    public int getyLocation(){ return yLocation; }
 
     public String getType(){
         return type;

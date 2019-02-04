@@ -196,9 +196,23 @@ public final class GameState {
     }
 
     public static void combat(Unit attacker, Unit defender){
-        System.out.println("Attacker: " + attacker.getName());
-        attacker.setHealth(attacker.getHealth()-30);
-        defender.setHealth(defender.getHealth()-30);
+        Random random = new Random();
+        int attackerMean, defenderMean, attackerLosses, defenderLosses;
+        int standardDeviation = 15;
+        int typeBonus = 20;
+        attackerMean = 40;
+        defenderMean = 30;
+        if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;}
+        if (defender.getType().equals("inf") && attacker.getType().equals("arm")){defenderMean+=typeBonus;}
+        if (attacker.getType().equals("arm") && defender.getType().equals("art")){attackerMean+=typeBonus;}
+        if (defender.getType().equals("arm") && attacker.getType().equals("art")){defenderMean+=typeBonus;}
+        if (attacker.getType().equals("art") && defender.getType().equals("inf")){attackerMean+=typeBonus;}
+        if (defender.getType().equals("art") && attacker.getType().equals("inf")){defenderMean+=typeBonus;}
+        attackerLosses = (int)(random.nextGaussian()*standardDeviation+attackerMean);
+        defenderLosses = (int)(random.nextGaussian()*standardDeviation+defenderMean);
+        attackerLosses+=10;
+        attacker.setHealth(attacker.getHealth()-attackerLosses);
+        defender.setHealth(defender.getHealth()-defenderLosses);
     }
 
     public static int[][] getNewTerritories(){
@@ -245,7 +259,7 @@ public final class GameState {
             for (int j = 0; j < GameState.height; j++) {
                 if(gameBoard.get(i).get(j) != null) {
                     try {
-                        gameBoard.get(i).set(j, new Unit(gameBoard.get(i).get(j)));
+                        gameBoard.get(i).set(j, new Unit(updatedBoard.get(i).get(j)));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
