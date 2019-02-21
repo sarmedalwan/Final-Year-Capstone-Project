@@ -4,12 +4,14 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.*;
 
 public class MenuElements extends JLabel implements ActionListener
 {
@@ -80,10 +82,14 @@ public class MenuElements extends JLabel implements ActionListener
 
     public void actionPerformed(ActionEvent e) {
         if ("start".equals(e.getActionCommand())) {
-            new MainFrame("Game by Sarmed Alwan, 1603088");
+            try {
+                new MainFrame("Game by Sarmed Alwan, 1603088");
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             mediaPlayer.stop();
         } else if ("host".equals(e.getActionCommand())) {
-
+            new Server().start();
         } else if ("quit".equals(e.getActionCommand())) {
             System.exit(0);
         } else if ("credits".equals(e.getActionCommand())) {

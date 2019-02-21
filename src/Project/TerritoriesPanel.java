@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class TerritoriesPanel extends JPanel
 {
     static Color[] colors =
-            {new Color(200, 0,0, 140), new Color(200, 200, 200, 140)};
+            {new Color(200, 0,0, 80), new Color(200, 200, 200, 80)};
     public int[][] territories;
     int w;
     int h;

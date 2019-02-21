@@ -14,9 +14,11 @@ public class MainPanel extends JPanel {
         this.setFocusable(true);
         this.grabFocus();
         TerritoriesPanel territoriesPanel = new TerritoriesPanel(GameState.getNewTerritories());
-        UnitPanel unitPanel = new UnitPanel(GameState.getNewBoard(), 1, territoriesPanel, frame, this);
+        UnitPanel unitPanel = new UnitPanel(GameState.getNewBoard(), GameState.getFaction(), territoriesPanel, frame, this);
+        ClientThread clientThread = new ClientThread(unitPanel, territoriesPanel);
+        clientThread.start();
         GridPanel gridPanel = new GridPanel();
-        Background background = new Background("operationmarsmapbigger.png");
+        Background background = new Background("operationmarsmap.png");
         this.add(BorderLayout.CENTER, unitPanel);
         this.add(BorderLayout.CENTER, territoriesPanel);
         this.add(BorderLayout.CENTER, gridPanel);

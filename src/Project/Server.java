@@ -6,18 +6,21 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server {
-
-    public static void main(String args[]) throws IOException {
+public class Server extends Thread {
+    public void run() {
         int portNumber = 8888;
-        List<Socket> socketList = new ArrayList<>();
-        System.out.println("Server created: " + portNumber);
-        ServerSocket serverSocket = new ServerSocket(portNumber);
-        ArrayList<ArrayList<Unit>> a = GameState.getNewBoard();
-        while (true) {
-            Socket socket = serverSocket.accept();
-            socketList.add(socket);
-            new ServerThread(socket, socketList).start();
-        }
+        try {
+            List<Socket> socketList = new ArrayList<>();
+            System.out.println("Server created: " + portNumber);
+            ServerSocket serverSocket = new ServerSocket(portNumber);
+            //ArrayList<ArrayList<Unit>> a = GameState.getNewBoard();
+            while (true) {
+                Socket socket = serverSocket.accept();
+                socketList.add(socket);
+                new ServerThread(socket, socketList).start();
+            }
+        } catch(IOException e){
+            e.printStackTrace();
         }
     }
+}

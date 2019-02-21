@@ -48,7 +48,10 @@ public class UnitPanel extends JPanel
             if(gameGrid.get(x).get(y) == null){
                 System.out.println("empty");
             }
-            copyBoard();
+            gameGrid = GameState.getBoard();
+            //copyBoard();
+            faction = GameState.getFaction();
+            System.out.println("faction: " + faction);
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
                     if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getSelection()) {
@@ -99,11 +102,9 @@ public class UnitPanel extends JPanel
                         System.out.println(gameGrid.get(x).get(y).getHealth());
                         revalidate();
                         repaint();
-                        if (selected.getHealth() < 1) {
-                            int tempX = selected.getxLocation();
-                            int tempY = selected.getyLocation();
+                        if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) {
                             gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
-                            gameGrid.get(tempX).add(tempY, null);
+                            gameGrid.get(selected.getxLocation()).add(selected.getyLocation(), null);
                         }
                         if (gameGrid.get(x).get(y).getHealth() < 1) {
                             gameGrid.get(x).remove(y);
@@ -113,9 +114,10 @@ public class UnitPanel extends JPanel
                         h.printStackTrace();
                     }
                 }
+                ClientThread.makeMove(gameGrid);
             }
             GameState.updateBoard(gameGrid);
-            revalidate();
+            //revalidate();
             repaint();
             selected = null;
         }
@@ -165,11 +167,12 @@ public class UnitPanel extends JPanel
         UIManager.put("ToolTip.foreground", Color.WHITE);
         this.setFocusable(true);
         this.grabFocus();
-        this.gameGrid = GameState.getBoard();
+        this.gameGrid = gameGrid;
         this.frame = frame;
         this.mainPanel = mainPanel;
         w = 10;
         h = 10; //Defines the dimensions of the grid
+        System.out.println("newfaction: "+faction);
         this.faction = faction;
         this.territoriesPanel = territoriesPanel;
         Listener listener = new Listener(this);
@@ -183,10 +186,15 @@ public class UnitPanel extends JPanel
     public void paintComponent(Graphics g) {
         //copyBoard();
         setOpaque(false);
+        gameGrid = GameState.getBoard();
         try {
             for (int i = 0; i < GameState.width; i++) {
                 for (int j = 0; j < GameState.height; j++) {
                     if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30&&gameGrid.get(i).get(j).getHealth()>0) {
+                        if (gameGrid.get(i).get(j).getSelection()){
+                            g.setColor(Color.WHITE);
+                            g.fillRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44);
+                        }
                         g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
                 }
@@ -198,17 +206,45 @@ public class UnitPanel extends JPanel
     }
 
     public void copyBoard() {
-        for (int i = 0; i < GameState.width; i++) {
+        gameGrid = GameState.getBoard();
+        /*for (int i = 0; i < GameState.width; i++) {
             for (int j = 0; j < GameState.height; j++) {
                 if(GameState.getBoard().get(i).get(j) != null) {
                     try {
-                        gameGrid.get(i).set(j, new Unit(GameState.getBoard().get(i).get(j)));
+                        gameGrid = GameState.getBoard();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                 }
             }
+        }*/
+    }
+
+    public void deselect() {
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if(GameState.getBoard().get(i).get(j) != null) {
+                    gameGrid.get(i).get(j).setSelection(false);
+                }
+            }
         }
+    }
+
+    public void updateGrid(ArrayList<ArrayList<Unit>> newGrid){
+        gameGrid = newGrid;
+        repaint();
+    }
+
+    public void updateTerritories(){
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if (gameGrid.get(i).get(j)!=null) {
+                    territories[i][j] =
+                            gameGrid.get(i).get(j).getFaction() - 1;
+                }
+            }
+        }
+        territoriesPanel.updateTerritories(territories);
     }
 
     public Dimension getPreferredSize() {

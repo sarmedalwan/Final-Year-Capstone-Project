@@ -9,6 +9,7 @@ public final class GameState {
     public static final int width = 10;
     public static ArrayList<ArrayList<Unit>> gameBoard;
     public static int[][] territories;
+    public static int faction;
 
     public static ArrayList<ArrayList<Unit>> getNewBoard() {
         gameBoard = new ArrayList<ArrayList<Unit>>(10);
@@ -184,7 +185,7 @@ public final class GameState {
     }
 
     public static boolean isMoveAllowed(ArrayList<ArrayList<Unit>> gameBoard, int player) {
-        return false;
+        return true;
     }
 
     public static int[][] getTerritories(){
@@ -195,10 +196,18 @@ public final class GameState {
 
     }
 
+    public static void updateFaction(int newFaction){ faction = newFaction;
+        //System.out.println("updatedfaction" + faction);
+        }
+
+    public static int getFaction(){
+        //System.out.println("returnedfaction:" + faction);
+        return faction;}
+
     public static void combat(Unit attacker, Unit defender){
         Random random = new Random();
         int attackerMean, defenderMean, attackerLosses, defenderLosses;
-        int standardDeviation = 15;
+        int standardDeviation = 10;
         int typeBonus = 20;
         attackerMean = 40;
         defenderMean = 30;
@@ -257,7 +266,7 @@ public final class GameState {
     public static void updateBoard(ArrayList<ArrayList<Unit>> updatedBoard){
         for (int i = 0; i < GameState.width; i++) {
             for (int j = 0; j < GameState.height; j++) {
-                if(gameBoard.get(i).get(j) != null) {
+                if(gameBoard.get(i).get(j) != null && updatedBoard.get(i).get(j) != null) {
                     try {
                         gameBoard.get(i).set(j, new Unit(updatedBoard.get(i).get(j)));
                     } catch (IOException e1) {

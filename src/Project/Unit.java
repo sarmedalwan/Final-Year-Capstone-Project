@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class Unit implements Serializable {
 
-    private BufferedImage icon;
+    private transient BufferedImage icon;
     private String iconFileName;
     private String name;
     private int xLocation;
@@ -35,9 +35,6 @@ public class Unit implements Serializable {
         this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getSelection());
         this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
         this.health = unit.getHealth();
-    }
-
-    public Unit() {
     }
 
     public String getIconFileName(){

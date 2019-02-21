@@ -1,57 +1,67 @@
 package Project;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.List;
+import java.util.ArrayList;
 
+/**
+ * Created by Sarmed on 05/02/2019.
+ */
 public class ClientThread extends Thread {
-    protected Socket socket;
-    private List<Socket> sockets;
-    public int[] playerpositions;
-    public Unit[][] gameBoard;
-
-    public ClientThread(Socket clientSocket, List<Socket> sockets, Unit[][] gameBoard) {
-        this.socket = clientSocket;
-        this.sockets = sockets;
-        this.gameBoard = gameBoard;
-    }
-
-    public void run() {
-        InputStream inp;
-        BufferedReader br;
-        DataOutputStream out;
-        Gson gson = new Gson();
-
+    static int faction;
+    static PrintWriter out;
+    String host;
+    int portNumber;
+    Gson gson;
+    Socket socket;
+    UnitPanel unitPanel;
+    TerritoriesPanel territoriesPanel;
+    BufferedReader br;
+    ArrayList<ArrayList<Unit>> unitBoard;
+    public ClientThread(UnitPanel panel, TerritoriesPanel terrPanel){
         try {
-            OutputStream os = socket.getOutputStream();
-            PrintWriter pw = new PrintWriter(os, true);
-            String boardJson = gson.toJson(gameBoard);
-            pw.println(boardJson);
-            pw.println(sockets.size());
-        } catch(Exception e){
-            System.out.println(e);
+            territoriesPanel = terrPanel;
+            unitPanel = panel;
+            host = "localhost";
+            portNumber = 8888;
+            gson = new Gson();
+            System.out.println("Creating socket to '" + host + "' on port " + portNumber);
+            socket = new Socket(host, portNumber);
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+            unitBoard = GameState.getNewBoard();
+            GameState.updateBoard(unitBoard);
+            faction = Integer.parseInt(br.readLine());
+            System.out.println("Welcome, Player " + faction);
+            GameState.updateFaction(faction);
+        } catch (IOException e){
+            e.printStackTrace();
         }
-        while (true) {
-            try {
-                OutputStream outputStream = socket.getOutputStream();
-                PrintWriter printWriter = new PrintWriter(outputStream, true);
-                br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                int playerMove = Integer.parseInt(br.readLine());
-                int xMove = Integer.parseInt(br.readLine());
-                int yMove = Integer.parseInt(br.readLine());
-                for (Socket socket:sockets) {
-                    OutputStream outputStr = socket.getOutputStream();
-                    PrintWriter printWr = new PrintWriter(outputStr, true);
-                    printWr.println(playerMove);
-                    printWr.println(xMove);
-                    printWr.println(yMove);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
+    }
+    public void run() {
+        try {
+            while (true) {
+                int lastMovedPlayer = Integer.parseInt(br.readLine());
+                System.out.println("Server says: Player " + lastMovedPlayer + " moved");
+                //GameState.updateBoard(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
+                unitPanel.updateGrid(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
+                unitPanel.updateTerritories();
+                //unitBoard = GameState.getBoard();
+                //GameState.updateBoard(unitBoard);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+    public static void makeMove(ArrayList<ArrayList<Unit>> unitBoard){
+        out.println(faction);
+        Gson gson = new Gson();
+        out.println(gson.toJson(unitBoard));
     }
 }
