@@ -39,7 +39,7 @@ public class ClientThread extends Thread {
             GameState.updateBoard(unitBoard);
             faction = Integer.parseInt(br.readLine());
             System.out.println("Welcome, Player " + faction);
-            GameState.updateFaction(faction);
+            GameState.setFaction(faction);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -53,6 +53,7 @@ public class ClientThread extends Thread {
                 unitPanel.updateGrid(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>() {
                 }.getType()));
                 unitPanel.updateTerritories();
+                GameState.setLastMovedPlayer(lastMovedPlayer);
                 //unitBoard = GameState.getBoard();
                 //GameState.updateBoard(unitBoard);
             }
@@ -62,6 +63,7 @@ public class ClientThread extends Thread {
     }
     public static void makeMove(ArrayList<ArrayList<Unit>> unitBoard){
         out.println(faction);
+        System.out.println("My faction is " + faction);
         Gson gson = new Gson();
         out.println(gson.toJson(unitBoard));
     }

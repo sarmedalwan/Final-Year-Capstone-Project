@@ -10,6 +10,7 @@ public final class GameState {
     public static ArrayList<ArrayList<Unit>> gameBoard;
     public static int[][] territories;
     public static int faction;
+    public static int lastMovedPlayer;
 
     public static ArrayList<ArrayList<Unit>> getNewBoard() {
         gameBoard = new ArrayList<ArrayList<Unit>>(10);
@@ -196,13 +197,12 @@ public final class GameState {
 
     }
 
-    public static void updateFaction(int newFaction){ faction = newFaction;
-        //System.out.println("updatedfaction" + faction);
-        }
+    public static void setFaction(int newFaction){ faction = newFaction;}
+    public static int getFaction(){return faction;}
 
-    public static int getFaction(){
-        //System.out.println("returnedfaction:" + faction);
-        return faction;}
+    public static int getLastMovedPlayer(){return lastMovedPlayer;}
+    public static void setLastMovedPlayer(int lastMoved){ lastMovedPlayer = lastMoved;}
+
 
     public static void combat(Unit attacker, Unit defender){
         Random random = new Random();

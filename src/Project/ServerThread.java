@@ -33,22 +33,27 @@ public class ServerThread extends Thread {
         } catch(Exception e){
             System.out.println(e);
         }
+        int lastMovedPlayer = 20;
         while (true) {
-            //System.out.println("in serverthread loop");
             try {
                 br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 int factionWhoMoved = Integer.parseInt(br.readLine());
                 String playerBoard = br.readLine();
-                int index = 0;
-                for (Socket socket : sockets) {
-                    index++;
-                    if(index!=factionWhoMoved) {
-                        OutputStream outputStr = socket.getOutputStream();
-                        PrintWriter printWriter = new PrintWriter(outputStr, true);
-                        printWriter.println(factionWhoMoved);
-                        printWriter.println(playerBoard);
+                if (factionWhoMoved == lastMovedPlayer || lastMovedPlayer == 20) {
+                    int index = 0;
+                    for (Socket socket : sockets) {
+                        index++;
+                        if (index != factionWhoMoved) {
+                            OutputStream outputStr = socket.getOutputStream();
+                            PrintWriter printWriter = new PrintWriter(outputStr, true);
+                            printWriter.println(factionWhoMoved);
+                            printWriter.println(playerBoard);
+                        }
                     }
+                } else{
+                    System.out.println("Cannot move twice in a row");
                 }
+                lastMovedPlayer = factionWhoMoved;
             } catch (IOException e) {
                 e.printStackTrace();
                 return;

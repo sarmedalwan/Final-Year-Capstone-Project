@@ -42,91 +42,97 @@ public class UnitPanel extends JPanel
         }
         @Override
         public void mouseClicked(MouseEvent e) {
-            int x = (e.getX()/size);
-            int y = (e.getY()/size);
-            int oldX;
-            int oldY;
-            System.out.println(x + ", " + y);
-            if(gameGrid.get(x).get(y) == null){
-                System.out.println("empty");
-            }
-            gameGrid = GameState.getBoard();
-            //copyBoard();
             faction = GameState.getFaction();
-            System.out.println("faction: " + faction);
-            for (int i = 0; i < GameState.width; i++) {
-                for (int j = 0; j < GameState.height; j++) {
-                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getSelection()) {
-                        try {
-                            selected = new Unit(gameGrid.get(i).get(j));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+            if (GameState.getLastMovedPlayer() == faction){
+                System.out.println("It isn't your turn");
+            } else {
+                int x = (e.getX() / size);
+                int y = (e.getY() / size);
+                int oldX;
+                int oldY;
+                System.out.println(x + ", " + y);
+                if (gameGrid.get(x).get(y) == null) {
+                    System.out.println("empty");
+                }
+                gameGrid = GameState.getBoard();
+                //copyBoard();
+                faction = GameState.getFaction();
+                System.out.println("faction: " + faction);
+                for (int i = 0; i < GameState.width; i++) {
+                    for (int j = 0; j < GameState.height; j++) {
+                        if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getSelection()) {
+                            try {
+                                selected = new Unit(gameGrid.get(i).get(j));
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                            System.out.println("Selected unit: " + selected.getName());
+                            System.out.println(selected.getHealth());
                         }
-                        System.out.println("Selected unit: " + selected.getName());
-                        System.out.println(selected.getHealth());
                     }
                 }
-            }
-            if (gameGrid.get(x).get(y) != null) {
-                System.out.println(gameGrid.get(x).get(y).getName());
-                Unit selectedUnit = null;
-                if(currentSelected(gameGrid)!=null) {
-                    selectedUnit = currentSelected(gameGrid);
-                }
-                if (currentSelected(gameGrid) != null) {
-                    System.out.println("Unit " + selectedUnit.getName() + " is already selected");
-                } else if (gameGrid.get(x).get(y).getFaction() == faction) {
-                    gameGrid.get(x).get(y).setSelection(true);
-                    GameState.updateBoard(gameGrid);
-                    System.out.println(gameGrid.get(x).get(y).getName() + " selection set true");
-                }
-            }
-            if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=faction))))){
-                try {
-                if (gameGrid.get(x).get(y) == null) { //moving to empty square
-                    oldX = selected.getxLocation();
-                    oldY = selected.getyLocation();
-                    selected.setxLocation(x);
-                    selected.setyLocation(y);
-                    gameGrid.get(x).set(y, new Unit(selected));
-                    gameGrid.get(oldX).remove(oldY);
-                    gameGrid.get(oldX).add(oldY, null);
-                    System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
-                    GameState.updateBoard(gameGrid);
-                    territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
-                    territories[x][y] = selected.getFaction() - 1;
-                    territoriesPanel.updateTerritories(territories);
-                } else{
-                    try {                             //attacking an enemy unit
-                        System.out.println("Combat!");
-                        GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y));
-                        System.out.println(selected.getHealth());
-                        System.out.println(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth());
-                        System.out.println(gameGrid.get(x).get(y).getHealth());
-                        revalidate();
-                        repaint();
-                        if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) {
-                            gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
-                            gameGrid.get(selected.getxLocation()).add(selected.getyLocation(), null);
-                        }
-                        if (gameGrid.get(x).get(y).getHealth() < 1) {
-                            gameGrid.get(x).remove(y);
-                            gameGrid.get(x).add(y, null);
-                        }
-                    } catch (Exception h){
-                        h.printStackTrace();
+                if (gameGrid.get(x).get(y) != null) {
+                    System.out.println(gameGrid.get(x).get(y).getName());
+                    Unit selectedUnit = null;
+                    if (currentSelected(gameGrid) != null) {
+                        selectedUnit = currentSelected(gameGrid);
+                    }
+                    if (currentSelected(gameGrid) != null) {
+                        System.out.println("Unit " + selectedUnit.getName() + " is already selected");
+                    } else if (gameGrid.get(x).get(y).getFaction() == faction) {
+                        gameGrid.get(x).get(y).setSelection(true);
+                        GameState.updateBoard(gameGrid);
+                        System.out.println(gameGrid.get(x).get(y).getName() + " selection set true");
                     }
                 }
-                //selected = null;
-                ClientThread.makeMove(GameState.getBoard());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction() != faction))))) {
+                    try {
+                        if (gameGrid.get(x).get(y) == null) { //moving to empty square
+                            oldX = selected.getxLocation();
+                            oldY = selected.getyLocation();
+                            selected.setxLocation(x);
+                            selected.setyLocation(y);
+                            gameGrid.get(x).set(y, new Unit(selected));
+                            gameGrid.get(oldX).remove(oldY);
+                            gameGrid.get(oldX).add(oldY, null);
+                            System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
+                            GameState.updateBoard(gameGrid);
+                            territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
+                            territories[x][y] = selected.getFaction() - 1;
+                            territoriesPanel.updateTerritories(territories);
+                        } else {
+                            try {                             //attacking an enemy unit
+                                System.out.println("Combat!");
+                                GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y));
+                                System.out.println(selected.getHealth());
+                                System.out.println(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth());
+                                System.out.println(gameGrid.get(x).get(y).getHealth());
+                                revalidate();
+                                repaint();
+                                if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) {
+                                    gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
+                                    gameGrid.get(selected.getxLocation()).add(selected.getyLocation(), null);
+                                }
+                                if (gameGrid.get(x).get(y).getHealth() < 1) {
+                                    gameGrid.get(x).remove(y);
+                                    gameGrid.get(x).add(y, null);
+                                }
+                            } catch (Exception h) {
+                                h.printStackTrace();
+                            }
+                        }
+                        //selected = null;
+                        ClientThread.makeMove(GameState.getBoard());
+                        GameState.setLastMovedPlayer(faction);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
+                GameState.updateBoard(gameGrid);
+                //revalidate();
+                repaint();
+                selected = null;
             }
-            GameState.updateBoard(gameGrid);
-            //revalidate();
-            repaint();
-            selected = null;
         }
 
         @Override
@@ -201,7 +207,7 @@ public class UnitPanel extends JPanel
                     if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30&&gameGrid.get(i).get(j).getHealth()>0) {
                         if (gameGrid.get(i).get(j).getSelection()){
                             g.setColor(Color.WHITE);
-                            g.fillRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44);
+                            g.fillRoundRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44, 10, 10);
                         }
                         g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
