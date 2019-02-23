@@ -24,7 +24,7 @@ public class ServerThread extends Thread {
         BufferedReader br;
 
         try {
-            System.out.println("in serverthread");
+            //System.out.println("in serverthread");
             OutputStream outputStream = socket.getOutputStream();
             PrintWriter printWriter = new PrintWriter(outputStream, true);
             printWriter.println(sockets.size());
@@ -34,16 +34,20 @@ public class ServerThread extends Thread {
             System.out.println(e);
         }
         while (true) {
-            System.out.println("in serverthread loop");
+            //System.out.println("in serverthread loop");
             try {
                 br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 int factionWhoMoved = Integer.parseInt(br.readLine());
                 String playerBoard = br.readLine();
+                int index = 0;
                 for (Socket socket : sockets) {
-                    OutputStream outputStr = socket.getOutputStream();
-                    PrintWriter printWriter = new PrintWriter(outputStr, true);
-                    printWriter.println(factionWhoMoved);
-                    printWriter.println(playerBoard);
+                    index++;
+                    if(index!=factionWhoMoved) {
+                        OutputStream outputStr = socket.getOutputStream();
+                        PrintWriter printWriter = new PrintWriter(outputStr, true);
+                        printWriter.println(factionWhoMoved);
+                        printWriter.println(playerBoard);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

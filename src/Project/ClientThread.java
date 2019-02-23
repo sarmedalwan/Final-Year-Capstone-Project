@@ -47,10 +47,11 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             while (true) {
+                //GameState.updateBoard(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
                 int lastMovedPlayer = Integer.parseInt(br.readLine());
                 System.out.println("Server says: Player " + lastMovedPlayer + " moved");
-                //GameState.updateBoard(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
-                unitPanel.updateGrid(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
+                unitPanel.updateGrid(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>() {
+                }.getType()));
                 unitPanel.updateTerritories();
                 //unitBoard = GameState.getBoard();
                 //GameState.updateBoard(unitBoard);

@@ -4,6 +4,8 @@ package Project;
  * Created by Sarmed on 10/11/2018.
  */
 
+import sun.font.FontFamily;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
@@ -80,12 +82,13 @@ public class UnitPanel extends JPanel
                 }
             }
             if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction()!=faction))))){
+                try {
                 if (gameGrid.get(x).get(y) == null) { //moving to empty square
                     oldX = selected.getxLocation();
                     oldY = selected.getyLocation();
                     selected.setxLocation(x);
                     selected.setyLocation(y);
-                    gameGrid.get(x).set(y, selected);
+                    gameGrid.get(x).set(y, new Unit(selected));
                     gameGrid.get(oldX).remove(oldY);
                     gameGrid.get(oldX).add(oldY, null);
                     System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
@@ -114,7 +117,11 @@ public class UnitPanel extends JPanel
                         h.printStackTrace();
                     }
                 }
-                ClientThread.makeMove(gameGrid);
+                //selected = null;
+                ClientThread.makeMove(GameState.getBoard());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
             GameState.updateBoard(gameGrid);
             //revalidate();
@@ -151,8 +158,9 @@ public class UnitPanel extends JPanel
             int y = (e.getY() / size);
             JComponent component = (JComponent) e.getSource();
             if (gameGrid.get(x).get(y) != null) {
-                //gameGrid.get(x).get(y).setHealth(GameState.getBoard().get(x).get(y).getHealth());
-                component.setToolTipText("<html>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</html>");
+                component.setFont(new Font("Segoe", Font.BOLD, 12));
+                String fontFamily = component.getFont().getFamily();
+                component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</b></html>");
                 MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, e.getX(), e.getY(), 0, false);
                 ToolTipManager.sharedInstance().mouseMoved(phantom);
             } else{
@@ -231,14 +239,26 @@ public class UnitPanel extends JPanel
     }
 
     public void updateGrid(ArrayList<ArrayList<Unit>> newGrid){
-        gameGrid = newGrid;
+        for (int i = 0; i < GameState.width; i++) {
+            for (int j = 0; j < GameState.height; j++) {
+                if (newGrid.get(i).get(j) != null) {
+                    newGrid.get(i).get(j).setIcon();
+                    newGrid.get(i).get(j).setSelection(false);
+                    //gameGrid.get(i).set(j, null);
+                }
+                gameGrid.get(i).remove(j);
+                gameGrid.get(i).add(j, newGrid.get(i).get(j));
+                //gameGrid.get(i).get(j).setSelection(false);
+            }
+        }
         repaint();
     }
 
     public void updateTerritories(){
+        territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
         for (int i = 0; i < GameState.width; i++) {
             for (int j = 0; j < GameState.height; j++) {
-                if (gameGrid.get(i).get(j)!=null) {
+                if(gameGrid.get(i).get(j) != null) {
                     territories[i][j] =
                             gameGrid.get(i).get(j).getFaction() - 1;
                 }

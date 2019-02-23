@@ -83,7 +83,7 @@ public class MenuElements extends JLabel implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if ("start".equals(e.getActionCommand())) {
             try {
-                new MainFrame("Game by Sarmed Alwan, 1603088");
+                new MainFrame("Operation Mars");
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

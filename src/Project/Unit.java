@@ -82,6 +82,15 @@ public class Unit implements Serializable {
 
     public void setHealth(int newHealth){ this.health = newHealth; }
 
+    public void setIcon(){
+        try {
+            this.icon = ImageIO.read(getClass().getResource("/media/" + this.iconFileName + ".png"));
+        } catch(IOException e){
+            e.printStackTrace();
+            System.out.println("Couldn't find texture file for a unit");
+        }
+    }
+
     public void removeUnit()
     {
         this.xLocation = 30;
