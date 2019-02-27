@@ -4,27 +4,32 @@ package Project;
  * Created by Sarmed on 10/11/2018.
  */
 
-import sun.font.FontFamily;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import static Project.Selection.*;
-import static java.awt.MouseInfo.getPointerInfo;
 
 public class UnitPanel extends JPanel
 {
     int w;
     int h;
     int faction;
+    float alpha = 1.0f;
+    Unit hurt1 = null;
+    Unit hurt2 = null;
     static int size = 60;
     static ArrayList<ArrayList<Unit>> gameGrid;
     Unit selected;
@@ -33,6 +38,15 @@ public class UnitPanel extends JPanel
     TerritoriesPanel territoriesPanel;
     MainFrame frame;
     MainPanel mainPanel;
+    final JFXPanel fxPanel = new JFXPanel();
+    Media turnSound = new Media(getClass().getResource("/media/yourturn.mp3").toString()); // freesound.org
+    Media infSound = new Media(getClass().getResource("/media/inf.mp3").toString()); // freesound.org
+    Media armSound = new Media(getClass().getResource("/media/arm.mp3").toString());// freesound.org
+    Media artSound = new Media(getClass().getResource("/media/art.mp3").toString());// freesound.org
+    MediaPlayer turnSoundPlayer = new MediaPlayer(turnSound);
+    MediaPlayer infSoundPlayer = new MediaPlayer(infSound);
+    MediaPlayer armSoundPlayer = new MediaPlayer(armSound);
+    MediaPlayer artSoundPlayer = new MediaPlayer(artSound);
 
     class Listener extends MouseInputAdapter {
         UnitPanel panel;
@@ -81,55 +95,79 @@ public class UnitPanel extends JPanel
                         System.out.println("Unit " + selectedUnit.getName() + " is already selected");
                     } else if (gameGrid.get(x).get(y).getFaction() == faction) {
                         gameGrid.get(x).get(y).setSelection(true);
-                        GameState.updateBoard(gameGrid);
                         System.out.println(gameGrid.get(x).get(y).getName() + " selection set true");
                     }
                 }
-                if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction() != faction))))) {
+                if (selected != null && (gameGrid.get(x).get(y) == null || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction() != faction))) || ((gameGrid.get(x).get(y) != null && (gameGrid.get(x).get(y).getFaction() == faction))))) {
                     try {
-                        if (gameGrid.get(x).get(y) == null) { //moving to empty square
-                            oldX = selected.getxLocation();
-                            oldY = selected.getyLocation();
-                            selected.setxLocation(x);
-                            selected.setyLocation(y);
-                            gameGrid.get(x).set(y, new Unit(selected));
-                            gameGrid.get(oldX).remove(oldY);
-                            gameGrid.get(oldX).add(oldY, null);
-                            System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
-                            GameState.updateBoard(gameGrid);
-                            territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
-                            territories[x][y] = selected.getFaction() - 1;
-                            territoriesPanel.updateTerritories(territories);
-                        } else {
-                            try {                             //attacking an enemy unit
-                                System.out.println("Combat!");
-                                GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y));
-                                System.out.println(selected.getHealth());
-                                System.out.println(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth());
-                                System.out.println(gameGrid.get(x).get(y).getHealth());
-                                revalidate();
-                                repaint();
-                                if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) {
-                                    gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
-                                    gameGrid.get(selected.getxLocation()).add(selected.getyLocation(), null);
+                        if(GameState.isLegal(selected, x, y)) {
+                            if (gameGrid.get(x).get(y) == null) { //moving to empty square
+                                oldX = selected.getxLocation();
+                                oldY = selected.getyLocation();
+                                selected.setxLocation(x);
+                                selected.setyLocation(y);
+                                gameGrid.get(x).set(y, new Unit(selected));
+                                gameGrid.get(oldX).remove(oldY);
+                                gameGrid.get(oldX).add(oldY, null);
+                                //System.out.println("moved to: " + selected.getxLocation() + " " + selected.getyLocation());
+                                territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
+                                territories[x][y] = selected.getFaction() - 1;
+                                territoriesPanel.updateTerritories(territories);
+                            } else if (gameGrid.get(x).get(y).getFaction() != faction) {
+                                try {                             //attacking an enemy unit
+                                    //System.out.println("Combat!");
+                                    GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y));
+                                    System.out.println(selected.getHealth());
+                                    System.out.println(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth());
+                                    System.out.println(gameGrid.get(x).get(y).getHealth());
+                                    //revalidate();
+                                    repaint();
+                                    if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) {
+                                        if (gameGrid.get(x).get(y)!=null && gameGrid.get(x).get(y).getVet()<6) {
+                                            gameGrid.get(x).get(y).setVet(gameGrid.get(x).get(y).getVet() + 1);
+                                        }
+                                        gameGrid.get(selected.getxLocation()).remove(selected.getyLocation());
+                                        gameGrid.get(selected.getxLocation()).add(selected.getyLocation(), null);
+                                    }
+                                    if (gameGrid.get(x).get(y).getHealth() < 1) {
+                                        if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation())!=null && gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getVet()<6) {
+                                            gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).setVet(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getVet() + 1);
+                                        }
+                                        gameGrid.get(x).remove(y);
+                                        gameGrid.get(x).add(y, null);
+                                    }
+                                    playCombatSound(selected);
+                                } catch (Exception h) {
+                                    h.printStackTrace();
                                 }
-                                if (gameGrid.get(x).get(y).getHealth() < 1) {
-                                    gameGrid.get(x).remove(y);
-                                    gameGrid.get(x).add(y, null);
-                                }
-                            } catch (Exception h) {
-                                h.printStackTrace();
+                            } else { //swap
+                                oldX = selected.getxLocation();
+                                oldY = selected.getyLocation();
+                                selected.setxLocation(x);
+                                selected.setyLocation(y);
+                                Unit temp = new Unit(gameGrid.get(x).get(y));
+                                temp.setxLocation(oldX);
+                                temp.setyLocation(oldY);
+                                //gameGrid.get(oldX).remove(oldY);
+                                gameGrid.get(oldX).set(oldY, new Unit(temp));
+                                gameGrid.get(x).set(y, new Unit(selected));
+                                //gameGrid.get(x).add(new Unit(selected));
+                                territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length);
+                                territories[x][y] = selected.getFaction() - 1;
+                                territories[oldX][oldY] = temp.getFaction() - 1;
+                                territoriesPanel.updateTerritories(territories);
                             }
+                            deselect();
+                            GameState.updateBoard(gameGrid);
+                            ClientThread.makeMove(GameState.getBoard());
+                            alpha = 1.0f;
+                            GameState.setLastMovedPlayer(faction);
                         }
-                        //selected = null;
-                        ClientThread.makeMove(GameState.getBoard());
-                        GameState.setLastMovedPlayer(faction);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                 }
                 GameState.updateBoard(gameGrid);
-                //revalidate();
                 repaint();
                 selected = null;
             }
@@ -164,9 +202,9 @@ public class UnitPanel extends JPanel
             int y = (e.getY() / size);
             JComponent component = (JComponent) e.getSource();
             if (gameGrid.get(x).get(y) != null) {
-                component.setFont(new Font("Segoe", Font.BOLD, 12));
+                component.setFont(new Font("BahnSchrift", Font.BOLD, 12));
                 String fontFamily = component.getFont().getFamily();
-                component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "</b></html>");
+                component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b>" + gameGrid.get(x).get(y).getName()  + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "<br>" + "Veterancy: " + gameGrid.get(x).get(y).getVet() + "</b></html>");
                 MouseEvent phantom = new MouseEvent(component, MouseEvent.MOUSE_MOVED, System.currentTimeMillis(), 0, e.getX(), e.getY(), 0, false);
                 ToolTipManager.sharedInstance().mouseMoved(phantom);
             } else{
@@ -195,25 +233,82 @@ public class UnitPanel extends JPanel
         this.requestFocus();
         this.setBackground(transparent);
         this.setOpaque(false);
+        turnSoundPlayer.setVolume(0.7);
+        infSoundPlayer.setVolume(0.7);
+        armSoundPlayer.setVolume(0.7);
+        artSoundPlayer.setVolume(0.7);
     }
 
     public void paintComponent(Graphics g) {
         //copyBoard();
+        Graphics2D g2d = (Graphics2D) g.create();
         setOpaque(false);
         gameGrid = GameState.getBoard();
         try {
-            for (int i = 0; i < GameState.width; i++) {
-                for (int j = 0; j < GameState.height; j++) {
-                    if(gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation()!=30&&gameGrid.get(i).get(j).getHealth()>0) {
-                        if (gameGrid.get(i).get(j).getSelection()){
-                            g.setColor(Color.WHITE);
-                            g.fillRoundRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44, 10, 10);
+                for (int i = 0; i < GameState.width; i++) {
+                    for (int j = 0; j < GameState.height; j++) {
+                        if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getxLocation() != 30 && gameGrid.get(i).get(j).getHealth() > 0) {
+                            if (gameGrid.get(i).get(j).getSelection()) {
+                                g.setColor(Color.WHITE);
+                                g.fillRoundRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44, 10, 10);
+                            }
+                            g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
+                            //g.setColor(Color.GREEN);
+                            //g.drawLine((gameGrid.get(i).get(j).getxLocation() * size) + 15, (gameGrid.get(i).get(j).getyLocation() * size) + 15, (gameGrid.get(i).get(j).getxLocation() * size) + 15 + (gameGrid.get(i).get(j).getHealth()/3), (gameGrid.get(i).get(j).getyLocation() * size) + 15);
+                            g2d.setColor(new Color(127,255,0));
+                            g2d.setStroke(new BasicStroke(2));
+                            g2d.draw(new Line2D.Float((gameGrid.get(i).get(j).getxLocation() * size) + 16, (gameGrid.get(i).get(j).getyLocation() * size) + 12, (gameGrid.get(i).get(j).getxLocation() * size) + 16 + (gameGrid.get(i).get(j).getHealth()/3.5f), (gameGrid.get(i).get(j).getyLocation() * size) + 12));
+                            if (gameGrid.get(i).get(j).getVet()>0) {
+                                if (gameGrid.get(i).get(j).getVet()<=2) {
+                                    g2d.setColor(new Color(214,175,54)); //Bronze
+                                } else if (gameGrid.get(i).get(j).getVet()<=4) {
+                                    g2d.setColor(new Color(212,212,212)); //Silver
+                                } else if (gameGrid.get(i).get(j).getVet()>4) {
+                                    g2d.setColor(new Color(255, 223, 0)); //Gold
+                                }
+                                    //int fontSize = gameGrid.get(i).get(j).getVet()*10;
+                                    g2d.setFont(new Font("BahnSchrift", Font.BOLD, 12));
+                                    g2d.drawString(Integer.toString(gameGrid.get(i).get(j).getVet()), (gameGrid.get(i).get(j).getxLocation() * size) + 12, (gameGrid.get(i).get(j).getyLocation() * size) + 48);
+                            }
                         }
-                        g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                     }
+                }
+            if(GameState.getLastMovedPlayer()!=faction) {
+                    AlphaComposite alcom = AlphaComposite.getInstance(
+                            AlphaComposite.SRC_OVER, alpha);
+                    g2d.setPaint(Color.WHITE);
+                    g2d.setComposite(alcom);
+                    g2d.setFont(new Font("BahnSchrift", Font.BOLD, 50));
+                    if (hurt1!=null && hurt2 != null){
+                        BufferedImage explosion = ImageIO.read(getClass().getResource("/media/explosion.png"));
+                        g2d.drawImage(explosion, ((((hurt1.getxLocation()*size)+(hurt2.getxLocation()*size)))/2)+10, ((((hurt1.getyLocation() * size)+(hurt2.getyLocation()*size)))/2)+10, 40, 40, null);
+                    }
+                    g2d.drawString("YOUR TURN", 155, 310);
+                    if (faction == 1) {
+                        frame.setTitle("Operation Mars | Faction: Soviets | Your Turn");
+                    } else if (faction == 2) {
+                        frame.setTitle("Operation Mars | Faction: Germans | Your Turn");
+                    }
+                    alpha -= 0.02f;
+                    if (alpha <= 0.0f) {
+                        alpha = 0.0f;
+                    } else {
+                        repaint();
+                    }
+                    try {
+                        Thread.sleep(70);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            } else {
+                if (faction == 1) {
+                    frame.setTitle("Operation Mars | Faction: Soviets | Opponent's Turn");
+                } else if (faction == 2) {
+                    frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn");
                 }
             }
         } catch(Exception e){
+            System.out.println("In drawing method");
             System.out.println(e);
         }
         this.requestFocus();
@@ -245,19 +340,35 @@ public class UnitPanel extends JPanel
     }
 
     public void updateGrid(ArrayList<ArrayList<Unit>> newGrid){
+        hurt1 = null;
+        hurt2 = null;
         for (int i = 0; i < GameState.width; i++) {
             for (int j = 0; j < GameState.height; j++) {
                 if (newGrid.get(i).get(j) != null) {
+                    if (gameGrid.get(i).get(j) != null) {
+                        if (newGrid.get(i).get(j).getHealth() < gameGrid.get(i).get(j).getHealth()) {
+                            try {
+                                if (hurt1 == null) {
+                                    hurt1 = new Unit(newGrid.get(i).get(j));
+                                } else {
+                                    hurt2 = new Unit(newGrid.get(i).get(j));
+                                }
+                            } catch (IOException e) {
+                                System.out.println("In updating method");
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }
                     newGrid.get(i).get(j).setIcon();
-                    newGrid.get(i).get(j).setSelection(false);
-                    //gameGrid.get(i).set(j, null);
                 }
                 gameGrid.get(i).remove(j);
                 gameGrid.get(i).add(j, newGrid.get(i).get(j));
-                //gameGrid.get(i).get(j).setSelection(false);
             }
         }
         repaint();
+        turnSoundPlayer.seek(new Duration(0));
+        turnSoundPlayer.play();
     }
 
     public void updateTerritories(){
@@ -271,6 +382,19 @@ public class UnitPanel extends JPanel
             }
         }
         territoriesPanel.updateTerritories(territories);
+    }
+
+    public void playCombatSound(Unit attacker){
+        if (attacker.getType().equals("inf")) {
+            infSoundPlayer.seek(new Duration(0));
+            infSoundPlayer.play();
+        } else if (attacker.getType().equals("arm")) {
+            armSoundPlayer.seek(new Duration(0));
+            armSoundPlayer.play();
+        } else if (attacker.getType().equals("art")) {
+            artSoundPlayer.seek(new Duration(0));
+            artSoundPlayer.play();
+        }
     }
 
     public Dimension getPreferredSize() {

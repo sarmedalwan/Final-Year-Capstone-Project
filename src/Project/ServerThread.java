@@ -28,8 +28,6 @@ public class ServerThread extends Thread {
             OutputStream outputStream = socket.getOutputStream();
             PrintWriter printWriter = new PrintWriter(outputStream, true);
             printWriter.println(sockets.size());
-            //String boardJson = gson.toJson(gameBoard);
-            //printWriter.println(boardJson);
         } catch(Exception e){
             System.out.println(e);
         }

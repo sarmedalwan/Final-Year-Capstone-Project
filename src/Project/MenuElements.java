@@ -25,6 +25,8 @@ public class MenuElements extends JLabel implements ActionListener
         final JFXPanel fxPanel = new JFXPanel();
         fxPanel.setFocusable(false);
         add(fxPanel);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setVolume(0.5);
         mediaPlayer.play();
         fxPanel.setFocusable(false);
         w = 10;
@@ -42,11 +44,11 @@ public class MenuElements extends JLabel implements ActionListener
         gbc.anchor = GridBagConstraints.NORTH;
         JLabel title1 = new JLabel("Sarmed Alwan's");
         JLabel title2 = new JLabel("Operation Mars");
-        title1.setFont(new Font ("Aharoni", Font.ITALIC, 14));
+        title1.setFont(new Font ("BahnSchrift", Font.ITALIC, 14));
         title1.setForeground(Color.RED);
-        title2.setForeground(Color.RED);
-        title2.setFont(new Font ("Aharoni", Font.BOLD, 80));
-        JButton startGame = new JButton("Start Game");
+        title2.setForeground(Color.WHITE);
+        title2.setFont(new Font ("BahnSchrift", Font.BOLD, 80));
+        JButton startGame = new JButton("Join Game");
         startGame.addActionListener(this);
         startGame.setActionCommand("start");
         JButton hostGame = new JButton("Host Game");
@@ -83,8 +85,9 @@ public class MenuElements extends JLabel implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if ("start".equals(e.getActionCommand())) {
             try {
-                new MainFrame("Operation Mars");
-            } catch (IOException e1) {
+                String ip = JOptionPane.showInputDialog("Enter IP Address of Host: ");
+                new MainFrame("Operation Mars", ip);
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
             mediaPlayer.stop();

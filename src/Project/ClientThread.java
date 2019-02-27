@@ -24,14 +24,14 @@ public class ClientThread extends Thread {
     TerritoriesPanel territoriesPanel;
     BufferedReader br;
     ArrayList<ArrayList<Unit>> unitBoard;
-    public ClientThread(UnitPanel panel, TerritoriesPanel terrPanel){
+    public ClientThread(UnitPanel panel, TerritoriesPanel terrPanel, String ip){
         try {
             territoriesPanel = terrPanel;
             unitPanel = panel;
-            host = "localhost";
+            host = ip;
             portNumber = 8888;
             gson = new Gson();
-            System.out.println("Creating socket to '" + host + "' on port " + portNumber);
+            System.out.println("Creating socket connection to '" + host + "' on port " + portNumber);
             socket = new Socket(host, portNumber);
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -47,15 +47,12 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             while (true) {
-                //GameState.updateBoard(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>(){}.getType()));
                 int lastMovedPlayer = Integer.parseInt(br.readLine());
                 System.out.println("Server says: Player " + lastMovedPlayer + " moved");
                 unitPanel.updateGrid(gson.fromJson(br.readLine(), new TypeToken<ArrayList<ArrayList<Unit>>>() {
                 }.getType()));
                 unitPanel.updateTerritories();
                 GameState.setLastMovedPlayer(lastMovedPlayer);
-                //unitBoard = GameState.getBoard();
-                //GameState.updateBoard(unitBoard);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -14,11 +14,12 @@ public class Unit implements Serializable {
     private int xLocation;
     private int yLocation;
     private int health;
+    private int vet;
     private String type;
     private int faction;
     public boolean selected;
 
-    public Unit(String name, String iconFileName, int xLocation, int yLocation, String type, int faction, boolean selected) throws IOException {
+    public Unit(String name, String iconFileName, int xLocation, int yLocation, String type, int faction, int vet, boolean selected) throws IOException {
 
         this.iconFileName = iconFileName;
         this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
@@ -29,10 +30,11 @@ public class Unit implements Serializable {
         this.name = name;
         this.faction = faction;
         this.selected = selected;
+        this.vet = vet;
     }
 
     public Unit(Unit unit) throws IOException {
-        this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getSelection());
+        this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getVet(), unit.getSelection());
         this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
         this.health = unit.getHealth();
     }
@@ -98,4 +100,8 @@ public class Unit implements Serializable {
     }
 
     public boolean getSelection(){ return selected; }
+
+    public int getVet(){return vet;}
+
+    public void setVet(int newVet){this.vet = newVet;}
 }
