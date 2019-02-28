@@ -29,6 +29,7 @@ public class MainFrame extends JFrame {
         mediaPlayer.setVolume(0.2);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         LayoutManager overlay = new OverlayLayout(main);
         main.setLayout(overlay);
         setLayout(new BorderLayout());
