@@ -1,5 +1,6 @@
 package Project;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,14 +14,13 @@ public class Server extends Thread {
             List<Socket> socketList = new ArrayList<>();
             System.out.println("Server created: " + portNumber);
             ServerSocket serverSocket = new ServerSocket(portNumber);
-            //ArrayList<ArrayList<Unit>> a = GameState.getNewBoard();
             while (true) {
                 Socket socket = serverSocket.accept();
                 socketList.add(socket);
                 new ServerThread(socket, socketList).start();
             }
         } catch(IOException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "User disconnected. Please restart game.", "Connection Error", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

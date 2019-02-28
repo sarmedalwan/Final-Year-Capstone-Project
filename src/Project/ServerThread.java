@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
+
+import javax.swing.*;
 import java.net.Socket;
 
 public class ServerThread extends Thread {
@@ -53,7 +55,7 @@ public class ServerThread extends Thread {
                 }
                 lastMovedPlayer = factionWhoMoved;
             } catch (IOException e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "User disconnected. Please restart game.", "Connection Error", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
         }

@@ -10,24 +10,8 @@ import java.io.IOException;
  */
 public class MainPanel extends JPanel {
     MainFrame frame;
-    public MainPanel(MainFrame frame, String ip)
+    public MainPanel(MainFrame frame, String ip) throws IOException
     {
-        /*
-        try {
-            GraphicsEnvironment ge =
-                    GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("/media/")));
-        } catch (IOException |FontFormatException e) {
-            //Handle exception
-        }
-        */
-        /*
-        String fonts[]
-                = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        for (int i = 0; i < fonts.length; i++) {
-            System.out.println(fonts[i]);
-        }*/
         this.frame = frame;
         this.setFocusable(true);
         this.grabFocus();

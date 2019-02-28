@@ -26,7 +26,7 @@ public class MenuElements extends JLabel implements ActionListener
         fxPanel.setFocusable(false);
         add(fxPanel);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.setVolume(0.5);
+        mediaPlayer.setVolume(0.3);
         mediaPlayer.play();
         fxPanel.setFocusable(false);
         w = 10;
@@ -87,10 +87,10 @@ public class MenuElements extends JLabel implements ActionListener
             try {
                 String ip = JOptionPane.showInputDialog("Enter IP Address of Host: ");
                 new MainFrame("Operation Mars", ip);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                mediaPlayer.stop();
+            } catch (Exception e2){
+                JOptionPane.showMessageDialog(null, "Could not connect to the specified server. Please enter a valid IP address", "Connection Failed", JOptionPane.INFORMATION_MESSAGE);
             }
-            mediaPlayer.stop();
         } else if ("host".equals(e.getActionCommand())) {
             new Server().start();
         } else if ("quit".equals(e.getActionCommand())) {

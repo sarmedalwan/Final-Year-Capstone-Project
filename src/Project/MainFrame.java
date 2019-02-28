@@ -21,14 +21,14 @@ public class MainFrame extends JFrame {
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
     public MainFrame(String title, String ip) throws Exception {
         super(title);
+        MainPanel main = new MainPanel(this, ip);
         setResizable(false);
         final JFXPanel fxPanel = new JFXPanel();
         fxPanel.setFocusable(false);
         add(fxPanel);
-        mediaPlayer.setVolume(0.3);
+        mediaPlayer.setVolume(0.2);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaPlayer.play();
-        MainPanel main = new MainPanel(this, ip);
         LayoutManager overlay = new OverlayLayout(main);
         main.setLayout(overlay);
         setLayout(new BorderLayout());

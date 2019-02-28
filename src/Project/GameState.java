@@ -211,30 +211,35 @@ public final class GameState {
     public static void setLastMovedPlayer(int lastMoved){ lastMovedPlayer = lastMoved;}
 
 
-    public static void combat(Unit attacker, Unit defender){
+    public static void combat(Unit attacker, Unit defender, int[][] territories){
         Random random = new Random();
+        Boolean attackerEncircled = true;
+        Boolean defenderEncircled = true;
         int attackerMean, defenderMean, attackerLosses, defenderLosses;
-        int standardDeviation = 8;
-        int typeBonus = 32; //Combat bonus from unit types (Infantry vs artillery etc)
-        int townDefenceBonus = 15;
+        int standardDeviation = 8; //Standard deviation from the mean
+        int typeBonus = 35; //Combat bonus from unit types (Infantry vs artillery etc)
+        int townDefenceBonus = 15; //Bonus for defending a town
         int vetBonus = 5; //Combat bonus from unit veterancy
-        attackerMean = 50;
-        defenderMean = 30;
-        if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;}
+        int encirclementPenalty = 30; //Combat penalty for being encircled
+        attackerMean = 40; //Mean damage for the attacking unit
+        defenderMean = 30; //Mean damage for the defending unit
+        if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;} //Infantry performs worse against armour
         if (defender.getType().equals("inf") && attacker.getType().equals("arm")){defenderMean+=typeBonus;}
-        if (attacker.getType().equals("arm") && defender.getType().equals("art")){attackerMean+=typeBonus;}
+        if (attacker.getType().equals("arm") && defender.getType().equals("art")){attackerMean+=typeBonus;} //Armour performs worse against artillery
         if (defender.getType().equals("arm") && attacker.getType().equals("art")){defenderMean+=typeBonus;}
-        if (attacker.getType().equals("art") && defender.getType().equals("inf")){attackerMean+=typeBonus;}
+        if (attacker.getType().equals("art") && defender.getType().equals("inf")){attackerMean+=typeBonus;} //Artillery performs worse against infantry
         if (defender.getType().equals("art") && attacker.getType().equals("inf")){defenderMean+=typeBonus;}
-        attackerLosses = (int)(random.nextGaussian()*standardDeviation+attackerMean);
+        attackerLosses = (int)(random.nextGaussian()*standardDeviation+attackerMean); //Calculate losses based on the above calculated mean and the standard deviation. This is done with a gaussian curve (normal distribution)
         defenderLosses = (int)(random.nextGaussian()*standardDeviation+defenderMean);
 
+        //Take unit veterancies into account
         attackerLosses -= attacker.getVet()*vetBonus;
         defenderLosses += attacker.getVet()*vetBonus;
 
         attackerLosses += defender.getVet()*vetBonus;
         defenderLosses -= defender.getVet()*vetBonus;
 
+        //Take town defence bonus into account
         if (((defender.getxLocation() == 2)&&(defender.getyLocation()==1))
                 || ((defender.getxLocation() == 0)&&(defender.getyLocation()==2))
                 || ((defender.getxLocation() == 1)&&(defender.getyLocation()==6))
@@ -251,10 +256,65 @@ public final class GameState {
             defenderLosses-=townDefenceBonus;
             attackerLosses+=townDefenceBonus;
         }
-        //attackerLosses+=10;
-        if (attackerLosses<=8){attackerLosses = 8;}
-        if (defenderLosses<=8){defenderLosses = 8;}
-        attacker.setHealth(attacker.getHealth()-attackerLosses);
+        if (attackerLosses<7){attackerLosses = 7;}
+        if (defenderLosses<7){defenderLosses = 7;}
+
+        int w = 10;
+        int h = 10;
+        /*
+        if ((attacker.getxLocation()+1) < w && (attacker.getyLocation() + 1) < h){
+            if ((territories[attacker.getxLocation()][attacker.getyLocation() + 1] != attacker.getFaction()-1)
+                    &&(territories[attacker.getxLocation()][attacker.getyLocation() - 1] != attacker.getFaction()-1)
+                    &&(territories[attacker.getxLocation()+1][attacker.getyLocation()] != attacker.getFaction()-1)
+                    &&(territories[attacker.getxLocation()-1][attacker.getyLocation()] != attacker.getFaction()-1)) {
+
+            }
+        }
+        */
+
+        //Check if attacker is encircled
+        if ((attacker.getyLocation() + 1) < h && (territories[attacker.getxLocation()][attacker.getyLocation() + 1] == attacker.getFaction()-1)){
+            attackerEncircled = false;
+        }
+        if ((attacker.getyLocation() - 1) >= 0 && (territories[attacker.getxLocation()][attacker.getyLocation() - 1] == attacker.getFaction()-1)){
+            attackerEncircled = false;
+        }
+        if ((attacker.getxLocation() + 1) < w && (territories[attacker.getxLocation()+1][attacker.getyLocation()] == attacker.getFaction()-1)){
+            attackerEncircled = false;
+        }
+        if ((attacker.getxLocation() -1) >= 0 && (territories[attacker.getxLocation()-1][attacker.getyLocation()] == attacker.getFaction()-1)){
+            attackerEncircled = false;
+        }
+
+        //Check if defender is encircled
+        if ((defender.getyLocation() + 1) < h && (territories[defender.getxLocation()][defender.getyLocation() + 1] == defender.getFaction()-1)){
+            defenderEncircled = false;
+        }
+        if ((defender.getyLocation() - 1) >= 0 && (territories[defender.getxLocation()][defender.getyLocation() - 1] == defender.getFaction()-1)){
+            defenderEncircled = false;
+        }
+        if ((defender.getxLocation() + 1) < w && (territories[defender.getxLocation()+1][defender.getyLocation()] == defender.getFaction()-1)){
+            defenderEncircled = false;
+        }
+        if ((defender.getxLocation() -1) >= 0 && (territories[defender.getxLocation()-1][defender.getyLocation()] == defender.getFaction()-1)){
+            defenderEncircled = false;
+        }
+
+        //If attacker is encircled, make them take more damage and deal less
+        if (attackerEncircled){
+            System.out.println("Attacker encircled");
+            attackerLosses+=encirclementPenalty;
+            defenderLosses-=encirclementPenalty/2;
+        }
+
+        //If defender is encircled, make them take more damage and deal less
+        if (defenderEncircled){
+            System.out.println("Defender encircled");
+            defenderLosses+=encirclementPenalty;
+            attackerLosses-=encirclementPenalty/2;
+        }
+
+        attacker.setHealth(attacker.getHealth()-attackerLosses); //Finalise the changes to the units' health
         defender.setHealth(defender.getHealth()-defenderLosses);
     }
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String args[]) throws IOException {
         //new Server().start(); //FOR TESTING
+        GameState.setLastMovedPlayer(2);
         new MenuFrame("Operation Mars");
     }
 }
