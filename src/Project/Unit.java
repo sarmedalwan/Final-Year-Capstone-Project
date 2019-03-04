@@ -6,85 +6,90 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class Unit implements Serializable {
-
-    private transient BufferedImage icon;
-    private String iconFileName;
-    private String name;
-    private int xLocation;
+class Unit implements Serializable {
+    private transient BufferedImage icon; //Transient means the icon of the unit isn't serialised by Gson, which would cause issues
+    private String iconFileName; //File name of the icon
+    private String name; //Name of the unit
+    private int xLocation; //Unit's current x and y coordinates
     private int yLocation;
-    private int health;
-    private int vet;
-    private String type;
-    private int faction;
-    public boolean selected;
+    private int health; //Unit's health, starting at 100
+    private int vet; //Unit's veterancy (how experienced it is)
+    private String type; //Type of unit; infantry, armour or artillery
+    private int faction; //Which player the unit belongs to
+    public boolean selected; //Whether or not the unit is selected
 
-    public Unit(String name, String iconFileName, int xLocation, int yLocation, String type, int faction, int vet, boolean selected) throws IOException {
-
+    Unit(String name, String iconFileName, int xLocation, int yLocation, String type, int faction, int vet, boolean selected) throws IOException { //Constructor for the Unit object which is then stored in a 2D ArrayList
         this.iconFileName = iconFileName;
-        this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
+        this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png")); //Gets the icon using the file name
         this.xLocation = xLocation;
         this.yLocation = yLocation;
         this.type = type;
-        this.health = 100;
+        this.health = 100; //Starts the health at 100
         this.name = name;
         this.faction = faction;
         this.selected = selected;
         this.vet = vet;
     }
 
-    public Unit(Unit unit) throws IOException {
+    Unit(Unit unit) throws IOException { //Copying constructor; allows one unit to be created from another
         this(unit.getName(), unit.getIconFileName(), unit.getxLocation(), unit.getyLocation(), unit.getType(), unit.getFaction(), unit.getVet(), unit.getSelection());
         this.icon = ImageIO.read(getClass().getResource("/media/"+this.iconFileName+".png"));
         this.health = unit.getHealth();
     }
 
-    public String getIconFileName(){
+    //Getters and setters for the unit's stored values
+    String getIconFileName(){
         return iconFileName;
     }
 
-    public Image getIcon(){
+    Image getIcon(){
         return icon;
     }
 
-    public String getName(){
+    String getName(){
         return name;
     }
 
-    public int getFaction(){
+    int getFaction(){
         return faction;
     }
 
-    public int getxLocation(){
+    int getxLocation(){
         return xLocation;
     }
 
-    public int getyLocation(){ return yLocation; }
+    int getyLocation(){ return yLocation; }
 
-    public String getType(){
+    String getType(){
         return type;
     }
 
-    public int getHealth(){
+    int getHealth(){
         return health;
     }
 
-    public void setxLocation(int location){
+    void setxLocation(int location){
         this.xLocation = location;
     }
 
-    public void setyLocation(int location){
+    void setyLocation(int location){
         this.yLocation = location;
     }
 
-    public void setSelection(boolean selected)
+    void setSelection(boolean selected)
     {
         this.selected = selected;
     }
 
-    public void setHealth(int newHealth){ this.health = newHealth; }
+    void setHealth(int newHealth){ this.health = newHealth; }
 
-    public void setIcon(){
+    boolean getSelection(){ return selected; }
+
+    int getVet(){return vet;}
+
+    void setVet(int newVet){this.vet = newVet;}
+
+    void setIcon(){ //Allows the icon to be re-found from the file name after it has been serialised and the icon has been left behind
         try {
             this.icon = ImageIO.read(getClass().getResource("/media/" + this.iconFileName + ".png"));
         } catch(IOException e){
@@ -92,16 +97,4 @@ public class Unit implements Serializable {
             System.out.println("Couldn't find texture file for a unit");
         }
     }
-
-    public void removeUnit()
-    {
-        this.xLocation = 30;
-        this.yLocation = 30;
-    }
-
-    public boolean getSelection(){ return selected; }
-
-    public int getVet(){return vet;}
-
-    public void setVet(int newVet){this.vet = newVet;}
 }

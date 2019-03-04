@@ -1,18 +1,10 @@
 package Project;
 
-/**
- * Created by Sarmed on 10/11/2018.
- */
-
 import javax.swing.*;
 import java.awt.*;
-import static java.awt.Color.darkGray;
 
-public class GridPanel extends JPanel
+public class GridPanel extends JPanel //Provides a panel with the game grid lines on it
 {
-    static Color transparent = new Color(255,255,255,255);
-    static Color[] colors =
-            {new Color(128, 0,0,70), darkGray};
     int w;
     int h;
     static int size = 12;
@@ -29,12 +21,12 @@ public class GridPanel extends JPanel
         {
             for (int j = 0; j < h; j++)
             {
-                g.drawRect(i*size*5,j*size*5, 60, 60);
+                g.drawRect(i*size*5,j*size*5, 60, 60); //Draws a 10x10 array of grid squares to show the grid lines to the user
             }
         }
     }
 
     public Dimension getPreferredSize() {
         return new Dimension(w * size*5, h * size*5);
-    } //Defines the dimensions of the game
+    } //Defines the dimensions of the grid
 }

@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class TerritoriesPanel extends JPanel
+public class TerritoriesPanel extends JPanel //Renders the coloured grid showing which player controls which tiles
 {
     static Color[] colors =
-            {new Color(200, 0,0, 80), new Color(200, 200, 200, 80)};
+            {new Color(200, 0,0, 80), new Color(200, 200, 200, 80)}; //Red and grey, with transparency
     public int[][] territories;
     int w;
     int h;
@@ -15,17 +15,13 @@ public class TerritoriesPanel extends JPanel
 
     public TerritoriesPanel(int[][] owners)
     {
-        w = 10;
+        w = 10; //Width and height of the grid
         h = 10;
         this.territories = owners;
     }
 
     public void updateTerritories(int[][] owners){
         territories = Arrays.copyOf(owners, owners.length);
-    }
-
-    public void rePaint(){
-        repaint();
     }
 
     public int[][] getTerritories(){
@@ -38,13 +34,13 @@ public class TerritoriesPanel extends JPanel
         {
             for (int j = 0; j < h; j++)
             {
-                g.setColor(colors[territories[i][j]]);
-                g.fill3DRect(i * size*5, j * size*5, 60, 60, true); //Sets all tile colours
+                g.setColor(colors[territories[i][j]]); //If it's a 0, draw red. If it's a 1, draw grey
+                g.fill3DRect(i * size*5, j * size*5, 60, 60, true); //Draws the tiles in their locations
             }
         }
     }
 
     public Dimension getPreferredSize() {
         return new Dimension(w * size*5, h * size*5);
-    } //Defines the dimensions of the game
+    } //Defines the dimensions of the territory grid
 }

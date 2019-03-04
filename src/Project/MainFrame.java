@@ -1,39 +1,30 @@
 package Project;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.net.Socket;
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-public class MainFrame extends JFrame {
+class MainFrame extends JFrame {
     final JFXPanel fxPanel = new JFXPanel();
     Media hit = new Media(getClass().getResource("/media/gamesong.mp3").toString()); //Instinct, by BenSound https://www.bensound.com/royalty-free-music/track/instinct
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
-    public MainFrame(String title, String ip) throws Exception {
+    public MainFrame(String title, String ip) throws Exception { //Creates the main gameplay JFrame that the game is contained within
         super(title);
-        MainPanel main = new MainPanel(this, ip);
-        setResizable(false);
+        MainPanel main = new MainPanel(this, ip); //Creates the main panel that all of the game panels are contained within
+        setResizable(false); //Stops the user from resizing the game frame
         final JFXPanel fxPanel = new JFXPanel();
         fxPanel.setFocusable(false);
         add(fxPanel);
-        mediaPlayer.setVolume(0.2);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setVolume(0.2); //20% volume for the game music so it isn't too intrusive
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); //Makes the music loop indefinitely
         mediaPlayer.play();
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         LayoutManager overlay = new OverlayLayout(main);
         main.setLayout(overlay);
         setLayout(new BorderLayout());
-        getContentPane().add(main, BorderLayout.CENTER);
+        getContentPane().add(main, BorderLayout.CENTER); //Adds the main game panel to the main frame
         pack();
         this.setVisible(true);
         repaint();

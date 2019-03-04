@@ -1,35 +1,34 @@
 package Project;
 
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.util.*;
 
-// This class (not yet fully implemented) will give access to the current state of the game.
-public final class GameState {
-    public static final int height = 10;
-    public static final int width = 10;
-    public static ArrayList<ArrayList<Unit>> gameBoard;
-    public static int[][] territories;
-    public static int faction;
-    public static int lastMovedPlayer;
-    final JFXPanel fxPanel = new JFXPanel();
+public final class GameState { //Manages current state of the game
+    static final int height = 10; //Height and width of the game board
+    static final int width = 10;
+    static ArrayList<ArrayList<Unit>> gameBoard;
+    static int faction; //Stores the player's faction
+    static int lastMovedPlayer; //Stores which player moved last
+    static int victoryPoints = 0; //Stores the player's victory points gained from kills
+    static int enemyVictoryPoints = 0; //Stores the enemy's victory points gained from kills
+    static int turnCount = 1; //Stores the current turn of the game; starts at 1
+    static int territoryVictoryPoints = 0; //Stores the amount of victory points the player is getting from held territories
+    static int enemyTerritoryVictoryPoints = 0;//Stores the amount of victory points the enemy is getting from held territories
+    static boolean serverHosted = false; //Stores whether or not this client has already started a server
+    static boolean someoneHasMoved = false; //Stores for the server whether or not someone has moved yet. If they have, no one else can join
 
-    public static ArrayList<ArrayList<Unit>> getNewBoard() {
+    public static ArrayList<ArrayList<Unit>> getNewBoard() { //Generates a new historically-based unit board to use for the client
         gameBoard = new ArrayList<ArrayList<Unit>>(10);
         for (int i = 0; i < GameState.width; i++)
         {
             gameBoard.add(new ArrayList<Unit>(10));
             for (int j = 0; j < GameState.height; j++)
             {
-                gameBoard.get(i).add(null);
+                gameBoard.get(i).add(null); //Fills a 2D 10x10 ArrayList with null (blank) values to begin with
             }
-        } //Makes all of the tiles blank
+        }
         try {
+            //Defines all of the Soviet units and puts them in their appropriate locations on the board
             Unit s1stMC = new Unit("1st Mechanised Corps", "sovietinfcounter", 0, 8, "inf", 1, 0, false);
             gameBoard.get(0).set(8, s1stMC);
             Unit s1stMCArt = new Unit("1st MC Artillery", "sovietartillerycounter", 0, 7, "art", 1, 0, false);
@@ -127,6 +126,7 @@ public final class GameState {
             Unit s33rdArmy = new Unit("33rd Army", "sovietinfcounter", 7, 9, "inf", 1, 1, false);
             gameBoard.get(7).set(9, s33rdArmy);
 
+            //Defines all of the German units and puts them in their appropriate locations on the board
             Unit g41stPzC = new Unit("XXXXI Panzer Corps", "germanarmourcounter", 0, 9, "arm", 2, 1, false);
             gameBoard.get(0).set(9, g41stPzC);
             Unit g19thPz = new Unit("19th Panzer Division", "germanarmourcounter", 1, 8, "arm", 2, 1, false);
@@ -185,44 +185,88 @@ public final class GameState {
         } catch(Exception e){
             e.printStackTrace();
         }
+        return gameBoard; //Returns the generated fresh board
+    }
+
+    static ArrayList<ArrayList<Unit>> getBoard() {
         return gameBoard;
+    } //Returns the currently stored game board
+
+    static void setTurnCount(int newTurnCount){turnCount = newTurnCount;} //Lets the client update the turn counter. This has been made as a setter rather than a simple incrementation method with no arguments for expandability
+    static int getTurnCount(){
+        return turnCount;
+    } //Lets the client check the current turn number
+
+    static void setVictoryPoints(int newVictoryPoints){victoryPoints = newVictoryPoints;} //Lets the client update the victory points value
+    static int getVictoryPoints(){
+        return victoryPoints;
+    } //Lets the client check the victory points value
+
+    static void setEnemyVictoryPoints(int newVictoryPoints){enemyVictoryPoints = newVictoryPoints;} //Lets the client update the enemy victory points value
+    static int getEnemyVictoryPoints(){return enemyVictoryPoints;} //Lets the client check the enemy victory points value
+
+    static void setFaction(int newFaction){ faction = newFaction;} //Lets the client update their faction (player number)
+    static int getFaction(){return faction;} //Lets the client check their faction (player number)
+
+    static void setServerHosted(boolean hosted){ serverHosted = hosted;} //Lets the client save whether or not they've hosted a server
+    static boolean getServerHosted(){return serverHosted;} //Lets the client check whether or not they've hosted a server
+
+    static void setSomeoneHasMoved(boolean moved){ someoneHasMoved = moved;} //Lets the client save whether or not someone has moved yet
+    static boolean getSomeoneHasMoved(){return someoneHasMoved;} //Lets the server check if someone has moved yet
+
+    static int getLastMovedPlayer(){return lastMovedPlayer;} //Lets the client update which player last moved
+    static void setLastMovedPlayer(int lastMoved){ lastMovedPlayer = lastMoved;} //Lets the client check which player last moved
+
+    static int getTerritoryVictoryPoints(int[][] territories){ //Checks for how many victory points the player currently has from the territories they hold
+        territoryVictoryPoints = 0;
+        if (territories[2][1] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[0][2] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[1][6] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[2][3] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[3][7] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[4][6] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[6][3] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[6][5] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[8][0] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+        if (territories[8][5] == GameState.getFaction()-1) {territoryVictoryPoints += 5;} //All towns on the map give 5 victory points to the holder
+
+        if (territories[5][2] == GameState.getFaction()-1) {territoryVictoryPoints += 10;}
+        if (territories[6][7] == GameState.getFaction()-1) {territoryVictoryPoints += 10;} //Except for Rzhev and Vyazma, which give 10 victory points, because they're more important
+
+        return territoryVictoryPoints;
     }
 
-    public static ArrayList<ArrayList<Unit>> getBoard() {
-        return gameBoard;
+    static int getEnemyTerritoryVictoryPoints(int[][] territories){ //Checks for how many victory points the enemy currently has from the territories they hold
+        enemyTerritoryVictoryPoints = 0;
+        if (territories[2][1] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[0][2] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[1][6] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[2][3] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[3][7] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[4][6] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[6][3] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[6][5] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[8][0] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;}
+        if (territories[8][4] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 5;} //All towns on the map give 5 victory points to the holder
+
+        if (territories[5][2] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 10;}
+        if (territories[6][7] != GameState.getFaction()-1) {enemyTerritoryVictoryPoints += 10;} //Except for Rzhev and Vyazma, which give 10 victory points, because they're more important
+
+        return enemyTerritoryVictoryPoints;
     }
 
-    public static boolean isMoveAllowed(ArrayList<ArrayList<Unit>> gameBoard, int player) {
-        return true;
-    }
-
-    public static int[][] getTerritories(){
-        return territories;
-    }
-
-    public static void updateTerritories(){
-
-    }
-
-    public static void setFaction(int newFaction){ faction = newFaction;}
-    public static int getFaction(){return faction;}
-
-    public static int getLastMovedPlayer(){return lastMovedPlayer;}
-    public static void setLastMovedPlayer(int lastMoved){ lastMovedPlayer = lastMoved;}
-
-
-    public static void combat(Unit attacker, Unit defender, int[][] territories){
+    static void combat(Unit attacker, Unit defender, int[][] territories){ //Simulates combat between two provided units
         Random random = new Random();
-        Boolean attackerEncircled = true;
+        Boolean attackerEncircled = true; //Defines whether or not a unit is encircled (whether or not it has all 4 directions around it controlled by the enemy)
         Boolean defenderEncircled = true;
-        int attackerMean, defenderMean, attackerLosses, defenderLosses;
-        int standardDeviation = 8; //Standard deviation from the mean
+        int attackerMean, defenderMean, attackerLosses, defenderLosses; //The means of the standard distributions of damage being dealt to each unit, and the final damage being dealt to each unit
+        int standardDeviation = 8; //Value of 1 standard deviation from the mean
         int typeBonus = 35; //Combat bonus from unit types (Infantry vs artillery etc)
         int townDefenceBonus = 15; //Bonus for defending a town
-        int vetBonus = 5; //Combat bonus from unit veterancy
-        int encirclementPenalty = 30; //Combat penalty for being encircled
-        attackerMean = 40; //Mean damage for the attacking unit
-        defenderMean = 30; //Mean damage for the defending unit
+        int vetBonus = 5; //Combat bonus from unit veterancy (5 bonus damage dealt and 5 less damage received, per veterancy level)
+        int encirclementPenalty = 30; //Combat damage penalty for being encircled
+        attackerMean = 36; //Mean damage taken for the attacking unit
+        defenderMean = 30; //Mean damage taken for the defending unit
         if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;} //Infantry performs worse against armour
         if (defender.getType().equals("inf") && attacker.getType().equals("arm")){defenderMean+=typeBonus;}
         if (attacker.getType().equals("arm") && defender.getType().equals("art")){attackerMean+=typeBonus;} //Armour performs worse against artillery
@@ -232,14 +276,14 @@ public final class GameState {
         attackerLosses = (int)(random.nextGaussian()*standardDeviation+attackerMean); //Calculate losses based on the above calculated mean and the standard deviation. This is done with a gaussian curve (normal distribution)
         defenderLosses = (int)(random.nextGaussian()*standardDeviation+defenderMean);
 
-        //Take unit veterancies into account
+        //Take unit veterancies into account by reducing damage taken and increasing damage dealt
         attackerLosses -= attacker.getVet()*vetBonus;
         defenderLosses += attacker.getVet()*vetBonus;
 
         attackerLosses += defender.getVet()*vetBonus;
         defenderLosses -= defender.getVet()*vetBonus;
 
-        //Take town defence bonus into account
+        //Take town defence bonus into account by adding the town defence bonus to the defender if they're on one of the towns' locations
         if (((defender.getxLocation() == 2)&&(defender.getyLocation()==1))
                 || ((defender.getxLocation() == 0)&&(defender.getyLocation()==2))
                 || ((defender.getxLocation() == 1)&&(defender.getyLocation()==6))
@@ -252,25 +296,12 @@ public final class GameState {
                 || ((defender.getxLocation() == 6)&&(defender.getyLocation()==7))
                 || ((defender.getxLocation() == 8)&&(defender.getyLocation()==0))
                 || ((defender.getxLocation() == 8)&&(defender.getyLocation()==4))){
-            System.out.println("town defence");
             defenderLosses-=townDefenceBonus;
             attackerLosses+=townDefenceBonus;
         }
-        if (attackerLosses<7){attackerLosses = 7;}
-        if (defenderLosses<7){defenderLosses = 7;}
 
-        int w = 10;
+        int w = 10; //Width and height of the territory grid
         int h = 10;
-        /*
-        if ((attacker.getxLocation()+1) < w && (attacker.getyLocation() + 1) < h){
-            if ((territories[attacker.getxLocation()][attacker.getyLocation() + 1] != attacker.getFaction()-1)
-                    &&(territories[attacker.getxLocation()][attacker.getyLocation() - 1] != attacker.getFaction()-1)
-                    &&(territories[attacker.getxLocation()+1][attacker.getyLocation()] != attacker.getFaction()-1)
-                    &&(territories[attacker.getxLocation()-1][attacker.getyLocation()] != attacker.getFaction()-1)) {
-
-            }
-        }
-        */
 
         //Check if attacker is encircled
         if ((attacker.getyLocation() + 1) < h && (territories[attacker.getxLocation()][attacker.getyLocation() + 1] == attacker.getFaction()-1)){
@@ -302,23 +333,24 @@ public final class GameState {
 
         //If attacker is encircled, make them take more damage and deal less
         if (attackerEncircled){
-            System.out.println("Attacker encircled");
             attackerLosses+=encirclementPenalty;
             defenderLosses-=encirclementPenalty/2;
         }
 
         //If defender is encircled, make them take more damage and deal less
         if (defenderEncircled){
-            System.out.println("Defender encircled");
             defenderLosses+=encirclementPenalty;
             attackerLosses-=encirclementPenalty/2;
         }
 
-        attacker.setHealth(attacker.getHealth()-attackerLosses); //Finalise the changes to the units' health
+        if (attackerLosses<7){attackerLosses = 7;} //Inflicts a minimum of 7 damage on each unit, to stop a single unit from continuing to live through many battles by chance
+        if (defenderLosses<7){defenderLosses = 7;}
+
+        attacker.setHealth(attacker.getHealth()-attackerLosses); //Finally apply the changes to the units' health
         defender.setHealth(defender.getHealth()-defenderLosses);
     }
 
-    public static int[][] getNewTerritories(){
+    public static int[][] getNewTerritories(){ //Generates a new historically-based territory board to use for the client. 0 is taken as belonging to the Soviets and 1 is taken as belonging to the Germans
         int w = 10;
         int h = 10;
         int[][] owners = new int[w][h];
@@ -328,7 +360,7 @@ public final class GameState {
             {
                 owners[i][j] = 0;
             }
-        }
+        } //This is just a way of assigning the same owner to long lines of tiles
         for (int i = 0; i<7; i++){
             owners[i][9] = 1;
         }
@@ -357,7 +389,7 @@ public final class GameState {
         return owners;
     }
 
-    public static void updateBoard(ArrayList<ArrayList<Unit>> updatedBoard){
+    static void updateBoard(ArrayList<ArrayList<Unit>> updatedBoard){ //Updates the stored board from a new board by looping through each tile in the 2D ArrayList and copying the Unit object over if there is one
         for (int i = 0; i < GameState.width; i++) {
             for (int j = 0; j < GameState.height; j++) {
                 if(gameBoard.get(i).get(j) != null && updatedBoard.get(i).get(j) != null) {
@@ -371,20 +403,17 @@ public final class GameState {
         }
     }
 
-    public static Boolean isLegal(Unit selected, int x, int y){
-        if (selected.getxLocation() == x && selected.getyLocation() == y){
+    static Boolean isLegal(Unit selected, int x, int y){ //Checks if a move is legal
+        if (selected.getxLocation() == x && selected.getyLocation() == y){ //Illegal if the same tile on which the selected unit sits is clicked
             return false;
         }
-        if (selected.getType().equals("arm") && (!(Math.abs(selected.getxLocation() - x) > 1) && !(Math.abs(selected.getyLocation() - y) > 1))) { //If the unit isn't being moved more than 1 tile
-            System.out.println("legal");
+        if (selected.getType().equals("arm") && (!(Math.abs(selected.getxLocation() - x) > 1) && !(Math.abs(selected.getyLocation() - y) > 1))) { //If the unit isn't being moved more than 1 tile//Armour can move 1 square in all directions, whereas other units can't move diagonally (coded below)
             return true;
         } else if (!selected.getType().equals("arm") && (!(Math.abs(selected.getxLocation() - x) > 1) && !(Math.abs(selected.getyLocation() - y) > 1)) //If the unit isn't being moved more than 1 tile
                 && !((Math.abs(selected.getxLocation() - x) > 0) && (Math.abs(selected.getyLocation() - y) > 0))){ //And the X and Y coordinates aren't both being changed (only cardinal directions allowed for infantry and artillery)
-            System.out.println("legal");
             return true;
         }
-        System.out.println("illegal");
-        return false;
+        return false; //If none of the legal cases are met, false is returned to signal that the move is illegal
     }
 }
 
