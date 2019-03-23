@@ -105,7 +105,7 @@ public class MenuElements extends JLabel implements ActionListener
     } //Defines the dimensions, set to the size of the animated GIF
 
     public void openCredits(){
-        JPanel panel = new JPanel(); //Shows the credits in a message dialog, and lays them out in much the same way as the main menu is laid out
+        JPanel creditsPanel = new JPanel(); //Shows the credits in a message dialog, and lays them out in much the same way as the main menu is laid out
         JLabel dev = new JLabel("Design and Programming");
         JLabel dev1 = new JLabel("Sarmed Alwan");
         JLabel art = new JLabel("Art");
@@ -119,44 +119,44 @@ public class MenuElements extends JLabel implements ActionListener
         art.setFont(new Font("BahnSchrift", Font.BOLD, 25));
         music.setFont(new Font("BahnSchrift", Font.BOLD, 25));
         video.setFont(new Font("BahnSchrift", Font.BOLD, 25));
-        panel.setLayout(new GridBagLayout());
+        creditsPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10,10,10,10);
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panel.add(dev, gbc); //Places all of the text one on top of the other using the GridBagLayout grid system
+        creditsPanel.add(dev, gbc); //Places all of the text one on top of the other using the GridBagLayout grid system
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panel.add(dev1,gbc);
+        creditsPanel.add(dev1,gbc);
         gbc.gridx = 0;
         gbc.gridy = 3;
-        panel.add(art,gbc);
+        creditsPanel.add(art,gbc);
         gbc.gridx = 0;
         gbc.gridy = 4;
-        panel.add(art1,gbc);
+        creditsPanel.add(art1,gbc);
         gbc.gridx = 0;
         gbc.gridy = 5;
-        panel.add(music,gbc);
+        creditsPanel.add(music,gbc);
         gbc.gridx = 0;
         gbc.gridy = 6;
-        panel.add(music1,gbc);
+        creditsPanel.add(music1,gbc);
         gbc.gridx = 0;
         gbc.gridy = 7;
-        panel.add(music2,gbc);
+        creditsPanel.add(music2,gbc);
         gbc.gridx = 0;
         gbc.gridy = 8;
-        panel.add(video,gbc);
+        creditsPanel.add(video,gbc);
         gbc.gridx = 0;
         gbc.gridy = 9;
-        panel.add(video1,gbc);
+        creditsPanel.add(video1,gbc);
         gbc.gridx = 0;
         gbc.gridy = 10;
-        panel.setBackground(Color.white); //Makes the background of the credits panel white rather than the default grey
+        creditsPanel.setBackground(Color.white); //Makes the background of the credits panel white rather than the default grey
 
         UIManager UI=new UIManager();
         UI.put("OptionPane.background", Color.white); //Makes the message box surrounding the credits panel also white
         UI.put("Panel.background", Color.white); //Makes the area around the Ok button white
-        JOptionPane.showMessageDialog(this, panel, "Credits", JOptionPane.PLAIN_MESSAGE); //Displays the credits
+        JOptionPane.showMessageDialog(this, creditsPanel, "Credits", JOptionPane.PLAIN_MESSAGE); //Displays the credits
     }
 }

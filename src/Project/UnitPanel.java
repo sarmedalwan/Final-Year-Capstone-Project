@@ -74,9 +74,6 @@ class Listener extends MouseInputAdapter {
                 int y = (e.getY() / size); //Grid coordinates of the mouse click
                 int oldX;
                 int oldY; //Will be used to store the previous location of the moved unit
-                if (gameGrid.get(x).get(y) == null) {
-                    System.out.println("empty");
-                }
                 gameGrid = GameState.getBoard();
                 //copyBoard();
                 faction = GameState.getFaction();
@@ -222,7 +219,7 @@ class Listener extends MouseInputAdapter {
             int x = (e.getX() / size); //Coordinates of the mouse
             int y = (e.getY() / size);
             JComponent component = (JComponent) e.getSource(); //Component where the mouse event is taking place
-            if (gameGrid.get(x).get(y) != null) { //If the mouse isn't over an empty location
+            if (gameGrid.get(x).get(y) != null && GameState.isNear(gameGrid.get(x).get(y), gameGrid)) { //If the mouse isn't over an empty location and the unit is nearby (rendered)
                 component.setFont(new Font("BahnSchrift", Font.BOLD, 12));
                 String fontFamily = component.getFont().getFamily();
                 component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b>" + gameGrid.get(x).get(y).getName() + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "<br>" + "Veterancy: " + gameGrid.get(x).get(y).getVet() + "</b></html>");
@@ -271,36 +268,36 @@ public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction, TerritoriesPa
 }
 
 public void paintComponent(Graphics g) { //Renders the unit panel
-    Graphics2D g2d = (Graphics2D) g.create();
-    Graphics2D g2d2 = (Graphics2D) g.create();
-    Graphics2D g2d3 = (Graphics2D) g.create();
+    Graphics2D mainGraphics = (Graphics2D) g.create();
+    Graphics2D combatGraphics = (Graphics2D) g.create();
+    Graphics2D endGameGraphics = (Graphics2D) g.create();
     setOpaque(false);
     gameGrid = GameState.getBoard(); //Updates the game grid from the stored one
     try {
             for (int i = 0; i < GameState.width; i++) { //Loop through the game grid
                 for (int j = 0; j < GameState.height; j++) {
-                    if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getHealth() > 0) { //If a unit exists and has more than 0 health, render it
+                    if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getHealth() > 0 && GameState.isNear(gameGrid.get(i).get(j), gameGrid)) { //If a unit exists and has more than 0 health, render it
                         if (gameGrid.get(i).get(j).getSelection()) { //If that unit is selected, put a round rectangle behind it to give it a white outline to show that it's selected
                             g.setColor(Color.WHITE);
                             g.fillRoundRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44, 10, 10);
                         }
                         g.drawImage(gameGrid.get(i).get(j).getIcon(), (gameGrid.get(i).get(j).getxLocation() * size) + 10, (gameGrid.get(i).get(j).getyLocation() * size) + 10, 40, 40, null); //Draws each Unit object's corresponding icon
                         //Draw the unit's icon in its appropriate position and with its correct size
-                        g2d.setColor(new Color(127,255,0)); //Colour of the health bar
-                        g2d.setStroke(new BasicStroke(2)); //Width of the health bar; 2 pixels
-                        g2d.draw(new Line2D.Float((gameGrid.get(i).get(j).getxLocation() * size) + 16, (gameGrid.get(i).get(j).getyLocation() * size) + 12, (gameGrid.get(i).get(j).getxLocation() * size) + 16 + (gameGrid.get(i).get(j).getHealth()/3.5f), (gameGrid.get(i).get(j).getyLocation() * size) + 12));
+                        mainGraphics.setColor(new Color(127,255,0)); //Colour of the health bar
+                        mainGraphics.setStroke(new BasicStroke(2)); //Width of the health bar; 2 pixels
+                        mainGraphics.draw(new Line2D.Float((gameGrid.get(i).get(j).getxLocation() * size) + 16, (gameGrid.get(i).get(j).getyLocation() * size) + 12, (gameGrid.get(i).get(j).getxLocation() * size) + 16 + (gameGrid.get(i).get(j).getHealth()/3.5f), (gameGrid.get(i).get(j).getyLocation() * size) + 12));
                         //Draw the health bar with its length based on how much health the unit has
 
                         if (gameGrid.get(i).get(j).getVet()>0) {
                             if (gameGrid.get(i).get(j).getVet()<=2) {
-                                g2d.setColor(new Color(214,175,54)); //Bronze
+                                mainGraphics.setColor(new Color(214,175,54)); //Bronze
                             } else if (gameGrid.get(i).get(j).getVet()<=4) {
-                                g2d.setColor(new Color(212,212,212)); //Silver
+                                mainGraphics.setColor(new Color(212,212,212)); //Silver
                             } else if (gameGrid.get(i).get(j).getVet()>4) {
-                                g2d.setColor(new Color(255, 223, 0)); //Gold
+                                mainGraphics.setColor(new Color(255, 223, 0)); //Gold
                             } //Set the colour of the veterancy display to correspond with the amount of veterancy the unit has; bronze for 1-2, silver for 3-4, gold for 5-6
-                                g2d.setFont(new Font("BahnSchrift", Font.BOLD, 12));
-                                g2d.drawString(Integer.toString(gameGrid.get(i).get(j).getVet()), (gameGrid.get(i).get(j).getxLocation() * size) + 12, (gameGrid.get(i).get(j).getyLocation() * size) + 48);
+                                mainGraphics.setFont(new Font("BahnSchrift", Font.BOLD, 12));
+                                mainGraphics.drawString(Integer.toString(gameGrid.get(i).get(j).getVet()), (gameGrid.get(i).get(j).getxLocation() * size) + 12, (gameGrid.get(i).get(j).getyLocation() * size) + 48);
                                 //Write the unit's veterancy over the bottom corner of its icon (+48 to Y puts it low down, +12 puts it a little bit to the right)
                         }
                     }
@@ -309,14 +306,14 @@ public void paintComponent(Graphics g) { //Renders the unit panel
         if(GameState.getLastMovedPlayer()!=GameState.getFaction() && !(won||lost)) { //If the player wasn't the last to move and he has neither won nor lost
                 AlphaComposite alCom = AlphaComposite.getInstance(
                         AlphaComposite.SRC_OVER, alpha);
-                g2d.setPaint(Color.WHITE);
-                g2d.setComposite(alCom);
-                g2d.setFont(new Font("BahnSchrift", Font.BOLD, 50));
+                mainGraphics.setPaint(Color.WHITE);
+                mainGraphics.setComposite(alCom);
+                mainGraphics.setFont(new Font("BahnSchrift", Font.BOLD, 50));
                 if (hurt1!=null && hurt2 != null){
                     BufferedImage explosion = ImageIO.read(getClass().getResource("/media/explosion.png"));
-                    g2d.drawImage(explosion, ((((hurt1.getxLocation()*size)+(hurt2.getxLocation()*size)))/2)+10, ((((hurt1.getyLocation() * size)+(hurt2.getyLocation()*size)))/2)+10, 40, 40, null);
+                    mainGraphics.drawImage(explosion, ((((hurt1.getxLocation()*size)+(hurt2.getxLocation()*size)))/2)+10, ((((hurt1.getyLocation() * size)+(hurt2.getyLocation()*size)))/2)+10, 40, 40, null);
                 } //If the opponent attacked a unit, draw an explosion between the opponent's unit and the one they attacked to show what the opponent just did
-                g2d.drawString("YOUR TURN", 155, 310); //Write that it's the user's turn
+                mainGraphics.drawString("YOUR TURN", 155, 310); //Write that it's the user's turn
                 if (faction == 1) {
                     frame.setTitle("Operation Mars | Faction: Soviets | Your Turn"); //Set the frame title as a reminder that it's their turn
                 } else if (faction == 2) {
@@ -343,9 +340,9 @@ public void paintComponent(Graphics g) { //Renders the unit panel
         if (combatant1!=null && combatant2 != null){ //If the player just made two units fight
             AlphaComposite alcom = AlphaComposite.getInstance(
                     AlphaComposite.SRC_OVER, alpha2);
-            g2d2.setComposite(alcom);
+            combatGraphics.setComposite(alcom);
             BufferedImage explosion = ImageIO.read(getClass().getResource("/media/explosion.png"));
-            g2d2.drawImage(explosion, ((((combatant1.getxLocation()*size)+(combatant2.getxLocation()*size)))/2)+10, ((((combatant1.getyLocation() * size)+(combatant2.getyLocation()*size)))/2)+10, 40, 40, null);
+            combatGraphics.drawImage(explosion, ((((combatant1.getxLocation()*size)+(combatant2.getxLocation()*size)))/2)+10, ((((combatant1.getyLocation() * size)+(combatant2.getyLocation()*size)))/2)+10, 40, 40, null);
             //Draw an explosion between the two units
             alpha2 -= 0.02f; //Make the explosion fade out
             if (alpha2 <= 0.0f) {
@@ -362,12 +359,12 @@ public void paintComponent(Graphics g) { //Renders the unit panel
             }
         }
         if (won || lost){ //If the player has won or lost
-            g2d3.setPaint(Color.WHITE);
-            g2d3.setFont(new Font("BahnSchrift", Font.BOLD, 50));
+            endGameGraphics.setPaint(Color.WHITE);
+            endGameGraphics.setFont(new Font("BahnSchrift", Font.BOLD, 50));
             if (won) {
-                g2d3.drawString("YOU WON", 155, 310); //If they've won, put a big message up saying so
+                endGameGraphics.drawString("YOU WON", 155, 310); //If they've won, put a big message up saying so
             } else {
-                g2d3.drawString("YOU LOST", 155, 310); //If they've lost, put a big message up saying so
+                endGameGraphics.drawString("YOU LOST", 155, 310); //If they've lost, put a big message up saying so
             }
         }
     } catch(Exception e){

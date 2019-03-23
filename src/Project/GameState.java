@@ -415,5 +415,25 @@ public final class GameState { //Manages current state of the game
         }
         return false; //If none of the legal cases are met, false is returned to signal that the move is illegal
     }
+
+    static Boolean isNear(Unit unit, ArrayList<ArrayList<Unit>> unitBoard){ //Determines whether or not a unit is nearby (adjacent) to your units
+        if (unit.getFaction() == faction){ //If it's your unit, it is
+            return true;
+        }
+        int i = unit.getxLocation();
+        int j = unit.getyLocation();
+        if((i<9&&j<9&&(unitBoard.get(i+1).get(j+1)!=null)&&unitBoard.get(i+1).get(j+1).getFaction()==faction) //Checks that the check isn't out of bounds or null
+                || (i<9&&(unitBoard.get(i+1).get(j)!=null)&&unitBoard.get(i+1).get(j).getFaction()==faction) //Then checks all 8 adjacent positions for friendly units
+                || (i<9&&j>0&&(unitBoard.get(i+1).get(j-1)!=null)&&unitBoard.get(i+1).get(j-1).getFaction()==faction)
+                || (j>0&&(unitBoard.get(i).get(j-1)!=null)&&unitBoard.get(i).get(j-1).getFaction()==faction)
+                || (i>0&&j>0&&(unitBoard.get(i-1).get(j-1)!=null)&&unitBoard.get(i-1).get(j-1).getFaction()==faction)
+                || (i>0&&(unitBoard.get(i-1).get(j)!=null)&&unitBoard.get(i-1).get(j).getFaction()==faction)
+                || (i>0&&j<9&&(unitBoard.get(i-1).get(j+1)!=null)&&unitBoard.get(i-1).get(j+1).getFaction()==faction)
+                || (j<9&&(unitBoard.get(i).get(j+1)!=null)&&unitBoard.get(i).get(j+1).getFaction()==faction)
+                ) {
+            return true; //If one is found, the unit is nearby
+        }
+        return false; //Otherwise, it isn't
+    }
 }
 

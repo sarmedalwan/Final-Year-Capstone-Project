@@ -19,7 +19,6 @@ public class Background extends JPanel
         this.fileName = fileName;
     }
 
-
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
