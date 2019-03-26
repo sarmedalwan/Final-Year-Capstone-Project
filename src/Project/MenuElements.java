@@ -110,9 +110,10 @@ public class MenuElements extends JLabel implements ActionListener
         JLabel dev1 = new JLabel("Sarmed Alwan");
         JLabel art = new JLabel("Art");
         JLabel art1 = new JLabel("Sarmed Alwan");
-        JLabel music = new JLabel("Music");
+        JLabel music = new JLabel("Sound");
         JLabel music1 = new JLabel("Bensound");
         JLabel music2 = new JLabel("Richard Ampleford");
+        JLabel music3 = new JLabel("freesound.org");
         JLabel video = new JLabel("Main Menu Video");
         JLabel video1 = new JLabel("publicdomaintorrents.info");
         dev.setFont(new Font("BahnSchrift", Font.BOLD, 25));
@@ -146,12 +147,13 @@ public class MenuElements extends JLabel implements ActionListener
         creditsPanel.add(music2,gbc);
         gbc.gridx = 0;
         gbc.gridy = 8;
-        creditsPanel.add(video,gbc);
+        creditsPanel.add(music3,gbc);
         gbc.gridx = 0;
         gbc.gridy = 9;
-        creditsPanel.add(video1,gbc);
+        creditsPanel.add(video,gbc);
         gbc.gridx = 0;
         gbc.gridy = 10;
+        creditsPanel.add(video1,gbc);
         creditsPanel.setBackground(Color.white); //Makes the background of the credits panel white rather than the default grey
 
         UIManager UI=new UIManager();
