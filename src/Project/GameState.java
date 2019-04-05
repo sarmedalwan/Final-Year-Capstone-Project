@@ -15,6 +15,7 @@ public final class GameState { //Manages current state of the game
     static int territoryVictoryPoints = 0; //Stores the amount of victory points the player is getting from held territories
     static int enemyTerritoryVictoryPoints = 0;//Stores the amount of victory points the enemy is getting from held territories
     static boolean serverHosted = false; //Stores whether or not this client has already started a server
+    static boolean serverJoined = false; //Stores whether or not this client has already joined a server
     static boolean someoneHasMoved = false; //Stores for the server whether or not someone has moved yet. If they have, no one else can join
 
     public static ArrayList<ArrayList<Unit>> getNewBoard() { //Generates a new historically-based unit board to use for the client
@@ -210,6 +211,9 @@ public final class GameState { //Manages current state of the game
 
     static void setServerHosted(boolean hosted){ serverHosted = hosted;} //Lets the client save whether or not they've hosted a server
     static boolean getServerHosted(){return serverHosted;} //Lets the client check whether or not they've hosted a server
+
+    static void setServerJoined(boolean joined){ serverJoined = joined;} //Lets the client save whether or not they've hosted a server
+    static boolean getServerJoined(){return serverJoined;} //Lets the client check whether or not they've hosted a server
 
     static void setSomeoneHasMoved(boolean moved){ someoneHasMoved = moved;} //Lets the client save whether or not someone has moved yet
     static boolean getSomeoneHasMoved(){return someoneHasMoved;} //Lets the server check if someone has moved yet

@@ -33,6 +33,7 @@ public class ClientThread extends Thread {
         unitBoard = GameState.getNewBoard(); //Gets a fresh board
         GameState.updateBoard(unitBoard); //Saves the fresh board
         faction = Integer.parseInt(br.readLine()); //Receives the player's assigned faction from the server
+        GameState.setServerJoined(true);
         GameState.setFaction(faction);
         if (faction==2){
             GameState.setLastMovedPlayer(2); //Makes sure that player 1 always goes first at the very start of the game

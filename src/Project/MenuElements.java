@@ -79,9 +79,13 @@ public class MenuElements extends JLabel implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if ("start".equals(e.getActionCommand())) {
             try {
-                String ip = JOptionPane.showInputDialog("Enter IP Address of Host: "); //Message comes up with an input box and asks user for the IP. If the connection fails, the main frame isn't started and the media player isn't stopped
-                new MainFrame("Operation Mars", ip);
-                mediaPlayer.stop();
+                if(!GameState.getServerJoined()) {
+                    String ip = JOptionPane.showInputDialog("Enter IP Address of Host: "); //Message comes up with an input box and asks user for the IP. If the connection fails, the main frame isn't started and the media player isn't stopped
+                    new MainFrame("Operation Mars", ip);
+                    mediaPlayer.stop();
+                } else{ //Tells the user that they've already joined a server if they click the Join Game button more than once
+                    JOptionPane.showMessageDialog(null, "Game already joined", "Game Already Joined", JOptionPane.INFORMATION_MESSAGE);
+                }
             } catch (Exception e2){
                 JOptionPane.showMessageDialog(null, "Could not connect to the specified server. Please enter a valid IP address", "Connection Failed", JOptionPane.INFORMATION_MESSAGE);
             } //If the connection fails, the user is notified by a message box
