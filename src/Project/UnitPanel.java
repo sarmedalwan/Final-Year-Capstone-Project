@@ -24,9 +24,8 @@ int h;
 int faction;
 int totalVPs;
 int totalEnemyVPs;
-float alpha = 1.0f;
-float alpha2 = 1.0f;
-float alpha3 = 1.0f;
+float mainGraphicsAlpha = 1.0f;
+float combatAnimationAlpha = 1.0f;
 Unit hurt1 = null;
 Unit hurt2 = null;
 Unit combatant1 = null;
@@ -75,7 +74,6 @@ class Listener extends MouseInputAdapter {
                 int oldX;
                 int oldY; //Will be used to store the previous location of the moved unit
                 gameGrid = GameState.getBoard();
-                //copyBoard();
                 faction = GameState.getFaction();
 
                 for (int i = 0; i < GameState.width; i++) {
@@ -163,7 +161,7 @@ class Listener extends MouseInputAdapter {
                             }
 
                             deselect(); //Deselects whichever unit is selected
-                            alpha2 = 1.0f; //Sets the alpha for the explosion image to 1.0 (100%) so it can appear, i.e. be shown to represent the combat which may have occurred
+                            combatAnimationAlpha = 1.0f; //Sets the mainGraphicsAlpha for the explosion image to 1.0 (100%) so it can appear, i.e. be shown to represent the combat which may have occurred
                             GameState.setTurnCount(GameState.getTurnCount() + 1); //Adds 1 to the turn counter
                             totalVPs = GameState.getVictoryPoints() + GameState.getTerritoryVictoryPoints(territories); //Calculates and stores total victory points for the player
                             totalEnemyVPs = GameState.getEnemyVictoryPoints() + GameState.getEnemyTerritoryVictoryPoints(territories); //Calculates and stores total victory points for the opponent
@@ -171,11 +169,10 @@ class Listener extends MouseInputAdapter {
                                 if (totalVPs > totalEnemyVPs) { //If the player's victory points are higher than that of the opponent
                                     won = true;
                                     GameState.setFaction(GameState.getFaction() + 10); //Signals to the server that the player has won
-                                    alpha3 = 1.0f; //Sets the alpha for the "YOU WON" message to 1.0 (100%) so it can appear
                                     repaint();
                                 }
                             }
-                            alpha = 1.0f; //Sets the alpha of the "YOUR TURN" message so it can appear again next time
+                            mainGraphicsAlpha = 1.0f; //Sets the mainGraphicsAlpha of the "YOUR TURN" message so it can appear again next time
                             GameState.setLastMovedPlayer(GameState.getFaction()); //Records that this player is the last moved player because they've just finished their turn
                             ClientThread.makeMove(GameState.getBoard()); //Sends the move information to the server
                         }
@@ -305,7 +302,7 @@ public void paintComponent(Graphics g) { //Renders the unit panel
             }
         if(GameState.getLastMovedPlayer()!=GameState.getFaction() && !(won||lost)) { //If the player wasn't the last to move and he has neither won nor lost
                 AlphaComposite alCom = AlphaComposite.getInstance(
-                        AlphaComposite.SRC_OVER, alpha);
+                        AlphaComposite.SRC_OVER, mainGraphicsAlpha);
                 mainGraphics.setPaint(Color.WHITE);
                 mainGraphics.setComposite(alCom);
                 mainGraphics.setFont(new Font("BahnSchrift", Font.BOLD, 50));
@@ -319,9 +316,9 @@ public void paintComponent(Graphics g) { //Renders the unit panel
                 } else if (faction == 2) {
                     frame.setTitle("Operation Mars | Faction: Germans | Your Turn");
                 }
-                alpha -= 0.02f; //Reduces the alpha of the Graphics2D object so that the YOUR TURN message and the explosion can slowly fade out
-                if (alpha <= 0.0f) { //Once the alpha hits 0, leave it there
-                    alpha = 0.0f;
+                mainGraphicsAlpha -= 0.02f; //Reduces the alpha of the Graphics2D object so that the YOUR TURN message and the explosion can slowly fade out
+                if (mainGraphicsAlpha <= 0.0f) { //Once the alpha hits 0, leave it there
+                    mainGraphicsAlpha = 0.0f;
                 } else {
                     repaint(); //If it hasn't hit 0 yet, keep repainting until it does
                 }
@@ -339,14 +336,14 @@ public void paintComponent(Graphics g) { //Renders the unit panel
         }
         if (combatant1!=null && combatant2 != null){ //If the player just made two units fight
             AlphaComposite alcom = AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, alpha2);
+                    AlphaComposite.SRC_OVER, combatAnimationAlpha);
             combatGraphics.setComposite(alcom);
             BufferedImage explosion = ImageIO.read(getClass().getResource("/media/explosion.png"));
             combatGraphics.drawImage(explosion, ((((combatant1.getxLocation()*size)+(combatant2.getxLocation()*size)))/2)+10, ((((combatant1.getyLocation() * size)+(combatant2.getyLocation()*size)))/2)+10, 40, 40, null);
             //Draw an explosion between the two units
-            alpha2 -= 0.02f; //Make the explosion fade out
-            if (alpha2 <= 0.0f) {
-                alpha2 = 0.0f;
+            combatAnimationAlpha -= 0.02f; //Make the explosion fade out
+            if (combatAnimationAlpha <= 0.0f) {
+                combatAnimationAlpha = 0.0f;
                 combatant1 = null;
                 combatant2 = null;
             } else {
