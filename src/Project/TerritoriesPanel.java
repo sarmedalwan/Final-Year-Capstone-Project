@@ -11,12 +11,12 @@ public class TerritoriesPanel extends JPanel //Renders the coloured grid showing
     public int[][] territories;
     int w;
     int h;
-    static int size = 12;
+    static int size = GameState.getSquarePixelSize();
 
     public TerritoriesPanel(int[][] owners)
     {
-        w = 10; //Width and height of the grid
-        h = 10;
+        w = GameState.getWidth(); //Width and height of the grid
+        h = GameState.getHeight();
         this.territories = owners;
     }
 
@@ -35,12 +35,12 @@ public class TerritoriesPanel extends JPanel //Renders the coloured grid showing
             for (int j = 0; j < h; j++)
             {
                 g.setColor(colors[territories[i][j]]); //If it's a 0, draw red. If it's a 1, draw grey
-                g.fill3DRect(i * size*5, j * size*5, 60, 60, true); //Draws the tiles in their locations
+                g.fill3DRect(i * size, j * size, size, size, true); //Draws the tiles in their locations
             }
         }
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(w * size*5, h * size*5);
+        return new Dimension(w * size, h * size);
     } //Defines the dimensions of the territory grid
 }

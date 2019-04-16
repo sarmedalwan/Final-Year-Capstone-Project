@@ -8,14 +8,14 @@ import java.awt.image.BufferedImage;
 public class Background extends JPanel
 {
     int w, h;
-    static int size = 12;
+    static int size = GameState.getSquarePixelSize();
     static BufferedImage image;
     String fileName;
 
     public Background(String fileName)
     {
-        w = 10; //Width of the grid
-        h = 10; //Height of the grid
+        w = GameState.getWidth(); //Width of the grid
+        h = GameState.getHeight(); //Height of the grid
         this.fileName = fileName;
     }
 
@@ -31,6 +31,6 @@ public class Background extends JPanel
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(w * size*5, h * size*5);
+        return new Dimension(w * size, h * size);
     } //Defines the dimensions of the background
 }

@@ -22,9 +22,9 @@ class MainPanel extends JPanel {
         this.add(BorderLayout.CENTER, gridPanel);
         this.add(BorderLayout.CENTER, background);
         if (GameState.getFaction() == 1) {
-            frame.setTitle("Operation Mars | Faction: Soviets | Your Turn");
+            frame.setTitle("Operation Mars | Faction: Soviets | Your Turn | Turn: " + GameState.getTurnCount());
         } else if (GameState.getFaction() == 2) {
-            frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn"); //Sets the initial titles for the frame. This is done here rather than in the frame because this is after the client thread has received the player number
+            frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn | Turn: " + GameState.getTurnCount()); //Sets the initial titles for the frame. This is done here rather than in the frame because this is after the client thread has received the player number
         }
     }
 }

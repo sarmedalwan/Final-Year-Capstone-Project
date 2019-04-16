@@ -7,12 +7,12 @@ public class GridPanel extends JPanel //Provides a panel with the game grid line
 {
     int w;
     int h;
-    static int size = 12;
+    static int size = GameState.getSquarePixelSize();
 
     public GridPanel()
     {
-        w = 10;
-        h = 10; //Defines the dimensions of the grid
+        w = GameState.getWidth();
+        h = GameState.getHeight(); //Defines the dimensions of the grid
     }
 
 
@@ -21,12 +21,12 @@ public class GridPanel extends JPanel //Provides a panel with the game grid line
         {
             for (int j = 0; j < h; j++)
             {
-                g.drawRect(i*size*5,j*size*5, 60, 60); //Draws a 10x10 array of grid squares to show the grid lines to the user
+                g.drawRect(i*size,j*size, size, size); //Draws a 10x10 array of grid squares to show the grid lines to the user
             }
         }
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(w * size*5, h * size*5);
+        return new Dimension(w * size, h * size);
     } //Defines the dimensions of the grid
 }

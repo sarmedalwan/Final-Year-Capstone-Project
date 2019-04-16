@@ -6,6 +6,7 @@ import java.util.*;
 public final class GameState { //Manages current state of the game
     static final int height = 10; //Height and width of the game board
     static final int width = 10;
+    static final int size = 60;
     static ArrayList<ArrayList<Unit>> gameBoard;
     static int faction; //Stores the player's faction
     static int lastMovedPlayer; //Stores which player moved last
@@ -221,6 +222,12 @@ public final class GameState { //Manages current state of the game
     static int getLastMovedPlayer(){return lastMovedPlayer;} //Lets the client update which player last moved
     static void setLastMovedPlayer(int lastMoved){ lastMovedPlayer = lastMoved;} //Lets the client check which player last moved
 
+    static int getSquarePixelSize(){return size;}
+
+    static int getHeight(){return height;}
+
+    static int getWidth(){return width;}
+
     static int getTerritoryVictoryPoints(int[][] territories){ //Checks for how many victory points the player currently has from the territories they hold
         territoryVictoryPoints = 0;
         if (territories[2][1] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
@@ -304,17 +311,14 @@ public final class GameState { //Manages current state of the game
             attackerLosses+=townDefenceBonus;
         }
 
-        int w = 10; //Width and height of the territory grid
-        int h = 10;
-
         //Check if attacker is encircled
-        if ((attacker.getyLocation() + 1) < h && (territories[attacker.getxLocation()][attacker.getyLocation() + 1] == attacker.getFaction()-1)){
+        if ((attacker.getyLocation() + 1) < height && (territories[attacker.getxLocation()][attacker.getyLocation() + 1] == attacker.getFaction()-1)){
             attackerEncircled = false;
         }
         if ((attacker.getyLocation() - 1) >= 0 && (territories[attacker.getxLocation()][attacker.getyLocation() - 1] == attacker.getFaction()-1)){
             attackerEncircled = false;
         }
-        if ((attacker.getxLocation() + 1) < w && (territories[attacker.getxLocation()+1][attacker.getyLocation()] == attacker.getFaction()-1)){
+        if ((attacker.getxLocation() + 1) < width && (territories[attacker.getxLocation()+1][attacker.getyLocation()] == attacker.getFaction()-1)){
             attackerEncircled = false;
         }
         if ((attacker.getxLocation() -1) >= 0 && (territories[attacker.getxLocation()-1][attacker.getyLocation()] == attacker.getFaction()-1)){
@@ -322,13 +326,13 @@ public final class GameState { //Manages current state of the game
         }
 
         //Check if defender is encircled
-        if ((defender.getyLocation() + 1) < h && (territories[defender.getxLocation()][defender.getyLocation() + 1] == defender.getFaction()-1)){
+        if ((defender.getyLocation() + 1) < height && (territories[defender.getxLocation()][defender.getyLocation() + 1] == defender.getFaction()-1)){
             defenderEncircled = false;
         }
         if ((defender.getyLocation() - 1) >= 0 && (territories[defender.getxLocation()][defender.getyLocation() - 1] == defender.getFaction()-1)){
             defenderEncircled = false;
         }
-        if ((defender.getxLocation() + 1) < w && (territories[defender.getxLocation()+1][defender.getyLocation()] == defender.getFaction()-1)){
+        if ((defender.getxLocation() + 1) < width && (territories[defender.getxLocation()+1][defender.getyLocation()] == defender.getFaction()-1)){
             defenderEncircled = false;
         }
         if ((defender.getxLocation() -1) >= 0 && (territories[defender.getxLocation()-1][defender.getyLocation()] == defender.getFaction()-1)){
@@ -355,12 +359,10 @@ public final class GameState { //Manages current state of the game
     }
 
     public static int[][] getNewTerritories(){ //Generates a new historically-based territory board to use for the client. 0 is taken as belonging to the Soviets and 1 is taken as belonging to the Germans
-        int w = 10;
-        int h = 10;
-        int[][] owners = new int[w][h];
-        for (int i = 0; i < w; i++)
+        int[][] owners = new int[width][height];
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < h; j++)
+            for (int j = 0; j < height; j++)
             {
                 owners[i][j] = 0;
             }
@@ -394,8 +396,8 @@ public final class GameState { //Manages current state of the game
     }
 
     static void updateBoard(ArrayList<ArrayList<Unit>> updatedBoard){ //Updates the stored board from a new board by looping through each tile in the 2D ArrayList and copying the Unit object over if there is one
-        for (int i = 0; i < GameState.width; i++) {
-            for (int j = 0; j < GameState.height; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 if(gameBoard.get(i).get(j) != null && updatedBoard.get(i).get(j) != null) {
                     try {
                         gameBoard.get(i).set(j, new Unit(updatedBoard.get(i).get(j)));

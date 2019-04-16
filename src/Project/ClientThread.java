@@ -35,9 +35,9 @@ public class ClientThread extends Thread {
         faction = Integer.parseInt(br.readLine()); //Receives the player's assigned faction from the server
         GameState.setServerJoined(true);
         GameState.setFaction(faction);
-        if (faction==2){
-            GameState.setLastMovedPlayer(2); //Makes sure that player 1 always goes first at the very start of the game
-        }
+        //if (faction==2){
+          //  GameState.setLastMovedPlayer(2); //Makes sure that player 1 always goes first at the very start of the game
+        //}
     }
     public void run() {
         try {

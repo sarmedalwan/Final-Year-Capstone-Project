@@ -30,7 +30,7 @@ Unit hurt1 = null;
 Unit hurt2 = null;
 Unit combatant1 = null;
 Unit combatant2 = null;
-static int size = 60;
+static int size = GameState.getSquarePixelSize();
 static ArrayList<ArrayList<Unit>> gameGrid;
 static Boolean won = false;
 static Boolean lost = false;
@@ -76,6 +76,7 @@ class Listener extends MouseInputAdapter {
                 gameGrid = GameState.getBoard();
                 faction = GameState.getFaction();
 
+                SelectionLoop:
                 for (int i = 0; i < GameState.width; i++) {
                     for (int j = 0; j < GameState.height; j++) {
                         if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getSelection()) {
@@ -84,6 +85,7 @@ class Listener extends MouseInputAdapter {
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             }
+                            break SelectionLoop;
                         }
                     }
                 }
@@ -121,7 +123,7 @@ class Listener extends MouseInputAdapter {
                                 try {                            //Attacking an enemy unit
                                     territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length); //Update the territories board from the stored one
                                     GameState.combat(gameGrid.get(selected.getxLocation()).get(selected.getyLocation()), gameGrid.get(x).get(y), territories); //Simulate combat between the selected unit and the one it moved onto
-                                    setCombatants(selected, gameGrid.get(x).get(y)); //Gets current combatants (allows for the explosion graphical effect to be displayed between the two units)
+                                    setCombatants(selected, gameGrid.get(x).get(y)); //Sets current combatants (allows for the explosion graphical effect to be displayed between the two units)
                                     repaint();
                                     if (gameGrid.get(selected.getxLocation()).get(selected.getyLocation()).getHealth() < 1) { //If the selected (attacking) unit dies
                                         if (gameGrid.get(x).get(y) != null && gameGrid.get(x).get(y).getVet() < 6) { //Add veterancy to the defending unit if it's below the limit of 6
@@ -154,10 +156,6 @@ class Listener extends MouseInputAdapter {
                                 temp.setyLocation(oldY);
                                 gameGrid.get(oldX).set(oldY, new Unit(temp)); //Moves the clicked unit into the location of the selected unit
                                 gameGrid.get(x).set(y, new Unit(selected)); //Moves the selected unit into the location of the clicked unit
-                                territories = Arrays.copyOf(territoriesPanel.getTerritories(), territoriesPanel.getTerritories().length); //Updates the territories board from the stored one
-                                territories[x][y] = selected.getFaction() - 1;
-                                territories[oldX][oldY] = temp.getFaction() - 1; //Appropriately updates the territories
-                                territoriesPanel.updateTerritories(territories); //Saves the territories board back to the territories panel
                             }
 
                             deselect(); //Deselects whichever unit is selected
@@ -175,6 +173,7 @@ class Listener extends MouseInputAdapter {
                             mainGraphicsAlpha = 1.0f; //Sets the mainGraphicsAlpha of the "YOUR TURN" message so it can appear again next time
                             GameState.setLastMovedPlayer(GameState.getFaction()); //Records that this player is the last moved player because they've just finished their turn
                             ClientThread.makeMove(GameState.getBoard()); //Sends the move information to the server
+                            GameState.setSomeoneHasMoved(true);
                         }
                     } catch (IOException e1) {
                         e1.printStackTrace();
@@ -242,8 +241,8 @@ public UnitPanel(ArrayList<ArrayList<Unit>> gameGrid, int faction, TerritoriesPa
     this.gameGrid = gameGrid;
     this.frame = frame;
     this.mainPanel = mainPanel;
-    w = 10;
-    h = 10; //Defines the dimensions of the grid
+    w = GameState.getWidth();
+    h = GameState.getHeight(); //Defines the dimensions of the grid
     this.faction = faction;
     GameState.setFaction(this.faction);
     this.territoriesPanel = territoriesPanel;
@@ -312,9 +311,9 @@ public void paintComponent(Graphics g) { //Renders the unit panel
                 } //If the opponent attacked a unit, draw an explosion between the opponent's unit and the one they attacked to show what the opponent just did
                 mainGraphics.drawString("YOUR TURN", 155, 310); //Write that it's the user's turn
                 if (faction == 1) {
-                    frame.setTitle("Operation Mars | Faction: Soviets | Your Turn"); //Set the frame title as a reminder that it's their turn
+                    frame.setTitle("Operation Mars | Faction: Soviets | Your Turn | Turn: " + GameState.getTurnCount()); //Set the frame title as a reminder that it's their turn
                 } else if (faction == 2) {
-                    frame.setTitle("Operation Mars | Faction: Germans | Your Turn");
+                    frame.setTitle("Operation Mars | Faction: Germans | Your Turn | Turn: " + GameState.getTurnCount());
                 }
                 mainGraphicsAlpha -= 0.02f; //Reduces the alpha of the Graphics2D object so that the YOUR TURN message and the explosion can slowly fade out
                 if (mainGraphicsAlpha <= 0.0f) { //Once the alpha hits 0, leave it there
@@ -329,9 +328,9 @@ public void paintComponent(Graphics g) { //Renders the unit panel
                 }
         } else {
             if (faction == 1 && GameState.getFaction() != GameState.getLastMovedPlayer()-10) { //Otherwise, set the frame title as a reminder that it's the opponent's turn, as long as they haven't won the game
-                frame.setTitle("Operation Mars | Faction: Soviets | Opponent's Turn");
+                frame.setTitle("Operation Mars | Faction: Soviets | Opponent's Turn | Turn: " + GameState.getTurnCount());
             } else if (faction == 2) {
-                frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn");
+                frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn | Turn: " + GameState.getTurnCount());
             }
         }
         if (combatant1!=null && combatant2 != null){ //If the player just made two units fight
@@ -428,8 +427,7 @@ public void updateTerritories(){ //Triggered when the opponent has just moved, t
     for (int i = 0; i < GameState.width; i++) {
         for (int j = 0; j < GameState.height; j++) {
             if(gameGrid.get(i).get(j) != null) {
-                territories[i][j] =
-                        gameGrid.get(i).get(j).getFaction() - 1; //Updates the territory value on each tile to be correct based on the unit in each location
+                territories[i][j] = gameGrid.get(i).get(j).getFaction() - 1; //Updates the territory value on each tile to be correct based on the unit in each location
             }
         }
     }
