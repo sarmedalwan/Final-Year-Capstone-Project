@@ -65,7 +65,7 @@ The game ends after 100 turns. The player with the highest score at the end of t
 
 ![](src/readmemedia/operationmars3.png)
 
-The bar at the top of the window will remind you which faction you control and whether or not it’s your turn.
+You can only see units which are yours, or are next to yours. The bar at the top of the window will remind you which faction you control and whether or not it’s your turn.
 
 ![](src/readmemedia/operationmars4.png)
 
