@@ -61,11 +61,11 @@ Working modern computer capable of running Windows 7 or later, with network conn
 * 1 - [Java and the Windows Command Line](https://introcs.cs.princeton.edu/java/15inout/windows-cmd.html)
 * 2 - [Bensound Music](https://www.bensound.com/royalty-free-music/track/instinct)
 
-#Technical Documentation
+# Technical Documentation
 
-##User Manual
+## User Manual
 
-###System Requirements
+### System Requirements
 
 Minimum Specifications
 
@@ -85,9 +85,9 @@ Operating System: Microsoft® Windows® 10
 Storage: 200MB
 Java SE Runtime Environment 8
 
-##Getting Started
+## Getting Started
 
-###Getting Online
+### Getting Online
 
 If both players wish to play on the same machine, you do not need anything other than the game itself. If you wish to play Operation Mars over a remote internet connection, the recommended way is to download Virtual Private Network software such as LogMeIn Hamachi, and host your own Virtual Private Network. LogMeIn Hamachi can be downloaded for free at the following location:
 https://www.vpn.net/
@@ -100,7 +100,7 @@ The game is distributed as a .jar file called Operation Mars.jar. To play the ga
 
 The player who wishes to play as the Soviets should join the hosted game first, and the player who wishes to play as the Germans should join second. The Soviet player will play first. Once both players are in, the game can begin. More people can join the game, and they will be treated as spectators.
 
-###How to Play
+### How to Play
 
 The game ends after 100 turns. The player with the highest score at the end of these 100 turns wins. The Soviet player’s units are represented in red, and the German player’s units are represented in grey. Below is a figure of an example unit counter.
 
@@ -120,8 +120,8 @@ All towns on the map are worth 5 Victory Points each to the player who holds the
 
 Killing an enemy unit also gives you 1 Victory Point. When 100 turns have passed, the player with the higher total score will be declared the winner.
 
-##Technical Review
-###Structure of the Program
+## Technical Review
+### Structure of the Program
 
 The program is built with the following structure. The white arrows represent one part leading to or creating another, the black arrows represent one part being a part of another, and the grey arrows represent communication between parts.
 
@@ -149,13 +149,13 @@ ServerThread, TerritoriesPanel, and UnitPanel communicate back and forth with Ga
 UnitPanel and TerritoriesPanel communicate with each other to update the territory board.
 The Unit class is not part of the ‘structure’ per se, as it simply defines the Unit object and allows it to be modified.
 
-###Purpose and Functionality of the Program Classes
-####Main
+### Purpose and Functionality of the Program Classes
+#### Main
 
 The Main class is the initialising class of the whole program, and is the one that is run when the .jar file is run. The class’s only method - main - sets GameState’s stored lastMovedPlayer variable to 2 so that the first player will always be 1. The method then creates the frame for the main menu, and gives it a title:
 new MenuFrame("Operation Mars");
 
-####Unit
+#### Unit
 
 The Unit class defines the Unit object, which is the most important object in the program, and represents one of the players’ units which they control. The class implements the Serializable interface, meaning that it can be serialised, which is necessary for the transmission of unit information over the Java socket system used in this program, because the system uses Gson, a Java library which can serialise objects into their Json representation. The class declaration begins with the class variables, which make up the definition of a unit: icon, iconFileName, name, xLocation, yLocation, health, vet, type, faction, and selected. The variable icon is a BufferedImage, and directly stores the image icon associated with the Unit object, such as the following:
 
@@ -185,14 +185,14 @@ If [unit’s name].setHealth is invoked, the int health of that unit will be set
 
 The setIcon() method stands out in these ‘getter’ and ‘setter’ methods as slightly more complex. It contains a try/catch block to catch an IOException if the image file is not found from the file name. It reloads a unit’s icon based on its stored file name when it has just been de-serialised.
 
-####MenuFrame
+#### MenuFrame
 
 The MenuFrame class defines the MenuFrame object, which is extended from the JFrame class. This means that it is a subclass of the JFrame class, and extends it to create a new object. It receives the String argument title from the Main method. The ‘super’ call at the start of the constructor calls the super class’s constructor to set the title of the window (frame) to whatever was received from Main, in this case simply “Operation Mars”. The default close operation is set to terminate the whole program. This may be inconvenient if the user wishes to close the main menu window after launching the program, but it means that there won’t be the case of the program not actually terminating if the user doesn’t open the game frame and close the program from there. The MenuFrame then creates a MenuElements object, and uses BorderLayout to add the new object to the centre of itself.
 
 
 
 
-####MenuElements
+#### MenuElements
 
 The MenuElements object class extends from the JPanel class and implements the ActionListener interface. The ActionListener interface allows it to contain interactive buttons. The panel MenuElements constitutes all of the elements of the main menu, and is added to the frame MenuFrame, which holds and displays it. The file song.mp3 is loaded into a MediaPlayer at the start of the class, so that it can be played on the main menu. The void method getPreferredSize() tells Java that the menu should start at a certain size. In this case, that size is 1104x832, which is the original size of the background video. The JFXPanel is declared outside and then inside the constructor, because without the seemingly redundant declaration outside, it doesn’t work. The cycle count of the MediaPlayer is set to “INDEFINITE,” meaning that the song will loop indefinitely when it finishes. Its volume is set to 0.3, meaning 30% of the original.
 
@@ -237,7 +237,7 @@ The openCredits() method is called when the Credits button is clicked, and creat
 
 JOptionPane.showMessageDialog(this,creditsPanel,"Credits", JOptionPane.PLAIN_MESSAGE);
 
-####MainFrame
+#### MainFrame
 
 The MainFrame class is like the MenuFrame class in that it extends from the JFrame class. Its main jobs are to play the game’s music and to hold the main panel which houses the game itself. It initialises the MediaPlayer in the same way as the MenuFrame, and plays the game music at volume 0.2 (20%). It creates MainPanel and sets MainPanel’s layout to OverlayLayout, which will allow it to layer its constituent panels on top of each other. This frame’s default close action will also close the program as a whole, so if the user clicks the X button on the window then the program will terminate. The MainPanel is added to the centre of MainFrame using BorderLayout.
 LayoutManager overlay = new OverlayLayout(main);
@@ -245,7 +245,7 @@ main.setLayout(overlay);
 setLayout(new BorderLayout());
 getContentPane().add(main, BorderLayout.CENTER);
 
-####MainPanel
+#### MainPanel
 
 MainPanel is an object class which extends JPanel. It contains all of the other panels which make up the game: Background, GridPanel, TerritoriesPanel, and UnitPanel When an instance of it is created, it receives as arguments the containing frame and the IP which the user entered, so that the IP can be passed to the client thread to connect to the server. The frame is received as an argument so that the MainPanel can change the frame’s title at initialisation when the game starts, to include the player’s faction and whose turn it currently is (always the Soviet player’s turn initially). The frame is then passed to UnitPanel, which further changes the frame title as appropriate as the game goes on, such as when turns change. This is performed here rather than in the frame constructor because it must be performed after the player number has been received from the server by the ClientThread.
 
@@ -267,7 +267,7 @@ Because MainPanel (this) is in OverlayLayout (as set previously in MainFrame) th
 
 
 
-####UnitPanel
+#### UnitPanel
 
 UnitPanel contains most of the code for the rendering of, movement, and interaction between the units in the game. It also handles most of the sound effects, as these also occur via the units. The class extends JPanel, and within it is defined the class Listener which extends MouseInputAdapter and handles the user’s mouse clicks and movements and their effects. UnitPanel has a lot of class variables, since it has a variety of methods which need constant shared access to most of them. Variables w and h are ints and define the width and height of the game grid, and are assigned the number 10 in the panel’s constructor. Variable faction tells the panel which faction the player belongs to; 1 or 2. totalVPs and totalEnemyVPs are used to store the last calculated figure for each player’s victory points.
 The floats mainGraphicsAlpha and combatAnimationAlpha are used to store the alpha values for the composites of the graphics, such as the ‘your turn’ message and the combat explosion image. These control the transparencies of the graphics, so they can fade in or out. The Unit objects hurt1 and hurt2 store copies of the units which the opponent just made fight, and the objects combatant1 and combatant2 store copies of the units which the player just made fight. These variables allow for appropriate animations and sounds etc to be used. The int size dictates the pixel size of each tile, and if this is altered then the size of the game could be changed, though a proportionally larger background map would need to be used, or the same image could be stretched
@@ -429,7 +429,7 @@ The getPreferredSize() method tells Java which size the unit panel should be; th
 
 return new Dimension(w * size, h * size);
 
-####Listener
+#### Listener
 
 Class Listener is defined within class UnitPanel, and is used to keep track of the user’s mouse movements and clicks within the game. The class extends MouseInputAdapter, and takes the unit panel as an argument. It overrides the methods of MouseInputAdapter: mouseClicked, mousePressed, mouseReleased, mouseEntered, mouseExited, mouseDragged, and mouseMoved. The only ones of these which contain code are mouseClicked and mouseMoved; the remaining ones do nothing. Method mouseClicked handles the user’s clicks and their effects, being the selection and control of units on the board, and mouseMoved simply handles the tooltips which appear when the user hovers over a unit.
 
@@ -509,7 +509,7 @@ The font of the text is set by the fontFamily part of the argument. If the user 
 
 
 
-####Background
+#### Background
 
 The Background class is one of the 4 panel classes whose instances make up the MainPanel instance. Like the others, it extends the JPanel class. The class has 5 variables; w, h, size, image, and fileName. The ints w and h tell the panel which size the game grid’s width and height are in terms of tiles; in this case they are both 10. size is the pixel size of each grid square, which is 60. The BufferedImage image will hold the png image which is used as the background of the game, i.e. the map. The String fileName tells the Background object the file path of the png file.
 The class only has two methods; the first is paintComponent, which loads the png file into image and draws image from the top-left corner of the panel (0,0).
@@ -522,13 +522,13 @@ The other method in the class is getPreferredSize(), which works the same as in 
 
 
 
-####GridPanel
+#### GridPanel
 
 GridPanel is another of the 4 panels making up mainPanel, and is approximately as simple as Background, and also extends the JPanel class. The class has 3 variables; w, h, and size. The ints w and h tell the panel which size the game grid’s width and height are in terms of tiles; in this case they are both 10. size is the pixel size of each grid square, which is 60. The paintComponent method performs an embedded for loop to cover each of the 100 grid squares, and for each coordinate it draws a rectangle at that grid square’s coordinates, using size as the height and width of the rectangles. This simply adds a line grid to the game to denote the locations of the squares.
 
 The other method in the class is getPreferredSize(), which works the same as in the other panels; it uses the square size and the number of squares to determine the size of the panel. This size should come out the same as the other panels in mainPanel. The height is simply h*size, and the width is w*size.
 
-####TerritoriesPanel
+#### TerritoriesPanel
 
 TerritoriesPanel is the last of the 4 panels making up mainPanel, and is about as simple as the others, and also extends the JPanel class. The class has 5 variables; colors, territories, w, h, and size. The ints w and h tell the panel which size the game grid’s width and height are in terms of tiles; in this case they are both 10. size is the pixel size of each grid square, which is 60. The array colors holds two colours, which are essentially red and grey with an alpha value to make them transparent. The alpha value is set to 80 and can range up to 255, which would be completely opaque, or down to 0, which would mean totally transparent. In this case we want the territory colours to be apparent without blocking the layers beneath such as the map (background). The class’ paintComponent method does an embedded for loop through the 10x10 territories array, and draws a corresponding rectangle in the appropriate location, with the colour determined by whether that spot in the 2D territories array is a 0 or a 1; 0 referring to the index location of the red colour in the colors array, and 1 referring to the grey colour, i.e. Soviets are 0 and Germans are 1. 
 
@@ -552,7 +552,7 @@ public int[][] getTerritories(){
    return territories;
 }
 
-####GameState
+#### GameState
 
 GameState is a class which manages the state of the game, including storing important values like the game board, and also centrally handling combat. Its class variables are width, height, size, gameBoard, faction, victoryPoints, enemyVictoryPoints, turnCount, territoryVictoryPoints, enemyTerritoryVictoryPoints, serverHosted, serverJoined, and someoneHasMoved. The ints width, height and size determine the grid width and height, and individual square pixel size, respectively. gameBoard is a 2D ArrayList which stores the board of Unit objects. The int faction stores which faction the player belongs to; 1 or 2, meaning Soviets or Germans. The four ints victoryPoints, enemyVictoryPoints, territoryVictoryPoints, and enemyTerritoryVictoryPoints hold the current values for how many points each player has from kills (victoryPoints and enemyVictoryPoints) and how many points each player has from held territories (territoryVictoryPoints and enemyTerritoryVictoryPoints). The Boolean values serverHosted, serverJoined, and someoneHasMoved allow the client to know what’s happened so far in the game; if the user has hosted or joined a server, they can’t host or join again. If someone has already moved, the server won’t accept any new connections to avoid conflicting information.
 
@@ -668,11 +668,11 @@ The Boolean method isNear() takes a Unit and the unitBoard ArrayList, and checks
 
 If none of these 8 checks are passed, the unit is considered not nearby, so false is returned.
 
-####Selection
+#### Selection
 
 The Selection class has only one method, and that method takes the gameBoard 2D ArrayList of Units and returns the Unit object which is selected. It performs an embedded for loop to cycle through the ArrayList, and then performs an if statement to check that a Unit exists there and is selected. If it is, true is returned. If the whole loop completes without true being returned, null is returned.
 
-####ClientThread
+#### ClientThread
 
 The ClientThread class extends the class Thread and is used to communicate back and forth with the server on behalf of the client. In its constructor, it first takes the three parameters passed to it - the territories panel, the unit panel, and the server’s IP, and assigns them to instance variables. Then, an int portNumber is assigned the value 8888 so that this port will be used for the connection. A high-numbered port was chosen so that it wouldn’t conflict with anything else. A new Gson object is then created for later serialisation and deserialisation in the communication with the server. A Socket object is created using the provided IP address and the port number, which creates a connection to the server at that IP’s location and on that socket. A BufferedReader and PrintWriter are created to read from the socket connection and write to it. A 2D ArrayList has a fresh board copied to it from GameState.getNewBoard(), and then this is saved as the current game board. The player’s assigned faction is received from the server and read via the BufferedReader, and saved. The Boolean serverJoined in GameState is also flagged as true to record that the client has already joined a server, so they can’t join again. Finally, the last moved player is set to 2 so that player 1 will always go first.
 
@@ -686,11 +686,11 @@ public static void makeMove(ArrayList<ArrayList<Unit>> unitBoard){
    out.println(gson.toJson(unitBoard));
 }
 
-####Server
+#### Server
 
 The Server class extends the Thread class and is used to accept and open socket connections with clients who try to join the server. The thread is run when the user clicks the Host Game button on the main menu. The thread creates a socket at port 8888, then waits indefinitely, and when a client connects to the server, it accepts the socket connection and adds it to an ArrayList of connections, so it can know how many players are connected. It then starts a new ServerThread to communicate with that client, and sends it the new client’s Socket object, and the ArrayList of all of the Socket objects.
 
-####ServerThread
+#### ServerThread
 
 The ServerThread class extends the Thread class and is used to communicate over the socket to the client on behalf of the server. Its constructor simply receives the parameters passed to it by Server, and assigns them to instance variables. Like ClientThread, the run() method uses for communication a PrintWriter, an OutputStream, and a BufferedReader. Firstly, the thread prints the size of the ArrayList of socket connections to the output stream, so that the user joining can be told their player number based on the order in which they joined. Then, the last moved player is set to 20, so that the thread can know when it’s the first turn of the game. Then, the communication loop begins, and loops indefinitely. Within here, the thread uses the BufferedReader to receive communication from the client. Once it receives communication from the client, it can save the fact that someone has moved, so that it won’t accept any more socket connections after that. Then an if statement checks if the following communication should be relayed to the client. The communication is sent to the client in the event that either they just sent it themselves to the server, or it is the first turn, or either of the players has won the game, in which case both players need to be informed.
 
