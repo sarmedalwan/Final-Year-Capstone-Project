@@ -4,6 +4,8 @@ and is set in WW2 and focused on Operation Mars, a famous operation on the easte
 
 The project contains about 1500 lines of code, and two dozen assets.
 
+This Readme contains the technical documentation, followed by the user manual.
+
 ![](src/readmemedia/operationmars1.png)
 
 ## Credits
@@ -19,67 +21,6 @@ Opposing units can engage in combat against each other. Each unit has a health v
 which were thousands of men in strength historically. The players' territories will shift when their respective units move into their respective territories. A player must oppose and defeat the other player.
 
 # Technical Documentation
-
-## User Manual
-
-### System Requirements
-
-Minimum Specifications
-
-CPU: Intel® Core™2 Duo Processor E8400 or AMD® Athlon X2 6000+ Processor or Equivalent
-RAM: 2GB
-GPU: Intel® HD Graphics 2000 or Equivalent
-Operating System: Microsoft® Windows® 7
-Storage: 200MB
-Java SE Runtime Environment 8
-
-Recommended Specifications
-
-CPU: Intel® Core™ i5-2400 or AMD® FX-4300 or Equivalent
-RAM: 4GB
-GPU: Intel® HD Graphics 2000 or Equivalent
-Operating System: Microsoft® Windows® 10
-Storage: 200MB
-Java SE Runtime Environment 8
-
-## Getting Started
-
-### Getting Online
-
-If both players wish to play on the same machine, you do not need anything other than the game itself. If you wish to play Operation Mars over a remote internet connection, the recommended way is to download Virtual Private Network software such as LogMeIn Hamachi, and host your own Virtual Private Network. LogMeIn Hamachi can be downloaded for free at the following location:
-https://www.vpn.net/
-LogMeIn Hamachi is the property of LogMeIn Inc. and is not affiliated with Operation Mars. You may use another similar program if you know how to use it for the same purpose.
-Create an account and begin the application. Click Network -> Create a New Network, and then type in the Network Name and Password which you would like to use. Do not use sensitive information here, as you will be sharing this information with whoever you wish to join your game server.
-Your friend should click Network -> Join an Existing Network
-They should then type in the network name and password which you chose, and click Join. Once the connection has been established, the IP to be used for the game should be visible (may be labelled as IPv4).
-
-The game is distributed as a .jar file called Operation Mars.jar. To play the game, run the file by double-clicking it or right-clicking it and clicking Open. One of you should click Host Game, and then close the message which comes up. If you wish to both play on the same machine, you can open the file twice to open two instances of the game, and as usual only one of them should host. Once one of the players has hosted, the other should click Join Game, and enter the IPv4 address given by Hamachi, and then click OK. If you are both playing on the same machine, you don’t need to enter anything for the IP address, and can simply press Enter or OK to join the local game. Do not close the Main Menu window, or the game will close. If you do not wish to see it, simply minimise it.
-
-**If you wish to build the .jar for yourself, simply download this Git repository's code, open it in IntelliJ, click Build, on the top bar, then click build artifacts, and build the .jar.**
-
-The player who wishes to play as the Soviets should join the hosted game first, and the player who wishes to play as the Germans should join second. The Soviet player will play first. Once both players are in, the game can begin. More people can join the game, and they will be treated as spectators.
-
-### How to Play
-
-The game ends after 100 turns. The player with the highest score at the end of these 100 turns wins. The Soviet player’s units are represented in red, and the German player’s units are represented in grey. Below is a figure of an example unit counter.
-
-![](src/readmemedia/operationmars3.png)
-
-You can only see units which are yours, or are next to yours. The bar at the top of the window will remind you which faction you control and whether or not it’s your turn.
-
-![](src/readmemedia/operationmars4.png)
-
-To select a unit, when it is your turn, simply left-click on it. A white highlight will appear around it to show which unit you have selected. To switch which unit you have selected, simply click another of your units, unless it is adjacent, since that would be a swap command. To move your unit, click an adjacent empty tile. For Armour units (ARM), this can be diagonally adjacent. If the tile you move into has an allied unit, the two units will swap places. If the tile belongs to the enemy but is empty, it will swap to your control (represented by the red (Soviet) or grey (German) colouring of the tiles) If the tile you move into has an enemy unit, combat will be initiated. Armour units have a combat advantage against Infantry, Infantry have a combat advantage against Artillery, and Artillery has a combat advantage against Armour. Use this system to your advantage. For example, attack their infantry with your artillery. Defending units have a slight advantage in combat, but it is only slight. Units defending in towns have a large advantage. Units which are encircled (surrounded by adjacent enemy territory, not counting diagonal territories) will have a large combat advantage. You should aim when possible to encircle your enemy’s units to reduce your casualties, especially if they are defending a town. If you simply throw your units into the enemy to die, the enemy’s Veterancy will rise, which gives them further combat bonuses and makes them even more difficult to dislodge. If your unit kills an enemy unit, your unit’s veterancy will rise by 1.
-
-![](src/readmemedia/operationmars5.png)
-
-To defeat your opponent, you must wrest control of the towns on the map, represented on the map with their corresponding names:
-
-![](src/readmemedia/operationmars6.png)
-
-All towns on the map are worth 5 Victory Points each to the player who holds them, except for Rzhev and Vyazma, which are worth 10 Victory Points each. The German player starts with more of the towns, and thus more points, but they are outnumbered almost 2:1. This means that the Soviet player must attack the German player and try to gain enough control of the map before 100 turns pass and the operation is considered a failure. The German player must utilise their defensive position to try to defend long enough to win.The German player should still consider counter-attacks where necessary, as they can be advantageous, especially with the correct unit types matched up.
-
-Killing an enemy unit also gives you 1 Victory Point. When 100 turns have passed, the player with the higher total score will be declared the winner.
 
 ## Technical Review
 ### Structure of the Program
@@ -674,3 +615,64 @@ for (Socket socket : sockets) { //For all of the connections
    }
 }
 lastMovedPlayer = factionWhoMoved;
+
+## User Manual
+
+### System Requirements
+
+Minimum Specifications
+
+CPU: Intel® Core™2 Duo Processor E8400 or AMD® Athlon X2 6000+ Processor or Equivalent
+RAM: 2GB
+GPU: Intel® HD Graphics 2000 or Equivalent
+Operating System: Microsoft® Windows® 7
+Storage: 200MB
+Java SE Runtime Environment 8
+
+Recommended Specifications
+
+CPU: Intel® Core™ i5-2400 or AMD® FX-4300 or Equivalent
+RAM: 4GB
+GPU: Intel® HD Graphics 2000 or Equivalent
+Operating System: Microsoft® Windows® 10
+Storage: 200MB
+Java SE Runtime Environment 8
+
+## Getting Started
+
+### Getting Online
+
+If both players wish to play on the same machine, you do not need anything other than the game itself. If you wish to play Operation Mars over a remote internet connection, the recommended way is to download Virtual Private Network software such as LogMeIn Hamachi, and host your own Virtual Private Network. LogMeIn Hamachi can be downloaded for free at the following location:
+https://www.vpn.net/
+LogMeIn Hamachi is the property of LogMeIn Inc. and is not affiliated with Operation Mars. You may use another similar program if you know how to use it for the same purpose.
+Create an account and begin the application. Click Network -> Create a New Network, and then type in the Network Name and Password which you would like to use. Do not use sensitive information here, as you will be sharing this information with whoever you wish to join your game server.
+Your friend should click Network -> Join an Existing Network
+They should then type in the network name and password which you chose, and click Join. Once the connection has been established, the IP to be used for the game should be visible (may be labelled as IPv4).
+
+The game is distributed as a .jar file called Operation Mars.jar. To play the game, run the file by double-clicking it or right-clicking it and clicking Open. One of you should click Host Game, and then close the message which comes up. If you wish to both play on the same machine, you can open the file twice to open two instances of the game, and as usual only one of them should host. Once one of the players has hosted, the other should click Join Game, and enter the IPv4 address given by Hamachi, and then click OK. If you are both playing on the same machine, you don’t need to enter anything for the IP address, and can simply press Enter or OK to join the local game. Do not close the Main Menu window, or the game will close. If you do not wish to see it, simply minimise it.
+
+**If you wish to build the .jar for yourself, simply download this Git repository's code, open it in IntelliJ, click Build, on the top bar, then click build artifacts, and build the .jar.**
+
+The player who wishes to play as the Soviets should join the hosted game first, and the player who wishes to play as the Germans should join second. The Soviet player will play first. Once both players are in, the game can begin. More people can join the game, and they will be treated as spectators.
+
+### How to Play
+
+The game ends after 100 turns. The player with the highest score at the end of these 100 turns wins. The Soviet player’s units are represented in red, and the German player’s units are represented in grey. Below is a figure of an example unit counter.
+
+![](src/readmemedia/operationmars3.png)
+
+You can only see units which are yours, or are next to yours. The bar at the top of the window will remind you which faction you control and whether or not it’s your turn.
+
+![](src/readmemedia/operationmars4.png)
+
+To select a unit, when it is your turn, simply left-click on it. A white highlight will appear around it to show which unit you have selected. To switch which unit you have selected, simply click another of your units, unless it is adjacent, since that would be a swap command. To move your unit, click an adjacent empty tile. For Armour units (ARM), this can be diagonally adjacent. If the tile you move into has an allied unit, the two units will swap places. If the tile belongs to the enemy but is empty, it will swap to your control (represented by the red (Soviet) or grey (German) colouring of the tiles) If the tile you move into has an enemy unit, combat will be initiated. Armour units have a combat advantage against Infantry, Infantry have a combat advantage against Artillery, and Artillery has a combat advantage against Armour. Use this system to your advantage. For example, attack their infantry with your artillery. Defending units have a slight advantage in combat, but it is only slight. Units defending in towns have a large advantage. Units which are encircled (surrounded by adjacent enemy territory, not counting diagonal territories) will have a large combat advantage. You should aim when possible to encircle your enemy’s units to reduce your casualties, especially if they are defending a town. If you simply throw your units into the enemy to die, the enemy’s Veterancy will rise, which gives them further combat bonuses and makes them even more difficult to dislodge. If your unit kills an enemy unit, your unit’s veterancy will rise by 1.
+
+![](src/readmemedia/operationmars5.png)
+
+To defeat your opponent, you must wrest control of the towns on the map, represented on the map with their corresponding names:
+
+![](src/readmemedia/operationmars6.png)
+
+All towns on the map are worth 5 Victory Points each to the player who holds them, except for Rzhev and Vyazma, which are worth 10 Victory Points each. The German player starts with more of the towns, and thus more points, but they are outnumbered almost 2:1. This means that the Soviet player must attack the German player and try to gain enough control of the map before 100 turns pass and the operation is considered a failure. The German player must utilise their defensive position to try to defend long enough to win.The German player should still consider counter-attacks where necessary, as they can be advantageous, especially with the correct unit types matched up.
+
+Killing an enemy unit also gives you 1 Victory Point. When 100 turns have passed, the player with the higher total score will be declared the winner.
