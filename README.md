@@ -8,7 +8,7 @@ and is set in WW2 and focused on Operation Mars, a famous operation on the easte
 
 ![](src/readmemedia/operationmars2.png)
 
-Credit also goes to Project Supervisor Professor Anthony Vickers and Second Assessor Carmine Ventre
+**Credit also goes to Project Supervisor Professor Anthony Vickers and Second Assessor Carmine Ventre**
 
 ## Design of the Game
 
