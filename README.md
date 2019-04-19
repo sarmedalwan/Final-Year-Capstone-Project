@@ -53,7 +53,7 @@ They should then type in the network name and password which you chose, and clic
 
 The game is distributed as a .jar file called Operation Mars.jar. To play the game, run the file by double-clicking it or right-clicking it and clicking Open. One of you should click Host Game, and then close the message which comes up. If you wish to both play on the same machine, you can open the file twice to open two instances of the game, and as usual only one of them should host. Once one of the players has hosted, the other should click Join Game, and enter the IPv4 address given by Hamachi, and then click OK. If you are both playing on the same machine, you don’t need to enter anything for the IP address, and can simply press Enter or OK to join the local game. Do not close the Main Menu window, or the game will close. If you do not wish to see it, simply minimise it.
 
-**The .jar file is available in the 'out' folder in this Git.**
+**If you wish to build the .jar for yourself, simply download this Git repository's code, open it in IntelliJ, click Build, on the top bar, then click build artifacts, and build the .jar.**
 
 The player who wishes to play as the Soviets should join the hosted game first, and the player who wishes to play as the Germans should join second. The Soviet player will play first. Once both players are in, the game can begin. More people can join the game, and they will be treated as spectators.
 
