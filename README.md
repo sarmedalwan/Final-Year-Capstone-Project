@@ -59,17 +59,19 @@ The player who wishes to play as the Soviets should join the hosted game first, 
 
 The game ends after 100 turns. The player with the highest score at the end of these 100 turns wins. The Soviet player’s units are represented in red, and the German player’s units are represented in grey. Below is a figure of an example unit counter.
 
+![](src/readmemedia/operationmars3.png)
+
 The bar at the top of the window will remind you which faction you control and whether or not it’s your turn.
 
-
+![](src/readmemedia/operationmars4.png)
 
 To select a unit, when it is your turn, simply left-click on it. A white highlight will appear around it to show which unit you have selected. To switch which unit you have selected, simply click another of your units, unless it is adjacent, since that would be a swap command. To move your unit, click an adjacent empty tile. For Armour units (ARM), this can be diagonally adjacent. If the tile you move into has an allied unit, the two units will swap places. If the tile belongs to the enemy but is empty, it will swap to your control (represented by the red (Soviet) or grey (German) colouring of the tiles) If the tile you move into has an enemy unit, combat will be initiated. Armour units have a combat advantage against Infantry, Infantry have a combat advantage against Artillery, and Artillery has a combat advantage against Armour. Use this system to your advantage. For example, attack their infantry with your artillery. Defending units have a slight advantage in combat, but it is only slight. Units defending in towns have a large advantage. Units which are encircled (surrounded by adjacent enemy territory, not counting diagonal territories) will have a large combat advantage. You should aim when possible to encircle your enemy’s units to reduce your casualties, especially if they are defending a town. If you simply throw your units into the enemy to die, the enemy’s Veterancy will rise, which gives them further combat bonuses and makes them even more difficult to dislodge. If your unit kills an enemy unit, your unit’s veterancy will rise by 1.
 
-
+![](src/readmemedia/operationmars5.png)
 
 To defeat your opponent, you must wrest control of the towns on the map, represented on the map with their corresponding names:
 
-
+![](src/readmemedia/operationmars6.png)
 
 All towns on the map are worth 5 Victory Points each to the player who holds them, except for Rzhev and Vyazma, which are worth 10 Victory Points each. The German player starts with more of the towns, and thus more points, but they are outnumbered almost 2:1. This means that the Soviet player must attack the German player and try to gain enough control of the map before 100 turns pass and the operation is considered a failure. The German player must utilise their defensive position to try to defend long enough to win.The German player should still consider counter-attacks where necessary, as they can be advantageous, especially with the correct unit types matched up.
 
@@ -80,29 +82,29 @@ Killing an enemy unit also gives you 1 Victory Point. When 100 turns have passed
 
 The program is built with the following structure. The white arrows represent one part leading to or creating another, the black arrows represent one part being a part of another, and the grey arrows represent communication between parts.
 
-
+![](src/readmemedia/operationmars7.png)
 
 The class which the .jar file first leads to is the Main class, which only contains the ‘main’ method. This method simply sets the last moved player as 2, so that Player 1 will always go first, and then opens the main menu, in the form of MenuFrame.
 
-MenuFrame is a JFrame made up of MenuElements, which is a panel containing the menu’s elements. MenuFrame creates MenuElements, which has 4 buttons on it; Join Game, Host Game, Credits, and Quit
-Clicking Credits will create creditsPanel, and open a JOptionPane message dialog, which will contain the panel. The message dialog can be closed by clicking ‘OK’
-On MenuElements, clicking the Quit button will close and terminate the program
-Clicking Host Game will start a server. The server will simply wait to receive connections. When a connection is received, the server will run a new ServerThread to listen to and communicate with that given client
-If the Join Game button is clicked on MenuElements, the MainFrame will be created
-MainFrame will create a MainPanel and add it to itself
-The MainPanel will create 4 other panels and add them to itself. These 4 panels will make up the game display, and are layered on top of each other with OverlayLayout
-Background is a panel which simply loads and displays the background map
-GridPanel is a panel which creates and displays the game’s grid lines
-TerritoriesPanel is a panel which creates and displays the two players’ territories as coloured squares
-UnitPanel is the panel which displays the players’ units and handles their movement
-These four panels are created by, and come together to form, MainPanel
-MainPanel also initiates and runs ClientThread, a thread which will listen to and communicate with the server on behalf of the client
-ServerThread and UnitPanel communicate back and forth with ClientThread
-The Selection class simply contains the currentSelected method. The class is invoked by the game logic, mainly within UnitPanel.
-GameState is essentially a utility class; it initialises and stores the game state, calculates combat, and some other small tasks. 
-ServerThread, TerritoriesPanel, and UnitPanel communicate back and forth with GameState, such as to request combat calculations or the initial state of the game board.
-UnitPanel and TerritoriesPanel communicate with each other to update the territory board.
-The Unit class is not part of the ‘structure’ per se, as it simply defines the Unit object and allows it to be modified.
+* MenuFrame is a JFrame made up of MenuElements, which is a panel containing the menu’s elements. MenuFrame creates MenuElements, which has 4 buttons on it; Join Game, Host Game, Credits, and Quit
+* Clicking Credits will create creditsPanel, and open a JOptionPane message dialog, which will contain the panel. The message dialog can be closed by clicking ‘OK’
+* On MenuElements, clicking the Quit button will close and terminate the program
+* Clicking Host Game will start a server. The server will simply wait to receive connections. When a connection is received, the server will run a new ServerThread to listen to and communicate with that given client
+* If the Join Game button is clicked on MenuElements, the MainFrame will be created
+* MainFrame will create a MainPanel and add it to itself
+* The MainPanel will create 4 other panels and add them to itself. These 4 panels will make up the game display, and are layered on top of each other with OverlayLayout
+* Background is a panel which simply loads and displays the background map
+* GridPanel is a panel which creates and displays the game’s grid lines
+* TerritoriesPanel is a panel which creates and displays the two players’ territories as coloured squares
+* UnitPanel is the panel which displays the players’ units and handles their movement
+* These four panels are created by, and come together to form, MainPanel
+* MainPanel also initiates and runs ClientThread, a thread which will listen to and communicate with the server on behalf of the client
+* ServerThread and UnitPanel communicate back and forth with ClientThread
+* The Selection class simply contains the currentSelected method. The class is invoked by the game logic, mainly within UnitPanel.
+* GameState is essentially a utility class; it initialises and stores the game state, calculates combat, and some other small tasks. 
+* ServerThread, TerritoriesPanel, and UnitPanel communicate back and forth with GameState, such as to request combat calculations or the initial state of the game board.
+* UnitPanel and TerritoriesPanel communicate with each other to update the territory board.
+* The Unit class is not part of the ‘structure’ per se, as it simply defines the Unit object and allows it to be modified.
 
 ### Purpose and Functionality of the Program Classes
 #### Main
@@ -113,6 +115,8 @@ new MenuFrame("Operation Mars");
 #### Unit
 
 The Unit class defines the Unit object, which is the most important object in the program, and represents one of the players’ units which they control. The class implements the Serializable interface, meaning that it can be serialised, which is necessary for the transmission of unit information over the Java socket system used in this program, because the system uses Gson, a Java library which can serialise objects into their Json representation. The class declaration begins with the class variables, which make up the definition of a unit: icon, iconFileName, name, xLocation, yLocation, health, vet, type, faction, and selected. The variable icon is a BufferedImage, and directly stores the image icon associated with the Unit object, such as the following:
+
+![](src/readmemedia/operationmars8.png)
 
 This doesn’t include the veterancy counter or the health bar, which are rendered in-game from values rather than loaded in or stored. This variable is transient, meaning that it is left behind when serialisation is performed, because otherwise an error would occur, because BufferedImage objects can’t be serialised. The variable iconFileName stores the name of the image file of the icon. This not only allows the initial icon to be loaded from the file location, but also allows the icon to be easily re-loaded from the same location once the Unit object has been serialised and then de-serialised and the original icon has been left behind. The icon simply loads the image from the media folder using the Unit object’s iconFileName and the ImageIO class.
 
@@ -267,7 +271,7 @@ The rectangle is drawn at the unit’s location multiplied by the pixel size of 
 
 The rendering loop then draws each unit icon in its corresponding place, in much the same way that the rounded rectangles are rendered above. The mainGraphics object then draws a green line over the top of the unit’s icon to represent its health; the arguments provided were obtained by trial and error to try to position the line so that when health is 100, the line symmetrically spans from the top left of the unit icon to the top right, with space on the sides.
 
-
+![](src/readmemedia/operationmars9.png)
 
 The loop then checks what the unit’s current veterancy is, and writes it in the bottom-left of the unit icon. If the veterancy is 1 or 2, it is written in bronze, if it’s 3 or 4 it’s written in silver, and in gold if it’s 5 or 6. This provides another visual aid for users to quickly see the value of a unit to them.
 
@@ -462,6 +466,8 @@ component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b
 
 The font of the text is set by the fontFamily part of the argument. If the user is hovering over an empty area or the unit isn’t nearby, the tooltip text is set to null, which means the tooltip won’t appear.
 
+![](src/readmemedia/operationmars10.png)
+
 
 
 #### Background
@@ -596,7 +602,7 @@ for (int i = 0; i<7; i++){
    owners[i][9] = 1;
 }
 
-
+![](src/readmemedia/operationmars11.png)
 
 The updateBoard() void method updates the stored board from a new board by looping through each tile in the 2D ArrayList via an embedded for loop and copying the Unit object over if there is one:
 
