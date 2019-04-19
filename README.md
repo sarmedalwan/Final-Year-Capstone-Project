@@ -79,11 +79,11 @@ The copy constructor is below the primary constructor and can be identified by t
 
 Following the copy constructor are a series of ‘getter’ and ‘setter’ methods, which simply return and modify the attributes of the Unit object. Two examples are below:
 
-int getHealth(){return health;}
+`int getHealth(){return health;}`
 
 If [unit’s name].getHealth is invoked, the int health of that unit will be returned.
 
-void setHealth(int newHealth){ this.health = newHealth; }
+`void setHealth(int newHealth){ this.health = newHealth; }`
 
 If [unit’s name].setHealth is invoked, the int health of that unit will be set to whatever is passed into the invocation as an argument. The method is void because it doesn’t return anything.
 
@@ -102,6 +102,7 @@ The MenuElements object class extends from the JPanel class and implements the A
 
 The music is then played, and the background file is loaded as a StretchIcon (meaning that it will stretch to fill the frame, so the user can resize the menu and the GIF background will respond). The icon of the panel is then set to the StretchIcon, meaning that the StretchIcon will appear in the background of the panel and be directly part of it. This is contained within a try/catch block so that a missing file won’t throw an unhandled IOException.
 
+```
 try {
    StretchIcon image = new StretchIcon(this.getClass().getResource("/media/"+fileName));
    this.setIcon(image);
@@ -109,23 +110,30 @@ try {
 } catch (Exception e) {
    System.out.println("Background file not found");
 }
+```
+
 
 The panel’s layout is set to GridBagLayout, which allows its elements to be laid out with coordinates like a grid. This allowed for the buttons and text to be laid out neatly in the desired way. A GridBagConstraints object is declared to allow for defining the layout and location of each element of the menu. The anchor attribute of the GridBagConstraints object defines where on the panel the elements will be placed from, and the insets attribute defines the padding around each element. The North argument means that the elements should be centred horizontally. The title and buttons are then created, and are laid out one by one onto the panel using the GridBagConstraints, with coordinates for each one. For example:
 
+```
 gbc.gridx = 0;
 gbc.gridy = 4;
 this.add(hostGame, gbc);
+```
 
 This places the hostGame button at position 0,4 relative to the starting position, which is in the top centre (so it will be 4 spaces down from the top centre). Some of the insets are also modified between each element.
 
 The buttons all have String arguments which define their actions when clicked. For example, the Host Game button has the action “host”:
 
+```
 JButton hostGame = new JButton("Host Game");
 hostGame.addActionListener(this);
 hostGame.setActionCommand("host");
+```
 
 When the button is clicked, it will call the action listener implemented by the containing class (i.e. this) and the action listener will see that the action is “host”, and act accordingly:
 
+```
 } else if ("host".equals(e.getActionCommand())) {
    if(!GameState.getServerHosted()) {
        new Server().start();
@@ -134,37 +142,48 @@ When the button is clicked, it will call the action listener implemented by the 
    } else{
        JOptionPane.showMessageDialog(null, "Game already hosted. To join your own game, click Join Game and press Enter", "Game Already Hosted", JOptionPane.INFORMATION_MESSAGE);
    }
+```
 
 As can be seen, there is also an implementation to avoid the hosting of two servers on one client, which would cause an error. In this case, a message dialog comes up to warn the user. The same is done in the case of the user trying to launch the game twice from the same client.
 
 The openCredits() method is called when the Credits button is clicked, and creates a message dialog with a custom panel embedded onto it. This panel is also written using the GridBagLayout. The lines of text are all defined at the top, and then laid out one by one in the same fashion that the main menu itself is laid out. The background is then changed to white and the panel is displayed on a MessageBox which comes up when the Credits button is clicked.
 
-JOptionPane.showMessageDialog(this,creditsPanel,"Credits", JOptionPane.PLAIN_MESSAGE);
+`JOptionPane.showMessageDialog(this,creditsPanel,"Credits", JOptionPane.PLAIN_MESSAGE);`
 
 #### MainFrame
 
 The MainFrame class is like the MenuFrame class in that it extends from the JFrame class. Its main jobs are to play the game’s music and to hold the main panel which houses the game itself. It initialises the MediaPlayer in the same way as the MenuFrame, and plays the game music at volume 0.2 (20%). It creates MainPanel and sets MainPanel’s layout to OverlayLayout, which will allow it to layer its constituent panels on top of each other. This frame’s default close action will also close the program as a whole, so if the user clicks the X button on the window then the program will terminate. The MainPanel is added to the centre of MainFrame using BorderLayout.
+
+```
 LayoutManager overlay = new OverlayLayout(main);
 main.setLayout(overlay);
 setLayout(new BorderLayout());
 getContentPane().add(main, BorderLayout.CENTER);
+```
+
 
 #### MainPanel
 
 MainPanel is an object class which extends JPanel. It contains all of the other panels which make up the game: Background, GridPanel, TerritoriesPanel, and UnitPanel When an instance of it is created, it receives as arguments the containing frame and the IP which the user entered, so that the IP can be passed to the client thread to connect to the server. The frame is received as an argument so that the MainPanel can change the frame’s title at initialisation when the game starts, to include the player’s faction and whose turn it currently is (always the Soviet player’s turn initially). The frame is then passed to UnitPanel, which further changes the frame title as appropriate as the game goes on, such as when turns change. This is performed here rather than in the frame constructor because it must be performed after the player number has been received from the server by the ClientThread.
 
+```
 if (GameState.getFaction() == 1) {
    frame.setTitle("Operation Mars | Faction: Soviets | Your Turn");
 } else if (GameState.getFaction() == 2) {
    frame.setTitle("Operation Mars | Faction: Germans | Opponent's Turn");
 }
+```
+
 
 MainPanel’s main duties are to create the 4 panels of the game, and then to add them to itself. It also creates and runs the ClientThread, which communicates with the server on the client’s behalf. The panels are added in the following order:
 
+```
 this.add(BorderLayout.CENTER, unitPanel);
 this.add(BorderLayout.CENTER, territoriesPanel);
 this.add(BorderLayout.CENTER, gridPanel);
 this.add(BorderLayout.CENTER, background);
+```
+
 
 Because MainPanel (this) is in OverlayLayout (as set previously in MainFrame) this order of the adding of the panels is important, and means that unitPanel will visually be in front, with territoriesPanel behind, then gridPanel, then background. The units sit on top of the territory and are displayed first and foremost. The background panel, on its creation, is passed the file name of the map image file, in this case operationmarsmap.png. This tells the background panel where to look for the image file which will display the background of the game, i.e. the map with the towns etc.
 
@@ -180,21 +199,22 @@ The Boolean variables won and lost simply record whether or not the client has w
 The Unit object selected stores a copy of the currently selected unit; this is so that the selected object can be operated upon without the original object on the game grid being modified.
 Color transparent holds a colour object which has no RGB values and an alpha value of 0 (the last argument), meaning that it is transparent. This is used to make the background of the unit panel transparent so that the lower layers can show through behind it.
 
-Color transparent = new Color(0,0,0,0);
+`Color transparent = new Color(0,0,0,0);`
 
 territories stores a 2D array of ints indicating the current layout of the two players’ territories, so that they can be checked and modified, and sent to the territories panel. territoriesPanel stores a reference to the territoriesPanel created in mainPanel’s constructor. This allows unitPanel to interact with it. In much the same way, frame and mainPanel store references to the main frame and the main panel so that unitPanel can interact with them.
 The JFXPanel fxPanel needs to be created for the media players to work, though it isn’t used itself.
 There are a series of Media objects which hold the references to the sound effects for the MediaPlayers to use. They are declared as such.
 
-Media turnSound = new Media(getClass().getResource("/media/yourturn.mp3").toString());
+`Media turnSound = new Media(getClass().getResource("/media/yourturn.mp3").toString());`
+
 They contain string arguments referring to the file paths of their corresponding sound effect, which are all stored in the media folder, like the graphical assets.
 The MediaPlayers are then declared to utilise these Media objects like so:
 
-MediaPlayer turnSoundPlayer = new MediaPlayer(turnSound);
+`MediaPlayer turnSoundPlayer = new MediaPlayer(turnSound);`
 
 The UnitPanel class’ constructor first sets the UI background to black and the foreground to white, mainly affecting the colour of the tooltips. It then makes itself focusable and grabs the program’s focus, so that it can be interacted with by the user. It assigns all of the received arguments to its own variables declared above, like so:
 
-this.frame = frame;
+`this.frame = frame;`
 
 The w and h variables are then set to 10, representing the width and height of the game grid. The last moved player is set to 2, so that Player 1 always goes first, and then the volume of all of the sound effects’ media players is set to 0.7 (70%), to be louder than the music.
 
@@ -203,14 +223,17 @@ First, it sets the panel’s opacity to false so that it is transparent to the p
 The board is updated from the one stored in GameState, and an embedded For loop begins to cycle over every tile in the game and render it.
 If a unit exists (isn’t null), has more than 0 health, and is nearby, then it should be rendered:
 
-if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getHealth() > 0 && GameState.isNear(gameGrid.get(i).get(j), gameGrid)) {
+`if (gameGrid.get(i).get(j) != null && gameGrid.get(i).get(j).getHealth() > 0 && GameState.isNear(gameGrid.get(i).get(j), gameGrid)) {`
 
 If that unit is selected, then a white rounded rectangle should first be drawn under it, whose edges will appear around the unit’s edges.
 
+```
 if (gameGrid.get(i).get(j).getSelection()) {
    g.setColor(Color.WHITE);
    g.fillRoundRect((gameGrid.get(i).get(j).getxLocation() * size) + 8, (gameGrid.get(i).get(j).getyLocation() * size) + 8, 44, 44, 10, 10);
 }
+```
+
 
 The rectangle is drawn at the unit’s location multiplied by the pixel size of each grid square, plus 8 pixels so that it isn’t right at the edge of the grid square, because we want the rectangle to be in the middle with some space around it for the user to be able to see the map behind it. 44 is the pixel width and height; again, smaller than the grid square. 10 represents the arc width and arc height of the curved corners of the rectangle.
 
@@ -220,6 +243,7 @@ The rendering loop then draws each unit icon in its corresponding place, in much
 
 The loop then checks what the unit’s current veterancy is, and writes it in the bottom-left of the unit icon. If the veterancy is 1 or 2, it is written in bronze, if it’s 3 or 4 it’s written in silver, and in gold if it’s 5 or 6. This provides another visual aid for users to quickly see the value of a unit to them.
 
+```
 if (gameGrid.get(i).get(j).getVet()>0) {
    if (gameGrid.get(i).get(j).getVet()<=2) {
        mainGraphics.setColor(new Color(214,175,54)); //Bronze
@@ -232,57 +256,74 @@ if (gameGrid.get(i).get(j).getVet()>0) {
        mainGraphics.drawString(Integer.toString(gameGrid.get(i).get(j).getVet()), (gameGrid.get(i).get(j).getxLocation() * size) + 12, (gameGrid.get(i).get(j).getyLocation() * size) + 48);
        //Write the unit's veterancy over the bottom corner of its icon (+48 to Y puts it low down, +12 puts it a little bit to the right)
 }
+```
+
 
 Once the unit rendering loop has completed, the method checks whether or not it’s the user’s turn, and whether or not the game has ended. If it is the user’s turn and the game hasn’t ended, the ‘YOUR TURN’ message rendering is executed, as well as the rendering of the opponent’s move.
 
+```
 if(GameState.getLastMovedPlayer()!=GameState.getFaction() && !(won||lost)) { //If the player wasn't the last to move and he has neither won nor lost
        AlphaComposite alCom = AlphaComposite.getInstance(
                AlphaComposite.SRC_OVER, mainGraphicsAlpha);
        mainGraphics.setPaint(Color.WHITE);
        mainGraphics.setComposite(alCom);
        mainGraphics.setFont(new Font("BahnSchrift", Font.BOLD, 50));
+```
+
 
 An AlphaComposite object is created to utilise the alpha value to give the mainGraphics object a transparency, so that the combat graphic and the ‘YOUR TURN’ message can fade out. The alpha is reduced by a small amount, and then the painting is done again. This continues until the alpha reaches 0.
 
+```
 mainGraphicsAlpha -= 0.02f;
 if (mainGraphicsAlpha <= 0.0f) {
    mainGraphicsAlpha = 0.0f;
 } else {
    repaint();
 }
+```
+
 
 If it isn’t the client’s turn and the game hasn’t ended, the frame’s title is updated to remind them of this. The second rendering section, which uses combatGraphics, simply renders the explosion effect for when the client makes two units fight, rather than when the enemy does so. It is executed in the same way as the previous method; a BufferedImage of the explosion is drawn, and then is slowly faded by reducing its alpha value and repainting. The location of the image is also chosen in the same way, with the coordinates being halfway between the two fighting units - taking one unit’s coordinates and adding half of the distance to the other unit, and adding an offset of 10 since the units also don’t start at the edges of the grid squares. This puts the explosion halfway between the two units.
 
+```
 BufferedImage explosion = ImageIO.read(getClass().getResource("/media/explosion.png"));
 combatGraphics.drawImage(explosion, ((((combatant1.getxLocation()*size)+(combatant2.getxLocation()*size)))/2)+10, ((((combatant1.getyLocation() * size)+(combatant2.getyLocation()*size)))/2)+10, 40, 40, null);
+```
+
 
 Finally, if the player has won or lost, i.e. if the game is over, then either the ‘YOU WIN’ or ‘YOU LOSE’ message is rendered by endGameGraphics.
 
-if (won || lost){
+`if (won || lost){`
 
 This doesn’t need to use an alpha value as it doesn’t need to fade at this point, since the game is over.
 
 The deselect() method simply cycles through the 2D ArrayList of units in standard fashion - with an embedded for loop, and then sets each Unit object’s stored selection value to false:
 
-gameGrid.get(i).get(j).setSelection(false);
+`gameGrid.get(i).get(j).setSelection(false);`
 
 setCombatants() is used to set which two units the client just made fight, so that the combat animation can be rendered between them:
 
+```
 combatant1 = new Unit(attacker);
 combatant2 = new Unit(defender);
+```
+
 
 updateGrid() is used to update the grid of units when the opponent makes a move to match what the server says is the new state of the game grid.
 
 Firstly, the method increments the turn counter and then checks if the opponent won the game during their turn. If this was the case, then the server will send an 11 if the opponent is player 1, and a 12 if the opponent is player 2. Therefore, if the opponent’s player number is greater than 2, then they must have won:
 
+```
 GameState.setTurnCount(GameState.getTurnCount()+1);
 if (GameState.getLastMovedPlayer()>2){
    lost = true;
    repaint();
 }
+```
 
 Next, an embedded for loop runs through the board. If any two opposing units from the newly received board have less health than their counterparts on the client’s board, then they are marked as ‘hurt’, meaning they’ve just fought and need to have a combat animation displayed between them:
 
+```
 if (newGrid.get(i).get(j).getHealth() < gameGrid.get(i).get(j).getHealth()) {
    try {
        if (hurt1 == null) {
@@ -294,44 +335,61 @@ if (newGrid.get(i).get(j).getHealth() < gameGrid.get(i).get(j).getHealth()) {
        e.printStackTrace();
    }
 }
+```
+
 
 Then, within the same embedded loop, each unit has its icon set via its built-in setIcon method, and then it is copied from the received board to the client’s own board.
 
+```
    newGrid.get(i).get(j).setIcon(); //Sets the units' icons based on their icon file locations, since the icons themselves aren't sent over by the server
 }
 gameGrid.get(i).set(j, newGrid.get(i).get(j));
+```
+
 
 
 Then the ‘your turn’ sound effect is reset to the start and played to coincide with the start of the client’s turn:
 
+```
 turnSoundPlayer.seek(new Duration(0));
 turnSoundPlayer.play();
+```
+
 
 The method updateTerritories also works by cycling through a 10x10 embedded for loop; it goes to each tile in the territories 2D array, and updates its value based on which unit is in that corresponding location on the unit grid (gameGrid). 1 is subtracted because the territories grid works with 0s and 1s rather than 1s and 2s, but it works in the same way; 0 is player 1’s territory, 1 is player 2’s territory.
 
+```
 if(gameGrid.get(i).get(j) != null) {
    territories[i][j] = gameGrid.get(i).get(j).getFaction() - 1;
 }
+```
+
 
 The new territories grid is then saved to the one stored by territoriesPanel so that it can be rendered.
 
 The playCombatSound method checks with 3 if statements which unit type the attacking unit is; “inf”, “art”, or “arm”, and plays the corresponding sound effect. For example:
 
+```
 if (attacker.getType().equals("inf")) { //If the attacker was infantry, play the infantry combat sound effect
    infSoundPlayer.seek(new Duration(0));
    infSoundPlayer.play();
 }
+```
+
 
 playMovementSound works in exactly the same way, but plays the corresponding movement sound effect, like so:
 
+```
 if (selected.getType().equals("inf")) {
  infMoveSoundPlayer.seek(new Duration(0)); //If the moved unit was infantry, play the infantry movement sound effect
  infMoveSoundPlayer.play();
 }
+```
+
 
 The getPreferredSize() method tells Java which size the unit panel should be; the preferred size is defined as the pixel size of a tile multiplied by the amount of tiles in the game:
 
-return new Dimension(w * size, h * size);
+`return new Dimension(w * size, h * size);`
 
 #### Listener
 
@@ -339,17 +397,25 @@ Class Listener is defined within class UnitPanel, and is used to keep track of t
 
 When the mouse is clicked, the mouseClicked method is triggered, with MouseEvent e, which allows the mouse event to be further analysed, such as for coordinates. The method checks if the player has won or lost; if neither are true, this means the game is still going, and so it proceeds to process the user’s click. The method then checks if the user was the last player to move; if they were, then they can proceed, but otherwise the click isn’t processed because they just had their turn. There is only a console print command here, for debugging purposes. Having a message come up would be annoying to the user. If the click is processed, the grid coordinates of the user’s click are obtained by taking the pixel coordinates from the MouseEvent e, and dividing them by the pixel size of the grid squares:
 
+```
 int x = (e.getX() / size);
 int y = (e.getY() / size);
+```
+
 
 Variables are also created to hold the previous coordinates of a unit, and the gameGrid and faction variables are updated from their storage in GameState:
 
+```
 int oldX;
 int oldY;
 gameGrid = GameState.getBoard();
 faction = GameState.getFaction();
+```
+
 
 In the below loop, a 2D (embedded) for loop is used, so that each tile in the game grid can be checked one by one. The For loops run until the size of the grid (10) and are iterated by 1 each time. The if statement within checks if the user has clicked a unit (a non-null location) and the clicked unit is marked as selected within its object, it is copied into the selected variable to be operated on. Once the selected unit is copied, the embedded loop is broken using the SelectionLoop label. The loop is broken early because only one unit needs to be selected. Breaking early saves on extra CPU time.
+
+```
 SelectionLoop:
 for (int i = 0; i < GameState.width; i++) {
    for (int j = 0; j < GameState.height; j++) {
@@ -363,9 +429,12 @@ for (int i = 0; i < GameState.width; i++) {
        }
    }
 }
+```
+
 
 Following this is an if statement which sets the Unit in the game grid’s selection as true:
 
+```
 if (gameGrid.get(x).get(y) != null) {
    Unit selectedUnit = null;
    if (currentSelected(gameGrid) != null) {
@@ -375,29 +444,34 @@ if (gameGrid.get(x).get(y) != null) {
        gameGrid.get(x).get(y).setSelection(true);
    }
 }
+```
+
 
 The selectedUnit object simply exists so that the reference can be handed to a persistent instance variable so that unit re-selection can happen smoothly without having to first deselect. If the first if statement inside the outer one is removed, the game still works, but it takes 2 clicks to switch unit.
 Following this, an if statement checks if the user has clicked somewhere while a unit is selected:
 
+```
 if (selected != null){
    //If a unit is selected and you've clicked somewhere
    try {
+```
+
 
 The code that follows is the code for movement and combat. The processing only takes place if the move is legal, however, which is checked by a method in GameState:
 
-if (GameState.isLegal(selected, x, y)) { //If the move is legal (within 1 square, allowing diagonal movement for armour units)
+`if (GameState.isLegal(selected, x, y)) { //If the move is legal (within 1 square, allowing diagonal movement for armour units)`
 
 Following this, 3 scenarios are checked for: the user clicks an adjacent empty square, the user clicks an adjacent enemy, or the user clicks an adjacent ally.
 In the case that the user clicks on an adjacent empty tile, the currently selected unit’s location is saved, then it is copied into the new location, and then the object at the old ArrayList location is deleted so that the unit is only in its new place and not in its old place. The territories 2D array is then updated from the one stored by the territoriesPanel, the unit’s new location is updated to belong to his faction territorially, and then the newly adjusted territories array is saved again to the territoriesPanel. The method for playing the unit’s movement sound effect is then called, and the if statement ends.
 The second case is that the user clicks on an adjacent enemy unit. This is checked by the following if statement:
 
-} else if (gameGrid.get(x).get(y).getFaction() != faction) { //If the selected unit has been clicked onto an adjacent enemy unit
+`} else if (gameGrid.get(x).get(y).getFaction() != faction) { //If the selected unit has been clicked onto an adjacent enemy unit`
 
 If this happens, then the game handles combat and its effects. First, the territories array is updated from the one stored by territoriesPanel. Then, the combat simulation method is called, which is in the GameState class. The method modifies the two fighting units which are passed to it as arguments. Method setCombatants is then called with the two fighting units as arguments, so that the rendering code can know that two units have just fought, and which ones. This is followed by a call to repaint() so that the panel is redrawn and the combat animation can be shown. There are then two checks to the units’ health. If a unit has less than 1 health, i.e. it is dead, then it is removed from the board and its opposing unit is rewarded with 1 veterancy point, provided that its opposing unit still exists and has less than the maximum of 6 veterancy. If a unit dies, the opposing player is also granted 1 victory point here, regardless of whether or not their own unit also died. The combat sound effect method is then called, with the attacking unit as the argument, so that the appropriate corresponding sound effect can be played.
 
 The third case is that an adjacent friendly unit is clicked:
 
-} else { //If a friendly adjacent unit is clicked, a swap will take place
+`} else { //If a friendly adjacent unit is clicked, a swap will take place`
 
 Like with the movement code, the selected unit’s old location is temporarily stored. The unit which was clicked (not the selected one) is also copied into a temporary Unit object using the Unit class’ copy constructor. The clicked Unit’s location is set to the selected Unit, and then the selected unit’s location is set to the clicked Unit. Territories don’t need to be updated because no territories would ever be changing hands in the event of a swap move.
 
@@ -405,9 +479,12 @@ The deselect() method is then called to make sure that after the click, whether 
 
 The mouseMoved method handles the user’s mouse movements to provide them with tooltips when they hover over units. This is a useful way to give information such as unit names and specific health numbers without having to over-fill the GUI itself. When the user moves the mouse, the mouse’s grid coordinates are calculated in the same way as they are when the user clicks; by dividing the pixel coordinates by the pixel size of the grid squares. Then, if the user is hovering over a non-null square (one with a unit in it) and that unit is ‘nearby’ (within sight range of their own units), a corresponding tooltip will appear. The font is set to Microsoft’s Bahnschrift in bold with size 12, and the tooltip’s text is set to display the unit’s name, health, and veterancy. This is done by passing HTML code as the string argument to the setToolTipText() method, because otherwise the tooltip would not allow line breaks to be manually added. Using HTML here allows for line breaks to be added where aesthetically necessary, so that the tooltip can be compact and clear in its presentation of information, rather than spanning one long line.
 
+```
 component.setFont(new Font("BahnSchrift", Font.BOLD, 12));
 String fontFamily = component.getFont().getFamily();
 component.setToolTipText("<html><body style=\"font-family:" + fontFamily + "\"<b>" + gameGrid.get(x).get(y).getName() + "<br>" + "Health: " + gameGrid.get(x).get(y).getHealth() + "<br>" + "Veterancy: " + gameGrid.get(x).get(y).getVet() + "</b></html>");
+```
+
 
 The font of the text is set by the fontFamily part of the argument. If the user is hovering over an empty area or the unit isn’t nearby, the tooltip text is set to null, which means the tooltip won’t appear.
 
@@ -420,9 +497,12 @@ The font of the text is set by the fontFamily part of the argument. If the user 
 The Background class is one of the 4 panel classes whose instances make up the MainPanel instance. Like the others, it extends the JPanel class. The class has 5 variables; w, h, size, image, and fileName. The ints w and h tell the panel which size the game grid’s width and height are in terms of tiles; in this case they are both 10. size is the pixel size of each grid square, which is 60. The BufferedImage image will hold the png image which is used as the background of the game, i.e. the map. The String fileName tells the Background object the file path of the png file.
 The class only has two methods; the first is paintComponent, which loads the png file into image and draws image from the top-left corner of the panel (0,0).
 
+```
 image = ImageIO.read(getClass().getResource("/media/"+this.fileName));
 
 g.drawImage(image, 0, 0, null);
+```
+
 
 The other method in the class is getPreferredSize(), which works the same as in the other panels; it uses the square size and the number of squares to determine the size of the panel. This size should come out the same as the other panels in mainPanel. The height is simply h*size, and the width is w*size.
 
@@ -438,6 +518,7 @@ The other method in the class is getPreferredSize(), which works the same as in 
 
 TerritoriesPanel is the last of the 4 panels making up mainPanel, and is about as simple as the others, and also extends the JPanel class. The class has 5 variables; colors, territories, w, h, and size. The ints w and h tell the panel which size the game grid’s width and height are in terms of tiles; in this case they are both 10. size is the pixel size of each grid square, which is 60. The array colors holds two colours, which are essentially red and grey with an alpha value to make them transparent. The alpha value is set to 80 and can range up to 255, which would be completely opaque, or down to 0, which would mean totally transparent. In this case we want the territory colours to be apparent without blocking the layers beneath such as the map (background). The class’ paintComponent method does an embedded for loop through the 10x10 territories array, and draws a corresponding rectangle in the appropriate location, with the colour determined by whether that spot in the 2D territories array is a 0 or a 1; 0 referring to the index location of the red colour in the colors array, and 1 referring to the grey colour, i.e. Soviets are 0 and Germans are 1. 
 
+```
 for (int i = 0; i < w; i++)
 {
    for (int j = 0; j < h; j++)
@@ -446,10 +527,13 @@ for (int i = 0; i < w; i++)
        g.fill3DRect(i * size, j * size, size, size, true);
    }
 }
+```
+
 
 The class also has a ‘get’ method and a ‘set’ method for the territories grid, called getTerritories and updateTerritories respectively. getTerritories simply returns the territories array, while updateTerritories uses the Arrays.copyOf() method to copy the new territories array - called owners - into territories.
 
 
+```
 public void updateTerritories(int[][] owners){
    territories = Arrays.copyOf(owners, owners.length);
 }
@@ -457,6 +541,7 @@ public void updateTerritories(int[][] owners){
 public int[][] getTerritories(){
    return territories;
 }
+```
 
 #### GameState
 
@@ -464,6 +549,7 @@ GameState is a class which manages the state of the game, including storing impo
 
 The getNewBoard() method creates the initial board of units to be used by the clients. It first uses an embedded for loop to fill an ArrayList with 10 ArrayLists, each with a capacity of 10 Unit objects. This forms a 2D 10x10 grid. Each of the 10 ArrayLists is then filled with 10 null values, which fills the whole grid, providing a blank slate for the units to be placed in their historical locations, so that the null places don’t have to be explicitly set one-by-one to null.
 
+```
 gameBoard = new ArrayList<ArrayList<Unit>>(10);
 for (int i = 0; i < GameState.width; i++)
 {
@@ -473,23 +559,31 @@ for (int i = 0; i < GameState.width; i++)
        gameBoard.get(i).add(null);
    }
 }
+```
 
 The method then runs a Try block which contains a one-by-one definition of each unit as it should be in its historical location, with its own name, type, veterancy value, etc. There are 47 units defined and placed on the board for the Soviet player, and 26 for the German player. Below is an example of one of the unit placements.
+
+```
 Unit s1stMC = new Unit("1st Mechanised Corps", "sovietinfcounter", 0, 8, "inf", 1, 0, false);
 gameBoard.get(0).set(8, s1stMC);
+```
+
 
 First, the unit is given an object name, and then is given its historical name to be displayed to the user, which image file it should use as its icon, which coordinates it’s at, which type of unit it is, which faction it belongs to (1 for Soviets, 2 for Germans), how much veterancy it has, and whether or not it is selected (this is false for all units at the start). Then, the unit is placed in its corresponding historical location in gameBoard. The icon image couldn’t just be inferred from the unit type, because some infantry units have a different icon - a horse’s head - for historical flavour, because they were cavalry divisions and are named as such. This also allows for future expandability, with different units possibly having unique or more varied symbols. Once the Try block has completed, the completed initialised gameBoard with all of the units in their historical locations is returned.
 
 Following this method are simple get and set methods for 12 different variables. They all function in the same way, so here is one example:
 
+```
 static void setFaction(int newFaction){ faction = newFaction;}
 static int getFaction(){return faction;}
+```
+
 
 The set method receives an argument and assigns its value to the corresponding variable. The get method just returns the corresponding variable.
 
 The getTerritoryVictoryPoints and getEnemyTerritoryVictoryPoints methods are more complex than the other get methods, and involve a decent amount of calculation. The method getTerritoryVictoryPoints calculates how many victory points the player is currently gaining from towns that they hold, and getEnemyTerritoryVictoryPoints calculates the same but for the opponent. getTerritoryVictoryPoints sets the total to 0 to begin with, and then for each specific location where each town resides, if the player controls that location, 5 is added to the total. In the case of two locations - Rzhev and Vyazma, at positions (5,2) and (6,7), 10 is added rather than 5, because these are key towns and controlling them is more important than controlling peripheral villages.
 
-if (territories[2][1] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}
+`if (territories[2][1] == GameState.getFaction()-1) {territoryVictoryPoints += 5;}`
 
 This check is performed for each town, and then the total is returned. getEnemyTerritoryVictoryPoints works in the same way, but calculates the points for the opponent instead. These could be merged into one method with else statements, but being separate methods allows for them to be called separately without one of them having to take slightly longer to get through the if statements to get to the else statements. It also makes for easier returning of the values, and makes the code more obvious in function.
 
@@ -497,60 +591,85 @@ The void combat method simulates combat between two units, and applies the resul
 
 The unit type penalty is determined by a series of if statements describing each of the 6 possible match-ups where a bonus would apply. An example is below.
 
-if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;} //Infantry performs worse against armour
+`if (attacker.getType().equals("inf") && defender.getType().equals("arm")){attackerMean+=typeBonus;} //Infantry performs worse against armour`
 
 As is apparent, when attacking infantry faces defending armour, the type bonus is added to the mean of the attacking infantry’s damage taken. Once this new mean is calculated, the random damage values are calculated for both units.
 
+```
 attackerLosses = (int)(random.nextGaussian()*standardDeviation+attackerMean);
 defenderLosses = (int)(random.nextGaussian()*standardDeviation+defenderMean);
+```
+
 
 The veterancy bonuses are then applied as such:
 
+```
 attackerLosses -= attacker.getVet()*vetBonus;
 defenderLosses += attacker.getVet()*vetBonus;
 attackerLosses += defender.getVet()*vetBonus;
 defenderLosses -= defender.getVet()*vetBonus;
+```
+
 
 Each unit’s veterancy bonus is added to their opponent’s damage, and subtracted from their own. The town defence bonus is then applied, wherein the defender’s location is checked against the locations of the game’s 12 towns:
 
 
+```
 if (((defender.getxLocation() == 2)&&(defender.getyLocation()==1))
        || ((defender.getxLocation() == 0)&&(defender.getyLocation()==2))
+```
+
 …
 
 If there is a match, the town defence bonus is subtracted from the defender’s damage taken, and added to that of the attacker.
 
+```
 defenderLosses-=townDefenceBonus;
 attackerLosses+=townDefenceBonus;
+```
+
 
 Four if statements then check whether the attacker is encircled, and then four others check the same for the defender. This is done by adding 1 to or subtracting 1 from each coordinate to check all 4 adjacent territories. If any of them is friendly, the unit isn’t encircled, but if none of them are, then the encircled value remains true. The encirclement penalty is then added to the damage taken of the unit which is encircled, and half of it is subtracted from the damage taken of the other unit.
 
+```
 //If attacker is encircled, make them take more damage and deal less
 if (attackerEncircled){
    attackerLosses+=encirclementPenalty;
    defenderLosses-=encirclementPenalty/2;
 }
+```
+
 
 The units are also made to take a minimum of 7 damage each turn, so that the game can’t be broken by extremely unlucky or lucky rolls, or a single high-veterancy unit having a snowball effect and wiping out 15 units.
 
+```
 if (attackerLosses<7){attackerLosses = 7;}
 if (defenderLosses<7){defenderLosses = 7;}
+```
+
 
 Finally, the final changes to the units’ health are applied.
 
+```
 attacker.setHealth(attacker.getHealth()-attackerLosses);
 defender.setHealth(defender.getHealth()-defenderLosses);
+```
+
 
 The getNewTerritories() method is similar to the getNewBoard() method in that it generates a new data structure for the game at the very start to set up the historical situation as it should be. In this case, it is a 2D array of ints rather than a 2D ArrayList of Units. As discussed earlier, a 0 in the territories array represents Soviet player control, and a 1 represents German player control. Since the Soviet player will hold most of the territory and the German player will only hold the central area, an embedded for loop first fills the 2D array with 0 values, and then a series of for loops fill certain lines of tiles with 1s to represent the German territory among the Soviet territory. For instance, the following loop fills the bottom (10th, i.e. index 9) row with 1s (German control) from index 0 (1st tile) to index 6 (7th tile). The remaining 3 tiles are left unaltered as 0s (Soviet control). This is repeated as necessary for all of the German territory.
 
+```
 for (int i = 0; i<7; i++){
    owners[i][9] = 1;
 }
+```
+
 
 ![](src/readmemedia/operationmars11.png)
 
 The updateBoard() void method updates the stored board from a new board by looping through each tile in the 2D ArrayList via an embedded for loop and copying the Unit object over if there is one:
 
+```
 if(gameBoard.get(i).get(j) != null && updatedBoard.get(i).get(j) != null) {
    try {
        gameBoard.get(i).set(j, new Unit(updatedBoard.get(i).get(j)));
@@ -558,19 +677,24 @@ if(gameBoard.get(i).get(j) != null && updatedBoard.get(i).get(j) != null) {
        e1.printStackTrace();
    }
 }
+```
+
 
 The isLegal() method takes a Unit object and the coordinates it wishes to move to, and determines whether or not that move is legal. Legality means that the coordinates aren’t the same as the Unit’s current coordinates, and the unit is moving to an adjacent location. Armour units are allowed to move diagonally, so for them a simple if statement checks that the unit isn’t moving more than 1 tile. For non-armour units, there is an extra check added, to see that the x and y coordinates aren’t both changing, which would mean a diagonal move; only one coordinate can change for a cardinal (non-diagonal) move. Below is the legality check for non-armour units. The check for armour units is the same, but without the last condition that only one coordinate is changing.
 
+```
 } else if (!selected.getType().equals("arm") 
 && (!(Math.abs(selected.getxLocation() - x) > 1) 
 && !(Math.abs(selected.getyLocation() - y) > 1))
        && !((Math.abs(selected.getxLocation() - x) > 0) && (Math.abs(selected.getyLocation() - y) > 0))){
    return true;
 }
+```
+
 
 The Boolean method isNear() takes a Unit and the unitBoard ArrayList, and checks if that given unit is adjacent to one of your (the player’s) units, including diagonal adjacency. Firstly, if the unit is one of yours, then true is automatically returned because your own units are inherently always near to your units. Then, all 8 adjacent locations are checked to see if there’s one of your units in one of them. If there is, then the unit is considered nearby because one of your units is there to see it, and true will be returned so that the unit is rendered. The if statements have conditions to make sure that none of the checks go outside of the board’s bounds and throw a NullPointerException. Below is an example of one of the 8 checks.
 
-|| (i<9&&j>0&&(unitBoard.get(i+1).get(j-1)!=null)&&unitBoard.get(i+1).get(j-1).getFaction()==faction)
+`|| (i<9&&j>0&&(unitBoard.get(i+1).get(j-1)!=null)&&unitBoard.get(i+1).get(j-1).getFaction()==faction)`
 
 If none of these 8 checks are passed, the unit is considered not nearby, so false is returned.
 
@@ -586,11 +710,14 @@ The ClientThread’s run() method is where the thread’s socket communication t
 
 The makeMove() method is where the client’s socket communication takes place from the client to the server. The method receives the client’s new board, and sends to the server the client’s player number, and the board, serialised via Gson:
 
+```
 public static void makeMove(ArrayList<ArrayList<Unit>> unitBoard){
    out.println(GameState.getFaction());
    Gson gson = new Gson();
    out.println(gson.toJson(unitBoard));
 }
+```
+
 
 #### Server
 
@@ -600,11 +727,12 @@ The Server class extends the Thread class and is used to accept and open socket 
 
 The ServerThread class extends the Thread class and is used to communicate over the socket to the client on behalf of the server. Its constructor simply receives the parameters passed to it by Server, and assigns them to instance variables. Like ClientThread, the run() method uses for communication a PrintWriter, an OutputStream, and a BufferedReader. Firstly, the thread prints the size of the ArrayList of socket connections to the output stream, so that the user joining can be told their player number based on the order in which they joined. Then, the last moved player is set to 20, so that the thread can know when it’s the first turn of the game. Then, the communication loop begins, and loops indefinitely. Within here, the thread uses the BufferedReader to receive communication from the client. Once it receives communication from the client, it can save the fact that someone has moved, so that it won’t accept any more socket connections after that. Then an if statement checks if the following communication should be relayed to the client. The communication is sent to the client in the event that either they just sent it themselves to the server, or it is the first turn, or either of the players has won the game, in which case both players need to be informed.
 
-if (factionWhoMoved == lastMovedPlayer || lastMovedPlayer == 20 || factionWhoMoved == 11 || factionWhoMoved == 12) {
+`if (factionWhoMoved == lastMovedPlayer || lastMovedPlayer == 20 || factionWhoMoved == 11 || factionWhoMoved == 12) {`
 
 Within this statement, the server thread then cycles through every connection one by one and informs every other client on the server of the changes which have happened; these being the new board, and the player who updated the board, i.e. who made the move. This is done on the condition that the client isn’t the one who just moved, via the line: if (index != factionWhoMoved). After this is completed, the player who just moved is saved as the last moved player so that the process can repeat with the next received communication.
 
 
+```
 for (Socket socket : sockets) { //For all of the connections
    index++;
    if (index != factionWhoMoved) {
@@ -615,6 +743,8 @@ for (Socket socket : sockets) { //For all of the connections
    }
 }
 lastMovedPlayer = factionWhoMoved;
+```
+
 
 ## User Manual
 
