@@ -2,7 +2,7 @@
 This project is a two-player online multiplayer strategy game, created in Java. The game is turn-based, 
 and is set in WW2 and focused on Operation Mars, a famous operation on the eastern front around the city of Rzhev.
 
-The project contains about 1500 lines of code, and two dozen assets.
+The project contains about 1500 lines of code, and two dozen assets, including sound and music.
 
 This Readme contains the technical documentation, followed by the user manual.
 
