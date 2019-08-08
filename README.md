@@ -6,7 +6,7 @@ The project contains about 1500 lines of code, and two dozen assets, including s
 
 This Readme contains the technical documentation, followed by the user manual.
 
-![](operationmars.gif)
+![](src/readmemedia/operationmars.gif)
 
 ## Credits
 
